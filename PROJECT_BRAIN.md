@@ -74,6 +74,15 @@ Use the Browser tool's `preview_start` with name `cg-cyber-site` (reads `.claude
 which serves `site/` at `http://localhost:8080`. There is no build step — HTML/CSS/JS are edited
 directly and served as static files.
 
+## 3b. Git / GitHub
+
+The repo is pushed to `https://github.com/notsodiv1918/Cyber-Suraksha` (`main` branch). `data/raw/`
+(the ~96MB of raw downloaded training datasets) is gitignored on purpose — the site only needs
+`site/data/model.json` (the trained model) and `site/data/dashboard.json` at runtime, so the raw
+dumps would just bloat the repo for no benefit. **Convention: commit and push after every
+meaningful change from here on** (the user asked for this explicitly) — `git add -A && git commit
+-m "..." && git push`, same attribution footer as any other commit in this project.
+
 ## 4. The ML model (message/call scam detector)
 
 - **Datasets** (real, downloaded via Hugging Face `datasets-server` parquet export, not the
@@ -164,6 +173,12 @@ directly and served as static files.
 ---
 
 ## Change Log (newest first)
+
+- **Repo pushed to GitHub for the first time.** `git init`'d at the repo root, added a
+  `.gitignore` excluding `data/raw/` (large third-party dataset dumps, not needed at runtime) plus
+  the usual `__pycache__`/OS-junk/`.claude/settings.local.json`, committed all 40 remaining
+  tracked files, and pushed to `https://github.com/notsodiv1918/Cyber-Suraksha` on `main`. Per the
+  user's request, commit + push after every meaningful change from now on (see section 3b).
 
 - **`.page-head` banner (the colored strip under the nav tabs on every inner page) swapped from
   blue to a pale mint green, topbar left alone.** User supplied an exact swatch (`#eaf7e8`, which
