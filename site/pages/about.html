@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>परिचय एवं डेटा स्रोत | साइबर सुरक्षा पोर्टल छत्तीसगढ़</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<a href="#main" class="skip-link">मुख्य सामग्री पर जाएँ</a>
+<div class="topbar">
+  <div class="container">
+    <div class="topbar-left">
+      <span><svg class="icon"><use href="../assets/icons.svg?v=2#i-shield"></use></svg> <strong data-en="Prototype — Hackathon build, not an official production site">प्रोटोटाइप — हैकाथॉन निर्माण, आधिकारिक उत्पादन साइट नहीं</strong></span>
+      <span><svg class="icon"><use href="../assets/icons.svg?v=2#i-phone"></use></svg> <span data-en="National Cybercrime Helpline">राष्ट्रीय साइबर अपराध हेल्पलाइन</span>: <strong>1930</strong></span>
+    </div>
+    <div class="topbar-right">
+      <div class="textsize"><button data-textsize="base">A</button><button data-textsize="text-lg">A+</button><button data-textsize="text-xl">A++</button></div>
+      <div class="lang-toggle"><button data-lang="hi" class="active">हिन्दी</button><button data-lang="en">ENG</button></div>
+    </div>
+  </div>
+</div>
+<header class="site-header">
+  <div class="header-inner container">
+    <div class="gov-emblem-pair" aria-hidden="true">
+      <img class="pillar-icon" src="../assets/ashoka-emblem.png" alt="">
+      <img class="seal-icon" src="../assets/cg-seal.webp" alt="">
+    </div>
+    <div class="brand">
+      <div class="title" data-en="Cyber Suraksha &amp; Digital Financial Literacy Portal">साइबर सुरक्षा एवं डिजिटल वित्तीय साक्षरता पोर्टल</div>
+      <div class="subtitle" data-en="Government of Chhattisgarh (hackathon prototype)">छत्तीसगढ़ शासन (हैकाथॉन प्रोटोटाइप)</div>
+    </div>
+  </div>
+  <nav class="site-nav"><div class="container">
+    <button class="nav-toggle" aria-label="menu"><svg class="icon"><use href="../assets/icons.svg?v=2#i-menu"></use></svg></button>
+    <ul>
+      <li><a href="../index.html" data-en="Home">होम</a></li>
+      <li><a href="detector.html" data-en="Message Scam Detector">मैसेज स्कैम डिटेक्टर</a></li>
+      <li><a href="call-checker.html" data-en="Call Scam Detector">कॉल स्कैम डिटेक्टर</a></li>
+      <li><a href="report.html" data-en="Report Fraud">धोखाधड़ी की शिकायत</a></li>
+      <li><a href="learn.html" data-en="Safety Lessons &amp; Quiz">सुरक्षा पाठ एवं क्विज़</a></li>
+      <li><a href="dashboard.html" data-en="Scam Trend Dashboard">स्कैम ट्रेंड डैशबोर्ड</a></li>
+      <li><a href="about.html" class="current" data-en="About &amp; Data Sources">परिचय एवं डेटा स्रोत</a></li>
+    </ul>
+  </div></nav>
+</header>
+
+<div class="page-head">
+  <div class="container">
+    <div class="breadcrumb"><a href="../index.html" data-en="Home">होम</a> / <span data-en="About &amp; Data Sources">परिचय एवं डेटा स्रोत</span></div>
+    <h1 data-en="About this prototype, datasets &amp; architecture">इस प्रोटोटाइप, डेटासेट एवं आर्किटेक्चर के बारे में</h1>
+  </div>
+</div>
+
+<main id="main">
+  <section>
+    <div class="container">
+      <div class="card">
+        <h2 data-en="What this is">यह क्या है</h2>
+        <p data-en="A hackathon prototype built for the problem statement: 'Cyber Fraud Detection &amp; Digital Financial Literacy Platform' — an offline, local-language app that detects scam messages and calls, teaches payment safety, and connects citizens to official fraud reporting. The visual design is inspired by cgstate.gov.in but this is not an official government production system.">यह हैकाथॉन समस्या विवरण 'साइबर फ्रॉड डिटेक्शन एवं डिजिटल वित्तीय साक्षरता प्लेटफ़ॉर्म' हेतु बनाया गया प्रोटोटाइप है — एक ऑफ़लाइन, क्षेत्रीय-भाषा ऐप जो स्कैम मैसेज व कॉल पहचानती है, भुगतान सुरक्षा सिखाती है, एवं नागरिकों को आधिकारिक धोखाधड़ी रिपोर्टिंग से जोड़ती है। विज़ुअल डिज़ाइन cgstate.gov.in से प्रेरित है परंतु यह आधिकारिक सरकारी उत्पादन प्रणाली नहीं है।</p>
+      </div>
+
+      <div class="card" id="architecture" style="margin-top:20px;">
+        <h2 data-en="Architecture overview">आर्किटेक्चर विवरण</h2>
+        <ul class="kv-list">
+          <li><span data-en="Frontend">फ्रंटएंड</span><span>Static HTML / CSS / vanilla JS (no build step, no server)</span></li>
+          <li><span data-en="Message classifier">मैसेज क्लासिफायर</span><span data-en="Multinomial Naive Bayes over word + char-4-gram features, trained offline in Python, exported as JSON and scored entirely in-browser">शब्द + char-4-gram फ़ीचर पर Multinomial Naive Bayes, Python में ऑफ़लाइन प्रशिक्षित, JSON में निर्यातित, पूर्ण रूप से ब्राउज़र में ही स्कोर</span></li>
+          <li><span data-en="Explainability layer">व्याख्या परत</span><span data-en="Bilingual red-flag phrase lexicon (OTP, KYC, prize, link, urgency, payment, courier, arrest, job, investment, loan, Aadhaar) matched alongside the model score">द्विभाषी चेतावनी-वाक्यांश लेक्सिकॉन (OTP, KYC, इनाम, लिंक, जल्दबाज़ी, भुगतान, कूरियर, गिरफ़्तारी, नौकरी, निवेश, लोन, आधार) मॉडल स्कोर के साथ</span></li>
+          <li><span data-en="Call-scam detector">कॉल-स्कैम डिटेक्टर</span><span data-en="Prototype reuses the same offline classifier on a pasted/typed transcript; production version would add on-device Hindi/English speech-to-text (e.g. Vosk / whisper.cpp)">प्रोटोटाइप पेस्ट/टाइप किए ट्रांसक्रिप्ट पर वही ऑफ़लाइन क्लासिफायर पुनः उपयोग करता है; उत्पादन संस्करण में ऑन-डिवाइस हिन्दी/अंग्रेज़ी स्पीच-टू-टेक्स्ट (जैसे Vosk / whisper.cpp) जोड़ा जाता</span></li>
+          <li><span data-en="Lessons &amp; quiz">पाठ एवं क्विज़</span><span data-en="Fully static, offline, bilingual (Hindi/Chhattisgarhi) content with instant local scoring">पूर्ण स्थिर, ऑफ़लाइन, द्विभाषी (हिन्दी/छत्तीसगढ़ी) सामग्री, तुरंत स्थानीय स्कोरिंग सहित</span></li>
+          <li><span data-en="Dashboard">डैशबोर्ड</span><span data-en="Pre-aggregated JSON built offline from the complaint-category sample; Chart.js renders it (only page that expects a network fetch for the charting library)">शिकायत-श्रेणी नमूने से ऑफ़लाइन निर्मित पूर्व-एकत्रित JSON; Chart.js इसे प्रस्तुत करता है (केवल यही पृष्ठ चार्टिंग लाइब्रेरी हेतु नेटवर्क अपेक्षा रखता है)</span></li>
+          <li><span data-en="Reporting handoff">रिपोर्टिंग हैंडऑफ़</span><span data-en="Direct deep-links to 1930, cybercrime.gov.in and Chakshu (Sanchar Saathi), plus an evidence checklist">1930, cybercrime.gov.in एवं चक्षु (संचार साथी) हेतु सीधे लिंक, साक्ष्य चेकलिस्ट सहित</span></li>
+        </ul>
+      </div>
+
+      <div class="card" id="accuracy" style="margin-top:20px;">
+        <h2 data-en="Message detector accuracy (held-out test split)">मैसेज डिटेक्टर सटीकता (होल्ड-आउट टेस्ट स्प्लिट)</h2>
+        <p data-en="Trained on 22,759 examples and evaluated on a held-out 4,016-example split (15%) never seen during training:">22,759 उदाहरणों पर प्रशिक्षित एवं प्रशिक्षण के दौरान कभी न देखे गए 4,016-उदाहरण (15%) होल्ड-आउट स्प्लिट पर मूल्यांकित:</p>
+        <div class="grid cols-4">
+          <div class="card" style="background:var(--bg);"><div style="font-size:26px;font-weight:800;color:var(--text);">98.8%</div><div class="hint" data-en="Accuracy">सटीकता</div></div>
+          <div class="card" style="background:var(--bg);"><div style="font-size:26px;font-weight:800;color:var(--text);">100%</div><div class="hint" data-en="Precision (scam class)">परिशुद्धता (स्कैम वर्ग)</div></div>
+          <div class="card" style="background:var(--bg);"><div style="font-size:26px;font-weight:800;color:var(--text);">97.5%</div><div class="hint" data-en="Recall (scam class)">रिकॉल (स्कैम वर्ग)</div></div>
+          <div class="card" style="background:var(--bg);"><div style="font-size:26px;font-weight:800;color:var(--text);">98.7%</div><div class="hint" data-en="F1 score (scam class)">F1 स्कोर (स्कैम वर्ग)</div></div>
+        </div>
+        <p class="hint" style="margin-top:14px;" data-en="Confusion matrix on the test split: TP 1841, TN 2128, FP 0, FN 47. Caveat: the 'genuine' examples mostly come from one dataset (india-spam-sms) and 'scam' examples partly from another (ScamShield-IN), so some of this separability may reflect dataset-specific writing style rather than scam content alone. Real-world accuracy on unseen phrasing will likely be lower — treat this as a prototype baseline, not a production guarantee.">टेस्ट स्प्लिट पर कन्फ्यूज़न मैट्रिक्स: TP 1841, TN 2128, FP 0, FN 47। सावधानी: अधिकतर 'असली' उदाहरण एक डेटासेट (india-spam-sms) से हैं एवं 'स्कैम' उदाहरण आंशिक रूप से दूसरे (ScamShield-IN) से, इसलिए यह पृथक्करण केवल स्कैम सामग्री के बजाय डेटासेट-विशिष्ट लेखन शैली को भी दर्शा सकता है। अनदेखी भाषा पर वास्तविक-विश्व सटीकता संभवतः कम होगी — इसे उत्पादन गारंटी नहीं, प्रोटोटाइप आधाररेखा मानें।</p>
+      </div>
+
+      <div class="card" style="margin-top:20px;">
+        <h2 data-en="Datasets used">उपयोग किए गए डेटासेट</h2>
+        <table class="table">
+          <thead><tr>
+            <th data-en="Dataset">डेटासेट</th><th data-en="Size">आकार</th><th data-en="Used for">किसलिए उपयोग</th><th data-en="License/source">लाइसेंस/स्रोत</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><a href="https://huggingface.co/datasets/CloveAI/india-spam-sms" target="_blank" rel="noopener">CloveAI/india-spam-sms</a></td>
+              <td>20,010 <span data-en="rows">पंक्तियाँ</span></td>
+              <td data-en="Primary labelled corpus (spam/ham) for training the message classifier — India-specific senders, banks, UPI, e-commerce">मैसेज क्लासिफायर प्रशिक्षण हेतु प्राथमिक लेबल्ड कॉर्पस (स्पैम/हैम) — भारत-विशिष्ट प्रेषक, बैंक, UPI, ई-कॉमर्स</td>
+              <td data-en="Public Hugging Face dataset">सार्वजनिक Hugging Face डेटासेट</td>
+            </tr>
+            <tr>
+              <td><a href="https://huggingface.co/datasets/haxrits/ScamShield-IN" target="_blank" rel="noopener">haxrits/ScamShield-IN</a></td>
+              <td>8,066 <span data-en="rows">पंक्तियाँ</span></td>
+              <td data-en="Additional confirmed-scam examples with fraud_type tags and explanations — used for training and for the red-flag lexicon/call-script library">fraud_type टैग एवं व्याख्या सहित अतिरिक्त पुष्ट-स्कैम उदाहरण — प्रशिक्षण एवं चेतावनी-लेक्सिकॉन/कॉल-स्क्रिप्ट लाइब्रेरी हेतु उपयोग</td>
+              <td data-en="Public Hugging Face dataset">सार्वजनिक Hugging Face डेटासेट</td>
+            </tr>
+            <tr>
+              <td><a href="https://huggingface.co/datasets/Dev523/Crime-Reports-Dataset" target="_blank" rel="noopener">Dev523/Crime-Reports-Dataset</a></td>
+              <td>93,686 <span data-en="rows (8,000 sampled)">पंक्तियाँ (8,000 नमूना लिया गया)</span></td>
+              <td data-en="National Cybercrime Reporting Portal complaint categories — used to build the real scam-type taxonomy and counts shown on the trend dashboard">राष्ट्रीय साइबर अपराध रिपोर्टिंग पोर्टल शिकायत श्रेणियाँ — ट्रेंड डैशबोर्ड पर दिखाई वास्तविक स्कैम-प्रकार वर्गीकरण एवं गणना हेतु उपयोग</td>
+              <td data-en="Public Hugging Face dataset, sourced from India's NCRP complaint data">सार्वजनिक Hugging Face डेटासेट, भारत के NCRP शिकायत डेटा से प्राप्त</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="hint" style="margin-top:10px;" data-en="Note: district-wise and month-wise splits on the dashboard are NOT in the source data (which has no location field) — they are proportionally synthesised for demonstration. The category totals themselves are real.">टिप्पणी: डैशबोर्ड पर जिलेवार एवं माहवार विभाजन स्रोत डेटा में नहीं हैं (जिसमें कोई स्थान फ़ील्ड नहीं है) — ये प्रदर्शन हेतु आनुपातिक रूप से संश्लेषित हैं। श्रेणी कुल वास्तविक हैं।</p>
+      </div>
+
+      <div class="card" style="margin-top:20px;">
+        <h2 data-en="Limitations &amp; next steps">सीमाएँ एवं अगले कदम</h2>
+        <ul class="checklist">
+          <li><span data-en="Chhattisgarhi text in the lessons is hand-written for this prototype, not drawn from a validated linguistic corpus — a real deployment should involve native speakers and local cyber-cell input.">पाठ में छत्तीसगढ़ी टेक्स्ट इस प्रोटोटाइप हेतु हस्तलिखित है, किसी मान्य भाषाई कॉर्पस से नहीं — वास्तविक परिनियोजन में स्थानीय वक्ताओं एवं साइबर-सेल इनपुट को शामिल करना चाहिए।</span></li>
+          <li><span data-en="Call transcription is simulated via paste/typed text in this prototype; a production build needs an on-device Hindi/English ASR model.">इस प्रोटोटाइप में कॉल ट्रांसक्रिप्शन पेस्ट/टाइप टेक्स्ट से अनुकरित है; उत्पादन निर्माण हेतु ऑन-डिवाइस हिन्दी/अंग्रेज़ी ASR मॉडल चाहिए।</span></li>
+          <li><span data-en="District-level scam-trend data is synthesised; a real system needs actual district-tagged complaint data from police/banks.">जिला-स्तरीय स्कैम-ट्रेंड डेटा संश्लेषित है; वास्तविक प्रणाली हेतु पुलिस/बैंकों से वास्तविक जिला-टैग शिकायत डेटा चाहिए।</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span data-en="© 2026 Hackathon prototype. Not an official Government of Chhattisgarh website.">© 2026 हैकाथॉन प्रोटोटाइप। यह छत्तीसगढ़ शासन की आधिकारिक वेबसाइट नहीं है।</span>
+      <span><a href="../index.html" data-en="Back to Home">होम पर वापस जाएँ</a></span>
+    </div>
+  </div>
+</footer>
+
+<div class="emergency-widget">
+  <div class="emergency-panel">
+    <h4 data-en="Quick Links">त्वरित लिंक</h4>
+    <ul>
+      <li><a href="detector.html"><span data-en="Message Detector">मैसेज डिटेक्टर</span> <strong>→</strong></a></li>
+      <li><a href="call-checker.html"><span data-en="Call Detector">कॉल डिटेक्टर</span> <strong>→</strong></a></li>
+      <li><a href="learn.html"><span data-en="Lessons &amp; Quiz">पाठ एवं क्विज़</span> <strong>→</strong></a></li>
+      <li><a href="dashboard.html"><span data-en="Dashboard">डैशबोर्ड</span> <strong>→</strong></a></li>
+      <li><a href="about.html"><span data-en="Data Sources">डेटा स्रोत</span> <strong>→</strong></a></li>
+    </ul>
+  </div>
+  <button class="emergency-fab" aria-label="Quick links" title="त्वरित लिंक"><svg class="icon"><use href="../assets/icons.svg?v=2#i-plus"></use></svg><span class="emergency-fab-label" data-en="Quick Links">त्वरित लिंक</span></button>
+</div>
+
+<script src="../js/app.js"></script>
+</body>
+</html>

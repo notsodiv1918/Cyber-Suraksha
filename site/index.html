@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>साइबर सुरक्षा एवं डिजिटल वित्तीय साक्षरता पोर्टल | छत्तीसगढ़</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>/* homepage keeps its own navy shade — the lighter sky blue below is for the other pages only */
+:root{--navy:#2f72bb;--navy-light:#4f96dd;}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">मुख्य सामग्री पर जाएँ</a>
+
+<!-- ============ TOP UTILITY BAR ============ -->
+<div class="topbar">
+  <div class="container">
+    <div class="topbar-left">
+      <span><svg class="icon"><use href="assets/icons.svg?v=2#i-shield"></use></svg> <strong data-en="Prototype — Hackathon build, not an official production site">प्रोटोटाइप — हैकाथॉन निर्माण, आधिकारिक उत्पादन साइट नहीं</strong></span>
+      <span><svg class="icon"><use href="assets/icons.svg?v=2#i-phone"></use></svg> <span data-en="National Cybercrime Helpline">राष्ट्रीय साइबर अपराध हेल्पलाइन</span>: <strong>1930</strong></span>
+    </div>
+    <div class="topbar-right">
+      <div class="textsize" aria-label="Text size">
+        <button data-textsize="base" title="सामान्य">A</button>
+        <button data-textsize="text-lg" title="बड़ा">A+</button>
+        <button data-textsize="text-xl" title="सबसे बड़ा">A++</button>
+      </div>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-lang="hi" class="active">हिन्दी</button>
+        <button data-lang="en">ENG</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <div class="header-inner container">
+    <div class="gov-emblem-pair" aria-hidden="true">
+      <img class="pillar-icon" src="assets/ashoka-emblem.png" alt="">
+      <img class="seal-icon" src="assets/cg-seal.webp" alt="">
+    </div>
+    <div class="brand">
+      <div class="title" data-en="Cyber Suraksha &amp; Digital Financial Literacy Portal">साइबर सुरक्षा एवं डिजिटल वित्तीय साक्षरता पोर्टल</div>
+      <div class="subtitle" data-en="Government of Chhattisgarh &middot; Police Dept. &amp; Electronics &amp; IT Dept. (hackathon prototype)">छत्तीसगढ़ शासन · पुलिस विभाग एवं इलेक्ट्रॉनिक्स व सूचना प्रौद्योगिकी विभाग (हैकाथॉन प्रोटोटाइप)</div>
+    </div>
+    <div class="gov-tag">
+      <strong data-en="भारत सरकार / राज्य सरकार">डिजिटल इंडिया पहल</strong>
+      <span data-en="Offline-first &middot; Hindi + Chhattisgarhi &middot; On-device ML">ऑफ़लाइन-फर्स्ट · हिन्दी + छत्तीसगढ़ी · ऑन-डिवाइस एमएल</span>
+    </div>
+  </div>
+  <nav class="site-nav">
+    <div class="container">
+      <button class="nav-toggle" aria-label="menu"><svg class="icon"><use href="assets/icons.svg?v=2#i-menu"></use></svg></button>
+      <ul>
+        <li><a href="index.html" class="current" data-en="Home">होम</a></li>
+        <li><a href="pages/detector.html" data-en="Message Scam Detector">मैसेज स्कैम डिटेक्टर</a></li>
+        <li><a href="pages/call-checker.html" data-en="Call Scam Detector">कॉल स्कैम डिटेक्टर</a></li>
+        <li><a href="pages/report.html" data-en="Report Fraud">धोखाधड़ी की शिकायत</a></li>
+        <li><a href="pages/learn.html" data-en="Safety Lessons &amp; Quiz">सुरक्षा पाठ एवं क्विज़</a></li>
+        <li><a href="pages/dashboard.html" data-en="Scam Trend Dashboard">स्कैम ट्रेंड डैशबोर्ड</a></li>
+        <li><a href="pages/about.html" data-en="About &amp; Data Sources">परिचय एवं डेटा स्रोत</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" style="padding-bottom:0;">
+    <div class="hero-slideshow" id="hero-slideshow">
+      <div class="hero-slide active">
+        <img src="assets/hero-photo-1.webp" alt="">
+      </div>
+      <div class="hero-slide">
+        <img src="assets/hero-photo-2.png" alt="">
+      </div>
+      <div class="hero-slide">
+        <img src="assets/hero-photo-3.webp" alt="">
+      </div>
+      <div class="hero-slide">
+        <img src="assets/hero-photo-4.webp" alt="">
+      </div>
+      <div class="hero-slide-dots" id="hero-dots"></div>
+    </div>
+    <div class="container">
+      <div class="hero-text">
+        <h1 data-en="Stay safe from digital payment fraud — in your own language, even offline">अपनी भाषा में, बिना इंटरनेट के भी — डिजिटल भुगतान धोखाधड़ी से सुरक्षित रहें</h1>
+        <p data-en="Paste a suspicious SMS or WhatsApp message, check a scam call recording, learn OTP/UPI/QR safety in Hindi &amp; Chhattisgarhi, and report fraud directly to 1930 / cybercrime.gov.in / Chakshu — all from one place.">संदिग्ध SMS या व्हाट्सऐप मैसेज पेस्ट करें, स्कैम कॉल रिकॉर्डिंग जाँचें, हिन्दी एवं छत्तीसगढ़ी में OTP/UPI/QR सुरक्षा सीखें, और 1930 / cybercrime.gov.in / चक्षु पर सीधे शिकायत दर्ज करें — सब एक ही जगह।</p>
+        <div class="hero-cta">
+          <a href="pages/detector.html" class="btn btn-primary" data-en="Check a message now">अभी मैसेज जाँचें</a>
+          <a href="pages/report.html" class="btn btn-outline" data-en="Lost money? Report now">पैसे गँवाए? अभी शिकायत करें</a>
+        </div>
+        <ul class="hero-features">
+          <li><svg class="icon"><use href="assets/icons.svg?v=2#i-check-circle"></use></svg> <span data-en="100% on-device verification">100% ऑन-डिवाइस सत्यापन</span></li>
+          <li><svg class="icon"><use href="assets/icons.svg?v=2#i-check-circle"></use></svg> <span data-en="Zero personal data uploads">शून्य व्यक्तिगत डेटा अपलोड</span></li>
+          <li><svg class="icon"><use href="assets/icons.svg?v=2#i-check-circle"></use></svg> <span data-en="Direct 1930 &amp; Chakshu links">सीधे 1930 एवं चक्षु लिंक</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TREND TICKER (below hero) ============ -->
+  <div class="hero-ticker">
+    <span class="tkr-tag"><svg class="icon"><use href="assets/icons.svg?v=2#i-alert-triangle"></use></svg> <span class="lbl" data-en="ALERT">चेतावनी</span></span>
+    <div class="hero-ticker-track-wrap">
+      <div class="hero-ticker-track">
+        <span data-en="Trending: fake 'digital arrest' calls impersonating TRAI/CBI/Customs demanding UPI payment — never pay or share OTP on a call.">ट्रेंड में: TRAI/CBI/कस्टम अधिकारी बनकर 'डिजिटल अरेस्ट' के नाम पर UPI भुगतान माँगने वाली फर्जी कॉलें — कॉल पर कभी भुगतान न करें या OTP साझा न करें।</span>
+        <span data-en="Fake KYC-update SMS with shortened links are rising across Chhattisgarh — verify directly with your bank branch.">फर्जी KYC-अपडेट SMS, छोटे लिंक सहित, छत्तीसगढ़ में बढ़ रहे हैं — सीधे अपनी बैंक शाखा से सत्यापित करें।</span>
+        <span data-en="Courier/customs-fine calls are a common script — legitimate couriers never ask for UPI payment over the phone.">कूरियर/कस्टम-जुर्माना कॉल एक आम स्क्रिप्ट है — असली कूरियर कंपनी कभी फ़ोन पर UPI भुगतान नहीं माँगती।</span>
+        <span data-en="Trending: fake 'digital arrest' calls impersonating TRAI/CBI/Customs demanding UPI payment — never pay or share OTP on a call.">ट्रेंड में: TRAI/CBI/कस्टम अधिकारी बनकर 'डिजिटल अरेस्ट' के नाम पर UPI भुगतान माँगने वाली फर्जी कॉलें — कॉल पर कभी भुगतान न करें या OTP साझा न करें।</span>
+        <span data-en="Fake KYC-update SMS with shortened links are rising across Chhattisgarh — verify directly with your bank branch.">फर्जी KYC-अपडेट SMS, छोटे लिंक सहित, छत्तीसगढ़ में बढ़ रहे हैं — सीधे अपनी बैंक शाखा से सत्यापित करें।</span>
+      </div>
+    </div>
+    <a href="pages/dashboard.html" class="btn btn-sm btn-navy" style="flex:none;border-radius:0;margin:6px 10px;" data-en="View trends">ट्रेंड देखें</a>
+  </div>
+  <div class="toran-strip" aria-hidden="true"></div>
+
+  <!-- ============ STAT TILES ============ -->
+  <section>
+    <div class="container">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow" data-en="THIS PLATFORM AT A GLANCE">यह प्लेटफ़ॉर्म एक नज़र में</span>
+          <h2 data-en="Built on real data, runs on-device">वास्तविक डेटा पर निर्मित, डिवाइस पर ही संचालित</h2>
+        </div>
+      </div>
+      <div class="cycle-tiles" id="cycle-tiles">
+        <div class="cycle-tile c1"><div class="cycle-content"><svg class="icon"><use></use></svg><div class="num"></div><div class="lbl"></div><div class="desc"></div></div><div class="cycle-dots"></div></div>
+        <div class="cycle-tile c2"><div class="cycle-content"><svg class="icon"><use></use></svg><div class="num"></div><div class="lbl"></div><div class="desc"></div></div><div class="cycle-dots"></div></div>
+        <div class="cycle-tile c3"><div class="cycle-content"><svg class="icon"><use></use></svg><div class="num"></div><div class="lbl"></div><div class="desc"></div></div><div class="cycle-dots"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section style="background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="container">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow" data-en="CORE SERVICES">मुख्य सेवाएँ</span>
+          <h2 data-en="Five tools, one offline app">पाँच उपकरण, एक ऑफ़लाइन ऐप</h2>
+        </div>
+      </div>
+      <div class="coverflow" id="services-coverflow">
+        <div class="coverflow-track" id="coverflow-track">
+
+          <div class="card service-card urgent coverflow-card">
+            <div class="icon-box"><svg class="icon"><use href="assets/icons.svg?v=2#i-mail"></use></svg></div>
+            <h3 data-en="Message Scam Detector">मैसेज स्कैम डिटेक्टर</h3>
+            <p data-en="ML model classifies SMS/WhatsApp text or a link as scam or genuine — Hindi, English &amp; Hinglish, fully offline.">SMS/व्हाट्सऐप टेक्स्ट या लिंक को स्कैम या असली वर्गीकृत करता ML मॉडल — हिन्दी, अंग्रेज़ी व हिंग्लिश, पूर्ण ऑफ़लाइन।</p>
+            <div class="coverflow-actions">
+              <a href="pages/detector.html" class="btn btn-danger"><svg class="icon"><use href="assets/icons.svg?v=2#i-mail"></use></svg> <span data-en="Check a Message">मैसेज जाँचें</span></a>
+              <a href="pages/detector.html" class="btn btn-outline" style="border-color:var(--border);color:var(--text);"><svg class="icon"><use href="assets/icons.svg?v=2#i-alert-triangle"></use></svg> <span data-en="See Sample Scams">नमूना स्कैम देखें</span></a>
+            </div>
+          </div>
+
+          <div class="card service-card urgent coverflow-card">
+            <div class="icon-box"><svg class="icon"><use href="assets/icons.svg?v=2#i-phone-alert"></use></svg></div>
+            <h3 data-en="Call Scam Detector">कॉल स्कैम डिटेक्टर</h3>
+            <p data-en="Transcribe a call recording and flag fake-KYC, digital-arrest or courier-scam scripts, with the exact trigger phrases.">कॉल रिकॉर्डिंग को ट्रांसक्राइब कर फर्जी-KYC, डिजिटल-अरेस्ट या कूरियर-स्कैम स्क्रिप्ट पहचानता है, ट्रिगर वाक्यांशों सहित।</p>
+            <div class="coverflow-actions">
+              <a href="pages/call-checker.html" class="btn btn-danger"><svg class="icon"><use href="assets/icons.svg?v=2#i-mic"></use></svg> <span data-en="Analyse a Call">कॉल जाँचें</span></a>
+              <a href="pages/call-checker.html" class="btn btn-outline" style="border-color:var(--border);color:var(--text);"><svg class="icon"><use href="assets/icons.svg?v=2#i-phone-alert"></use></svg> <span data-en="Try Live Mic">लाइव माइक आज़माएँ</span></a>
+            </div>
+          </div>
+
+          <div class="card service-card coverflow-card">
+            <div class="icon-box"><svg class="icon"><use href="assets/icons.svg?v=2#i-alert-triangle"></use></svg></div>
+            <h3 data-en="Report to Authorities">अधिकारियों को शिकायत</h3>
+            <p data-en="One tap to 1930, cybercrime.gov.in and Chakshu, plus an evidence checklist.">1930, cybercrime.gov.in और चक्षु पर एक-टैप पहुँच, साथ ही साक्ष्य चेकलिस्ट।</p>
+            <div class="coverflow-actions">
+              <a href="tel:1930" class="btn btn-danger"><svg class="icon"><use href="assets/icons.svg?v=2#i-phone"></use></svg> <span data-en="Instant Call 1930">तुरंत कॉल 1930</span></a>
+              <a href="pages/report.html" class="btn btn-outline" style="border-color:var(--border);color:var(--text);"><svg class="icon"><use href="assets/icons.svg?v=2#i-file-text"></use></svg> <span data-en="Open Evidence Checklist">साक्ष्य चेकलिस्ट खोलें</span></a>
+            </div>
+          </div>
+
+          <div class="card service-card coverflow-card">
+            <div class="icon-box"><svg class="icon"><use href="assets/icons.svg?v=2#i-book-open"></use></svg></div>
+            <h3 data-en="Safety Lessons &amp; Quiz">सुरक्षा पाठ एवं क्विज़</h3>
+            <p data-en="Short Hindi &amp; Chhattisgarhi lessons on OTP, ATM/UPI PIN and QR safety, with a Digital Financial Literacy Score.">OTP, ATM/UPI पिन व QR सुरक्षा पर संक्षिप्त हिन्दी व छत्तीसगढ़ी पाठ, डिजिटल वित्तीय साक्षरता स्कोर सहित।</p>
+            <div class="coverflow-actions">
+              <a href="pages/learn.html" class="btn btn-green"><svg class="icon"><use href="assets/icons.svg?v=2#i-book-open"></use></svg> <span data-en="Start Lessons">पाठ शुरू करें</span></a>
+              <a href="pages/learn.html" class="btn btn-outline" style="border-color:var(--border);color:var(--text);"><svg class="icon"><use href="assets/icons.svg?v=2#i-percent"></use></svg> <span data-en="Take the Quiz">क्विज़ लें</span></a>
+            </div>
+          </div>
+
+          <div class="card service-card coverflow-card">
+            <div class="icon-box"><svg class="icon"><use href="assets/icons.svg?v=2#i-bar-chart"></use></svg></div>
+            <h3 data-en="Scam Trend Dashboard">स्कैम ट्रेंड डैशबोर्ड</h3>
+            <p data-en="Anonymised, region-wise scam-type trends for banks &amp; district administration (policy view).">बैंकों व जिला प्रशासन हेतु अनाम, क्षेत्रवार स्कैम-प्रकार ट्रेंड (नीति दृश्य)।</p>
+            <div class="coverflow-actions">
+              <a href="pages/dashboard.html" class="btn btn-navy"><svg class="icon"><use href="assets/icons.svg?v=2#i-bar-chart"></use></svg> <span data-en="Open Dashboard">डैशबोर्ड खोलें</span></a>
+              <a href="index.html#cg-map-wrap" class="btn btn-outline" style="border-color:var(--border);color:var(--text);"><svg class="icon"><use href="assets/icons.svg?v=2#i-map-pin"></use></svg> <span data-en="View District Map">जिला मानचित्र देखें</span></a>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="coverflow-nav">
+          <button class="coverflow-nav-btn" id="coverflow-prev" aria-label="previous"><svg class="icon"><use href="assets/icons.svg?v=2#i-chevron-right" transform="rotate(180 12 12)"></use></svg></button>
+          <div class="coverflow-dots" id="coverflow-dots"></div>
+          <button class="coverflow-nav-btn" id="coverflow-next" aria-label="next"><svg class="icon"><use href="assets/icons.svg?v=2#i-chevron-right"></use></svg></button>
+        </div>
+        <div class="coverflow-caption" id="coverflow-caption"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section id="how-it-works">
+   <div class="walk-wrapper" id="walk-wrapper">
+    <div class="walk-sticky" id="walk-sticky">
+    <div class="container">
+      <div class="section-title">
+        <div><span class="eyebrow" data-en="HOW IT WORKS">यह कैसे काम करता है</span>
+        <h2 data-en="From suspicious message to official action — in 4 steps">संदिग्ध मैसेज से आधिकारिक कार्रवाई तक — 4 चरणों में</h2></div>
+      </div>
+
+      <div class="walk-stage" id="walk-stage">
+        <svg class="walk-path" viewBox="0 0 1000 140" preserveAspectRatio="none">
+          <path d="M60,90 C180,50 260,30 360,40 C460,50 560,110 660,100 C760,90 860,40 940,50" />
+          <circle class="walk-marker" cx="60" cy="90" r="7"></circle>
+          <circle class="walk-marker" cx="360" cy="40" r="7"></circle>
+          <circle class="walk-marker" cx="660" cy="100" r="7"></circle>
+          <circle class="walk-marker" cx="940" cy="50" r="7"></circle>
+        </svg>
+        <div class="walk-character" id="walk-character">
+          <div class="walk-bubble" id="walk-bubble">
+            <span class="walk-bubble-face"><img id="walk-face-img" src="assets/walk-face-1.png" alt=""></span>
+            <span id="walk-bubble-text"></span>
+          </div>
+          <img id="walk-body-img" class="walk-figure" src="assets/walk-body-1.png" alt="">
+        </div>
+      </div>
+
+      <div class="grid cols-4" id="step-cards">
+        <div class="card" data-step="0">
+          <h3 style="color:var(--india-green)">1</h3>
+          <h3 data-en="Paste / Record">पेस्ट करें / रिकॉर्ड करें</h3>
+          <p data-en="Paste the SMS/message text or play the suspicious call recording.">SMS/मैसेज टेक्स्ट पेस्ट करें या संदिग्ध कॉल रिकॉर्डिंग चलाएँ।</p>
+        </div>
+        <div class="card" data-step="1">
+          <h3 style="color:var(--india-green)">2</h3>
+          <h3 data-en="On-device analysis">डिवाइस पर विश्लेषण</h3>
+          <p data-en="The trained model scores it locally — nothing leaves your phone.">प्रशिक्षित मॉडल इसे स्थानीय रूप से जाँचता है — कुछ भी आपके फोन से बाहर नहीं जाता।</p>
+        </div>
+        <div class="card" data-step="2">
+          <h3 style="color:var(--india-green)">3</h3>
+          <h3 data-en="Clear verdict + reasons">स्पष्ट निर्णय + कारण</h3>
+          <p data-en="Scam / Suspicious / Genuine with the exact words that triggered the flag.">स्कैम / संदिग्ध / असली — साथ में वे शब्द जिनसे चेतावनी बनी।</p>
+        </div>
+        <div class="card" data-step="3">
+          <h3 style="color:var(--india-green)">4</h3>
+          <h3 data-en="Report in one tap">एक टैप में शिकायत</h3>
+          <p data-en="Jump straight to 1930 / cybercrime.gov.in / Chakshu with your evidence ready.">साक्ष्य तैयार कर सीधे 1930 / cybercrime.gov.in / चक्षु पर जाएँ।</p>
+        </div>
+      </div>
+    </div>
+    </div>
+   </div>
+  </section>
+
+  <!-- ============ TRY IT / FILE A COMPLAINT ============ -->
+  <section style="background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="container">
+      <div class="grid cols-2">
+
+        <div class="cta-panel cta-green">
+          <span class="eyebrow" data-en="TRY IT">अभी आज़माएँ</span>
+          <h3 data-en="Have a suspicious message or want to check if it's a scam?">कोई संदिग्ध मैसेज मिला है या यह जाँचना है कि यह स्कैम है?</h3>
+          <p data-en="Paste the message, link, or forward a WhatsApp text to our detector.">मैसेज, लिंक पेस्ट करें, या कोई व्हाट्सऐप टेक्स्ट हमारे डिटेक्टर को भेजें।</p>
+          <a href="pages/detector.html" class="btn btn-primary">
+            <svg class="icon"><use href="assets/icons.svg?v=2#i-mail"></use></svg>
+            <span data-en="Try Message Detector →">मैसेज डिटेक्टर आज़माएँ →</span>
+          </a>
+          <div class="cta-art cta-art-phone">
+            <img src="assets/cta-phone.webp" alt="">
+          </div>
+        </div>
+
+        <div class="cta-panel cta-blue">
+          <span class="eyebrow" style="color:var(--accent-blue);" data-en="FILE A COMPLAINT">शिकायत दर्ज करें</span>
+          <h3 data-en="Received a scam, lost money, or want to report cyber fraud?">स्कैम का शिकार हुए, पैसे गँवाए, या साइबर धोखाधड़ी की रिपोर्ट करनी है?</h3>
+          <p data-en="File a complaint with the official portals and get the right support.">आधिकारिक पोर्टलों पर शिकायत दर्ज करें एवं सही सहायता पाएँ।</p>
+          <div class="cta-links">
+            <a href="https://cybercrime.gov.in" target="_blank" rel="noopener" class="cta-link-row">
+              <svg class="icon"><use href="assets/icons.svg?v=2#i-external-link"></use></svg>
+              <span><span data-en="Report on">पर शिकायत करें</span> <u>cybercrime.gov.in</u> ↗</span>
+            </a>
+            <a href="tel:1930" class="cta-link-row">
+              <svg class="icon"><use href="assets/icons.svg?v=2#i-phone"></use></svg>
+              <span><span data-en="Call">कॉल करें</span> <u>1930</u> <span data-en="(Cyber Fraud Helpline)">(साइबर धोखाधड़ी हेल्पलाइन)</span></span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DISTRICT COVERAGE MAP ============ -->
+  <section>
+    <div class="container">
+      <div class="section-title">
+        <div><span class="eyebrow" data-en="SCAM-TREND COVERAGE">स्कैम-ट्रेंड कवरेज</span>
+        <h2 data-en="Districts covered in the trend sample">ट्रेंड नमूने में शामिल जिले</h2></div>
+        <a href="pages/dashboard.html" data-en="Open full dashboard →">पूर्ण डैशबोर्ड खोलें →</a>
+      </div>
+      <div class="district-map-wrap">
+        <div>
+          <div class="region-tabs" id="region-tabs"></div>
+          <div class="region-carousel">
+            <div class="region-track" id="region-track">
+              <div class="region-panel" data-region="north"><div class="region-panel-grid" id="panel-north"></div></div>
+              <div class="region-panel" data-region="central"><div class="region-panel-grid" id="panel-central"></div></div>
+              <div class="region-panel" data-region="south"><div class="region-panel-grid" id="panel-south"></div></div>
+            </div>
+          </div>
+          <div class="region-note">
+            <svg class="icon"><use href="assets/icons.svg?v=2#i-info"></use></svg>
+            <span data-en="This sample covers 10 districts today — the model and dashboard are built to scale to all 33 districts of Chhattisgarh as more complaint data is tagged by location.">यह नमूना फ़िलहाल 10 जिलों को कवर करता है — जैसे-जैसे अधिक शिकायत डेटा स्थान-टैग होता है, मॉडल एवं डैशबोर्ड छत्तीसगढ़ के सभी 33 जिलों तक विस्तारित होने हेतु तैयार हैं।</span>
+            <a href="pages/dashboard.html" data-en="See full trend dashboard →">पूर्ण ट्रेंड डैशबोर्ड देखें →</a>
+          </div>
+        </div>
+        <div class="cg-map-wrap" id="cg-map-wrap">
+          <img class="cg-map-img" src="assets/cg-map.png" alt="Map of Chhattisgarh districts">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EMERGENCY HELP STRIP ============ -->
+  <section>
+    <div class="container">
+      <div class="grid cols-3">
+        <div class="card" style="border-top:4px solid var(--danger);">
+          <h3 data-en="Already lost money?">पहले ही पैसे गँवा दिए?</h3>
+          <p data-en="Call the National Cybercrime Helpline immediately or file a complaint online.">तुरंत राष्ट्रीय साइबर अपराध हेल्पलाइन पर कॉल करें या ऑनलाइन शिकायत दर्ज करें।</p>
+          <p><strong style="font-size:22px;color:var(--danger);">1930</strong> &middot; <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a></p>
+        </div>
+        <div class="card" style="border-top:4px solid var(--warn);">
+          <h3 data-en="Suspicious call or message, no loss yet?">संदिग्ध कॉल/मैसेज, अभी नुकसान नहीं हुआ?</h3>
+          <p data-en="Report it on Chakshu (Sanchar Saathi) so it can be blocked before anyone loses money.">चक्षु (संचार साथी) पर रिपोर्ट करें ताकि किसी का नुकसान होने से पहले ही उसे रोका जा सके।</p>
+          <p><a href="https://sancharsaathi.gov.in/sfc/" target="_blank" rel="noopener" class="btn btn-sm btn-navy" data-en="Open Chakshu">चक्षु खोलें</a></p>
+        </div>
+        <div class="card" style="border-top:4px solid var(--india-green);">
+          <h3 data-en="Not sure what to do?">समझ नहीं आ रहा क्या करें?</h3>
+          <p data-en="See the full evidence checklist and step-by-step reporting guide.">पूर्ण साक्ष्य चेकलिस्ट एवं चरण-दर-चरण शिकायत मार्गदर्शिका देखें।</p>
+          <p><a href="pages/report.html" class="btn btn-sm btn-green" data-en="Reporting guide">शिकायत मार्गदर्शिका</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4 data-en="Cyber Suraksha Portal">साइबर सुरक्षा पोर्टल</h4>
+        <p style="font-size:13px;color:#aec2e6;max-width:320px;" data-en="A hackathon prototype for an offline, regional-first scam-detection and digital financial literacy platform for Chhattisgarh.">छत्तीसगढ़ हेतु ऑफ़लाइन, क्षेत्रीय-भाषा केंद्रित स्कैम-डिटेक्शन एवं डिजिटल वित्तीय साक्षरता प्लेटफ़ॉर्म का एक हैकाथॉन प्रोटोटाइप।</p>
+      </div>
+      <div>
+        <h4 data-en="Services">सेवाएँ</h4>
+        <ul>
+          <li><a href="pages/detector.html" data-en="Message Detector">मैसेज डिटेक्टर</a></li>
+          <li><a href="pages/call-checker.html" data-en="Call Detector">कॉल डिटेक्टर</a></li>
+          <li><a href="pages/learn.html" data-en="Lessons &amp; Quiz">पाठ एवं क्विज़</a></li>
+          <li><a href="pages/dashboard.html" data-en="Dashboard">डैशबोर्ड</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 data-en="Official Help">आधिकारिक सहायता</h4>
+        <ul>
+          <li><a href="tel:1930">1930 — <span data-en="Cybercrime Helpline">साइबर हेल्पलाइन</span></a></li>
+          <li><a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a></li>
+          <li><a href="https://sancharsaathi.gov.in/sfc/" target="_blank" rel="noopener" data-en="Chakshu (Sanchar Saathi)">चक्षु (संचार साथी)</a></li>
+          <li><a href="tel:112">112 — <span data-en="Emergency">आपातकाल</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 data-en="Data &amp; Credits">डेटा एवं श्रेय</h4>
+        <ul>
+          <li><a href="pages/about.html" data-en="Datasets used">उपयोग किए गए डेटासेट</a></li>
+          <li><a href="pages/about.html#architecture" data-en="Architecture overview">आर्किटेक्चर विवरण</a></li>
+          <li><a href="pages/about.html#accuracy" data-en="Model accuracy">मॉडल सटीकता</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-en="© 2026 Hackathon prototype. Not an official Government of Chhattisgarh website.">© 2026 हैकाथॉन प्रोटोटाइप। यह छत्तीसगढ़ शासन की आधिकारिक वेबसाइट नहीं है।</span>
+      <span data-en="Design inspired by cgstate.gov.in">डिज़ाइन cgstate.gov.in से प्रेरित</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ EMERGENCY WIDGET ============ -->
+<div class="emergency-widget">
+  <div class="emergency-panel">
+    <h4 data-en="Quick Links">त्वरित लिंक</h4>
+    <ul>
+      <li><a href="pages/detector.html"><span data-en="Message Detector">मैसेज डिटेक्टर</span> <strong>→</strong></a></li>
+      <li><a href="pages/call-checker.html"><span data-en="Call Detector">कॉल डिटेक्टर</span> <strong>→</strong></a></li>
+      <li><a href="pages/learn.html"><span data-en="Lessons &amp; Quiz">पाठ एवं क्विज़</span> <strong>→</strong></a></li>
+      <li><a href="pages/dashboard.html"><span data-en="Dashboard">डैशबोर्ड</span> <strong>→</strong></a></li>
+      <li><a href="pages/about.html"><span data-en="Data Sources">डेटा स्रोत</span> <strong>→</strong></a></li>
+    </ul>
+  </div>
+  <button class="emergency-fab" aria-label="Quick links" title="त्वरित लिंक"><svg class="icon"><use href="assets/icons.svg?v=2#i-plus"></use></svg><span class="emergency-fab-label" data-en="Quick Links">त्वरित लिंक</span></button>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+/* cycling stat tiles: 3 dark tiles, each rotating through a bucket of stats every 2s */
+(function(){
+  var STATS = [
+    { icon:'i-database', num:'40,000+', hi:'लेबल किए गए प्रशिक्षण उदाहरण', en:'labelled training examples',
+      descHi:'असली एवं टेम्पलेटेड स्कैम+असली संदेशों के मिश्रण से इकट्ठा किया गया डेटा।', descEn:'Gathered from a mix of real and templated scam+genuine messages.' },
+    { icon:'i-percent', num:'97.2%', hi:'होल्ड-आउट टेस्ट सटीकता', en:'held-out test accuracy',
+      descHi:'प्रशिक्षण के दौरान कभी न देखे गए 15% डेटा पर मापी गई।', descEn:'Measured on a 15% split the model never saw during training.' },
+    { icon:'i-globe', num:'3', hi:'भाषाएँ — हिन्दी, छत्तीसगढ़ी, अंग्रेज़ी', en:'languages — Hindi, Chhattisgarhi, English',
+      descHi:'हिंग्लिश (मिश्रित) टेक्स्ट भी बिना किसी अतिरिक्त सेटिंग के पहचाना जाता है।', descEn:'Hinglish (code-mixed) text is understood too, no extra setup needed.' },
+    { icon:'i-map-pin', num:'10', hi:'ट्रेंड नमूने में जिले', en:'districts in the trend sample',
+      descHi:'रायपुर, बिलासपुर, बस्तर, सरगुजा एवं दुर्ग संभाग को कवर करता है।', descEn:'Covers the Raipur, Bilaspur, Bastar, Surguja and Durg divisions.' },
+    { icon:'i-phone', num:'1930', hi:'राष्ट्रीय साइबर हेल्पलाइन', en:'national cybercrime helpline',
+      descHi:'एक टैप में सीधे कॉल करें — पूरे भारत में उपलब्ध है।', descEn:'One tap to call directly — available across India.' },
+    { icon:'i-lock', num:'100%', hi:'ऑन-डिवाइस — कुछ भी फोन से बाहर नहीं जाता', en:'on-device — nothing leaves your phone',
+      descHi:'इंटरनेट न होने पर भी डिटेक्टर एवं पाठ पूरी तरह काम करते हैं।', descEn:'The detector and lessons work fully even with no internet connection.' },
+    { icon:'i-book-open', num:'6', hi:'ऑफ़लाइन सुरक्षा पाठ', en:'offline safety lessons',
+      descHi:'OTP, ATM/UPI पिन एवं QR सुरक्षा पर संक्षिप्त, सचित्र पाठ।', descEn:'Short, illustrated lessons on OTP, ATM/UPI PIN and QR safety.' },
+    { icon:'i-bar-chart', num:'93,686', hi:'राष्ट्रीय शिकायत रिकॉर्ड विश्लेषित', en:'national complaint records analysed',
+      descHi:'NCRP पोर्टल के वास्तविक शिकायत वर्गीकरण के आधार पर।', descEn:'Based on real complaint-category data from the NCRP portal.' }
+  ];
+  var BUCKETS = [[0,3,6],[1,4,7],[2,5]];
+  var tiles = document.querySelectorAll('#cycle-tiles .cycle-tile');
+  var state = BUCKETS.map(function(){ return 0; });
+
+  function paint(tileIdx){
+    var bucket = BUCKETS[tileIdx];
+    var stat = STATS[bucket[state[tileIdx]]];
+    var tile = tiles[tileIdx];
+    var isEn = document.documentElement.lang === 'en';
+    tile.querySelector('use').setAttribute('href', 'assets/icons.svg?v=2#' + stat.icon);
+    tile.querySelector('.num').textContent = stat.num;
+    tile.querySelector('.lbl').textContent = isEn ? stat.en : stat.hi;
+    tile.querySelector('.desc').textContent = isEn ? stat.descEn : stat.descHi;
+    var dots = tile.querySelector('.cycle-dots');
+    dots.innerHTML = '';
+    bucket.forEach(function(_, i){
+      var d = document.createElement('span');
+      if(i === state[tileIdx]) d.className = 'active';
+      dots.appendChild(d);
+    });
+  }
+
+  function advance(tileIdx){
+    var content = tiles[tileIdx].querySelector('.cycle-content');
+    content.classList.add('fade');
+    setTimeout(function(){
+      state[tileIdx] = (state[tileIdx] + 1) % BUCKETS[tileIdx].length;
+      paint(tileIdx);
+      content.classList.remove('fade');
+    }, 350);
+  }
+
+  tiles.forEach(function(_, i){ paint(i); });
+  setInterval(function(){
+    tiles.forEach(function(_, i){ advance(i); });
+  }, 2000);
+  document.addEventListener('cg:langchange', function(){
+    tiles.forEach(function(_, i){ paint(i); });
+  });
+})();
+
+/* services coverflow: center card in focus, neighbours glassy behind it, auto-advances every 2s */
+(function(){
+  var cards = document.querySelectorAll('#coverflow-track .coverflow-card');
+  var n = cards.length;
+  var active = 0;
+  var dotsWrap = document.getElementById('coverflow-dots');
+  var captionEl = document.getElementById('coverflow-caption');
+  var timer = null;
+
+  var SUBTITLES = [
+    { hi:'तुरंत मैसेज जाँच', en:'Instant Message Screening' },
+    { hi:'कॉल स्क्रिप्ट पहचान', en:'Call Script Detection' },
+    { hi:'तुरंत शिकायत एवं नागरिक सहायता', en:'Direct Escalation & Citizen Support' },
+    { hi:'स्थानीय-भाषा साक्षरता', en:'Local-Language Literacy' },
+    { hi:'नीति एवं ट्रेंड जानकारी', en:'Policy & Trend Insights' }
+  ];
+
+  for(var i=0;i<n;i++){
+    (function(i){
+      var b = document.createElement('button');
+      if(i===active) b.className='active';
+      b.setAttribute('aria-label', 'slide ' + (i+1));
+      b.addEventListener('click', function(){ active=i; render(); restart(); });
+      dotsWrap.appendChild(b);
+    })(i);
+  }
+
+  function styleFor(diff){
+    if(diff===0) return { transform:'translate(-50%,0) scale(1)', opacity:'1', filter:'none', z:5, blocked:false };
+    if(diff===-1) return { transform:'translate(-50%,0) translateX(-250px) scale(.8)', opacity:'.45', filter:'blur(2.5px)', z:4, blocked:true };
+    if(diff===1) return { transform:'translate(-50%,0) translateX(250px) scale(.8)', opacity:'.45', filter:'blur(2.5px)', z:4, blocked:true };
+    if(diff===-2) return { transform:'translate(-50%,0) translateX(420px) scale(.65)', opacity:'0', filter:'blur(3px)', z:1, blocked:true };
+    if(diff===2) return { transform:'translate(-50%,0) translateX(-420px) scale(.65)', opacity:'0', filter:'blur(3px)', z:1, blocked:true };
+    return { transform:'translate(-50%,0) scale(.6)', opacity:'0', filter:'blur(3px)', z:0, blocked:true };
+  }
+
+  function render(){
+    var isEn = document.documentElement.lang === 'en';
+    cards.forEach(function(card, i){
+      var diff = i - active;
+      if(diff > n/2) diff -= n;
+      if(diff < -n/2) diff += n;
+      var s = styleFor(diff);
+      card.style.transform = s.transform;
+      card.style.opacity = s.opacity;
+      card.style.filter = s.filter;
+      card.style.zIndex = s.z;
+      card.style.pointerEvents = s.blocked ? 'none' : 'auto';
+      card.classList.toggle('is-active', diff===0);
+    });
+    Array.prototype.forEach.call(dotsWrap.children, function(d, i){
+      d.classList.toggle('active', i===active);
+    });
+    var sub = SUBTITLES[active];
+    captionEl.textContent = (isEn ? 'Tool ' : 'उपकरण ') + (active+1) + (isEn ? ' of ' : ' / ') + n + ': ' + (isEn ? sub.en : sub.hi);
+    // keep the track tall enough for the active card so the nav row below never overlaps it
+    document.getElementById('coverflow-track').style.height = cards[active].offsetHeight + 'px';
+  }
+
+  function restart(){
+    if(timer) clearInterval(timer);
+    timer = setInterval(function(){ active = (active+1) % n; render(); }, 2000);
+  }
+
+  document.getElementById('coverflow-prev').addEventListener('click', function(){ active = (active - 1 + n) % n; render(); restart(); });
+  document.getElementById('coverflow-next').addEventListener('click', function(){ active = (active + 1) % n; render(); restart(); });
+  document.addEventListener('cg:langchange', render);
+
+  render();
+  restart();
+})();
+
+/* hero slideshow */
+(function(){
+  var slides = document.querySelectorAll('#hero-slideshow .hero-slide');
+  var dotsWrap = document.getElementById('hero-dots');
+  var idx = 0;
+  slides.forEach(function(s, i){
+    var b = document.createElement('button');
+    if(i===0) b.className='active';
+    b.addEventListener('click', function(){ show(i); });
+    dotsWrap.appendChild(b);
+  });
+  function show(i){
+    slides[idx].classList.remove('active');
+    dotsWrap.children[idx].classList.remove('active');
+    idx = i;
+    slides[idx].classList.add('active');
+    dotsWrap.children[idx].classList.add('active');
+  }
+  setInterval(function(){ show((idx+1) % slides.length); }, 4500);
+})();
+
+/* district map + 3-region sliding carousel, fed by the same dashboard.json the dashboard page uses */
+(function(){
+  var DASH = null;
+  var REGIONS = [
+    { id:'north', hi:'उत्तर छत्तीसगढ़', en:'North Chhattisgarh', divisions:['सरगुजा संभाग','बिलासपुर संभाग'] },
+    { id:'central', hi:'मध्य छत्तीसगढ़', en:'Central Chhattisgarh', divisions:['रायपुर संभाग','दुर्ग संभाग'] },
+    { id:'south', hi:'दक्षिण छत्तीसगढ़', en:'South Chhattisgarh', divisions:['बस्तर संभाग'] }
+  ];
+  // Marker positions as % of the real map photo (site/assets/cg-map.png, 451x671px),
+  // measured by locating each printed red dot's pixel centroid in the source image.
+  var POS = {
+    'सरगुजा (अंबिकापुर)':[74.5,18.5],
+    'बिलासपुर':[53.2,34.6], 'कोरबा':[61.2,28.6], 'रायगढ़':[75.4,38.7],
+    'रायपुर':[45.2,47.7], 'दुर्ग':[35.5,47.1], 'राजनांदगांव':[26.6,50.1], 'महासमुंद':[57.7,50.1], 'धमतरी':[39.9,52.5],
+    'बस्तर (जगदलपुर)':[50.6,79.9]
+  };
+  var activeIndex = 0;
+
+  function fetchDash(){ return fetch('data/dashboard.json',{cache:'no-store'}).then(function(r){return r.json();}); }
+
+  function renderMarkers(){
+    var wrap = document.getElementById('cg-map-wrap');
+    wrap.querySelectorAll('.map-marker,.map-marker-count,.capital-ring').forEach(function(n){ n.remove(); });
+    if(!DASH) return;
+    var region = REGIONS[activeIndex];
+    DASH.districts.forEach(function(d){
+      var pos = POS[d.hi];
+      if(!pos) return;
+      var isActive = region.divisions.indexOf(d.division_hi) !== -1;
+      var isCapital = d.hi === 'रायपुर';
+      if(isCapital){
+        var ring = document.createElement('div');
+        ring.className = 'capital-ring' + (isActive ? '' : ' inactive');
+        ring.style.left = pos[0] + '%'; ring.style.top = pos[1] + '%';
+        wrap.appendChild(ring);
+        return;
+      }
+      var size = Math.max(10, Math.min(24, Math.sqrt(d.total) * 1.7));
+      var m = document.createElement('div');
+      m.className = 'map-marker' + (isActive ? '' : ' inactive');
+      m.style.left = pos[0] + '%'; m.style.top = pos[1] + '%';
+      m.style.width = size + 'px'; m.style.height = size + 'px';
+      wrap.appendChild(m);
+      var count = document.createElement('div');
+      count.className = 'map-marker-count';
+      count.style.left = pos[0] + '%'; count.style.top = pos[1] + '%';
+      count.textContent = d.total;
+      wrap.appendChild(count);
+    });
+  }
+
+  function chipsHtml(region){
+    var isEn = document.documentElement.lang==='en';
+    return DASH.districts
+      .filter(function(d){ return region.divisions.indexOf(d.division_hi) !== -1; })
+      .sort(function(a,b){ return b.total-a.total; })
+      .map(function(d){
+        return '<div class="district-chip"><span class="dot"></span><span>'+(isEn?d.en:d.hi)+'</span><span class="n">'+d.total+'</span></div>';
+      }).join('');
+  }
+
+  function renderPanels(){
+    REGIONS.forEach(function(region){
+      document.getElementById('panel-'+region.id).innerHTML = chipsHtml(region);
+    });
+  }
+
+  function renderTabs(){
+    var isEn = document.documentElement.lang==='en';
+    var wrap = document.getElementById('region-tabs');
+    wrap.innerHTML='';
+    REGIONS.forEach(function(region, i){
+      var b = document.createElement('button');
+      b.textContent = isEn ? region.en : region.hi;
+      if(i===activeIndex) b.className='active';
+      b.addEventListener('click', function(){ activeIndex=i; slide(); renderMarkers(); });
+      wrap.appendChild(b);
+    });
+  }
+
+  function slide(){
+    document.getElementById('region-track').style.transform = 'translateX(-' + (activeIndex * 33.3334) + '%)';
+    document.querySelectorAll('#region-tabs button').forEach(function(b,i){
+      b.classList.toggle('active', i===activeIndex);
+    });
+  }
+
+  function renderAll(){ renderTabs(); renderPanels(); renderMarkers(); slide(); }
+
+  fetchDash().then(function(d){ DASH=d; renderAll(); });
+  document.addEventListener('cg:langchange', function(){ if(DASH) renderAll(); });
+})();
+
+/* "how it works" walking character: pinned (sticky) while scrolling through #walk-wrapper,
+   so the full animation stays on screen until the character reaches step 4 */
+(function(){
+  var wrapper = document.getElementById('walk-wrapper');
+  var stage = document.getElementById('walk-stage');
+  var charEl = document.getElementById('walk-character');
+  var bubbleEl = document.getElementById('walk-bubble');
+  var bubbleTextEl = document.getElementById('walk-bubble-text');
+  var faceImg = document.getElementById('walk-face-img');
+  var bodyImg = document.getElementById('walk-body-img');
+  var cards = document.querySelectorAll('#step-cards .card');
+  if(!wrapper) return;
+
+  function setHeaderHeight(){
+    var header = document.querySelector('.site-header');
+    document.documentElement.style.setProperty('--header-h', (header ? header.offsetHeight : 0) + 'px');
+  }
+  setHeaderHeight();
+
+  var WAYPOINTS = [[60,90],[360,40],[660,100],[940,50]];
+  var STEPS = [
+    { body:'assets/walk-body-1.png', face:'assets/walk-face-1.png', color:'#9a3b3b',
+      hi:'संदिग्ध मैसेज?', en:'Suspicious message?' },
+    { body:'assets/walk-body-2.png', face:'assets/walk-face-2.png', color:'#2f5f8f',
+      hi:'डिवाइस पर विश्लेषण...', en:'Analysing on your device...' },
+    { body:'assets/walk-body-3.png', face:'assets/walk-face-3.png', color:'#9a7d1f',
+      hi:'स्कैम पाया गया', en:'Scam detected' },
+    { body:'assets/walk-body-4.png', face:'assets/walk-face-4.png', color:'var(--safe)',
+      hi:'रिपोर्ट हो गया ✓', en:'Reported ✓' }
+  ];
+  var lastStep = -1;
+
+  function lerp(a,b,t){ return a+(b-a)*t; }
+
+  function positionAt(progress){
+    var seg = Math.min(2.999, Math.max(0, progress*3));
+    var idx = Math.floor(seg);
+    var t = seg-idx;
+    var p0 = WAYPOINTS[idx], p1 = WAYPOINTS[idx+1];
+    return [lerp(p0[0],p1[0],t), lerp(p0[1],p1[1],t)];
+  }
+
+  function update(){
+    var headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 0;
+    var rect = wrapper.getBoundingClientRect();
+    var vh = window.innerHeight;
+    // the wrapper is taller than one viewport by design (see CSS: 100vh + 700px) so that
+    // there is scroll distance left over once the sticky inner has docked at --header-h.
+    var scrollableRange = wrapper.offsetHeight - (vh - headerH);
+    var scrolled = headerH - rect.top;
+    var progress = scrollableRange > 0 ? Math.min(1, Math.max(0, scrolled/scrollableRange)) : 0;
+
+    var pos = positionAt(progress);
+    var stageW = stage.clientWidth, stageH = stage.clientHeight;
+    charEl.style.left = (pos[0]/1000*stageW) + 'px';
+    charEl.style.top = (pos[1]/140*stageH) + 'px';
+
+    var stepIdx = Math.min(3, Math.floor(progress*4 + 0.0001));
+    if(progress<=0) stepIdx = 0;
+    if(stepIdx !== lastStep){
+      lastStep = stepIdx;
+      var s = STEPS[stepIdx];
+      bodyImg.src = s.body;
+      faceImg.src = s.face;
+      var isEn = document.documentElement.lang === 'en';
+      bubbleEl.style.background = s.color;
+      bubbleTextEl.textContent = isEn ? s.en : s.hi;
+      cards.forEach(function(c){ c.classList.toggle('active', Number(c.dataset.step)===stepIdx); });
+    }
+  }
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){ update(); ticking = false; });
+  }
+  window.addEventListener('scroll', onScroll, { passive:true });
+  window.addEventListener('resize', function(){ setHeaderHeight(); onScroll(); });
+  document.addEventListener('cg:langchange', function(){ lastStep = -1; update(); });
+  update();
+})();
+</script>
+</body>
+</html>

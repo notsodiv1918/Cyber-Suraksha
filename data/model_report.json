@@ -1,0 +1,15 @@
+{
+  "n_test": 5999,
+  "accuracy": 0.9715,
+  "precision_scam": 0.9967,
+  "recall_scam": 0.9282,
+  "f1_scam": 0.9612,
+  "confusion": {
+    "tp": 2120,
+    "tn": 3708,
+    "fp": 7,
+    "fn": 164
+  },
+  "n_train": 33998,
+  "vocab_size": 45886
+}
