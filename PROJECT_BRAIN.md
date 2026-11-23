@@ -174,6 +174,34 @@ meaningful change from here on** (the user asked for this explicitly) — `git a
 
 ## Change Log (newest first)
 
+- **"What the model looks for" (detector.html) rebuilt as a scroll-driven radial diagram +
+  timeline**, replacing the static 12-box `.grid.cols-4`. Matches a reference design the user
+  provided (left vertical timeline with one expanded active item, right circular layout of all 12
+  categories around a center icon with a tooltip bubble pointing at the active one), but recolored
+  to the site's own palette instead of the reference's colors — green (`var(--safe)`/
+  `var(--safe-bg)`) for the active state, `var(--text)`/`var(--text-muted)`/`var(--border)`/
+  `var(--bg)` for everything inactive, no new hex values introduced.
+  - Reused the exact sticky-pin scrollytelling mechanism from the homepage's "how it works"
+    walking character (`#walk-wrapper`/`#walk-sticky`, tall spacer + `position:sticky` docked at a
+    JS-measured `--header-h`, progress computed from `rect.top` only within the pinned range) —
+    new analogous `#flag-wrapper`/`#flag-sticky` IIFE in `detector.html`, independent of the
+    homepage's script (each page sets its own `--header-h`).
+  - 12 radial nodes are positioned with trig (`angle = i/12 * 2π - π/2`, `x/y = 50 + 42*cos/sin`,
+    as percentages) rather than hardcoded coordinates, so re-ordering or adding categories doesn't
+    require re-positioning anything by hand.
+  - Added a short bilingual one-line description (`dhi`/`den`) per category to `catMeta` — these
+    only show for the active timeline item (CSS hides `.flag-item:not(.active) p`), matching the
+    reference's "collapsed list, one item expands" look.
+  - Mobile (`max-width:760px`): sticky/pin is dropped (`position:static`, `height:auto`, same
+    fallback pattern as `.walk-wrapper`) and the radial diagram is hidden outright
+    (`max-width:900px`); every timeline item's description stays visible instead of only the
+    active one, since there's no pinned viewport to reveal it progressively. The scroll-reactive
+    highlighting still runs in this layout (verified: the active item does progress as the page
+    scrolls, it just isn't visually pinned).
+  - Verified end-to-end in the browser: tooltip tracks the correct node, left/right stay in sync
+    across the full scroll range, last category (`Aadhaar/PAN harvesting`) ends up active at the
+    bottom of the pinned range, and mobile fallback degrades sensibly.
+
 - **1930 bug fix + 4 cheap wins from a teammate's gap-analysis doc.** All verified against the
   actual codebase (via a fork audit) before touching anything, to separate "already exists" from
   genuine gaps.

@@ -93,8 +93,20 @@
       <div class="section-title"><div>
         <span class="eyebrow" data-en="COMMON RED FLAGS">आम चेतावनी-संकेत</span>
         <h2 data-en="What the model looks for">मॉडल किन संकेतों पर ध्यान देता है</h2>
+        <p class="hint" data-en="Key patterns that often indicate a scam message — scroll to cycle through all 12.">वे मुख्य पैटर्न जो अक्सर स्कैम मैसेज में दिखते हैं — सभी 12 देखने के लिए स्क्रॉल करें।</p>
       </div></div>
-      <div class="grid cols-4" id="lexicon-grid"></div>
+      <div class="flag-wrapper" id="flag-wrapper">
+        <div class="flag-sticky" id="flag-sticky">
+          <div class="flag-layout">
+            <div class="flag-timeline" id="flag-timeline"></div>
+            <div class="flag-radial" id="flag-radial">
+              <div class="flag-ring"></div>
+              <div class="flag-center"><svg class="icon"><use href="../assets/icons.svg?v=2#i-shield-check"></use></svg></div>
+              <div class="flag-tooltip" id="flag-tooltip"><span id="flag-tooltip-text"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </main>
@@ -176,30 +188,116 @@ document.getElementById('clear-btn').addEventListener('click', function(){
   document.getElementById('result-box').innerHTML='';
 });
 
-var lgrid = document.getElementById('lexicon-grid');
-var cats = {};
-CGScam.LEXICON.forEach(function(e){ cats[e.cat] = cats[e.cat] || e; });
 var catMeta = {
-  otp: {icon:'<svg class="icon"><use href="../assets/icons.svg?v=2#i-lock"></use></svg>', hi:'OTP/पिन माँगना', en:'Asking for OTP/PIN'},
-  kyc: {icon:'<svg class="icon"><use href="../assets/icons.svg?v=2#i-file-text"></use></svg>', hi:'फर्जी KYC/ब्लॉक धमकी', en:'Fake KYC/block threat'},
-  prize: {icon:'<svg class="icon"><use href="../assets/icons.svg?v=2#i-gift"></use></svg>', hi:'लॉटरी/इनाम झाँसा', en:'Lottery/prize bait'},
-  link: {icon:'<svg class="icon"><use href="../assets/icons.svg?v=2#i-link"></use></svg>', hi:'संदिग्ध लिंक', en:'Suspicious link'},
-  urgency: {icon:'<svg class="icon"><use href="../assets/icons.svg?v=2#i-clock"></use></svg>', hi:'जल्दबाज़ी बनाना', en:'Manufactured urgency'},
-  payment: {icon:'<svg class="icon"><use href="../assets/icons.svg?v=2#i-credit-card"></use></svg>', hi:'फर्जी रिफंड/UPI पिन', en:'Fake refund/UPI PIN'},
-  courier: {icon:'<svg class="icon"><use href="../assets/icons.svg?v=2#i-package"></use></svg>', hi:'कूरियर/कस्टम झाँसा', en:'Courier/customs bait'},
-  arrest: {icon:'<svg class="icon"><use href="../assets/icons.svg?v=2#i-alert-octagon"></use></svg>', hi:"'डिजिटल अरेस्ट' धमकी", en:"'Digital arrest' threat"},
-  job: {icon:'<svg class="icon"><use href="../assets/icons.svg?v=2#i-briefcase"></use></svg>', hi:'फर्जी नौकरी ऑफर', en:'Fake job offer'},
-  investment: {icon:'<svg class="icon"><use href="../assets/icons.svg?v=2#i-trending-up"></use></svg>', hi:'गारंटीड रिटर्न झाँसा', en:'Guaranteed-return bait'},
-  loan: {icon:'<svg class="icon"><use href="../assets/icons.svg?v=2#i-landmark"></use></svg>', hi:'फर्जी इंस्टेंट लोन', en:'Fake instant loan'},
-  idtheft: {icon:'<svg class="icon"><use href="../assets/icons.svg?v=2#i-id-card"></use></svg>', hi:'आधार/पैन चोरी', en:'Aadhaar/PAN harvesting'}
+  otp: {icon:'i-lock', hi:'OTP/पिन माँगना', en:'Asking for OTP/PIN', dhi:'OTP, पिन या सिक्योरिटी कोड माँगना।', den:'Requests for one-time password, PIN or security code.'},
+  kyc: {icon:'i-file-text', hi:'फर्जी KYC/ब्लॉक धमकी', en:'Fake KYC/block threat', dhi:'KYC अपडेट न करने पर खाता/सिम ब्लॉक करने की झूठी धमकी।', den:'False threat to block your account/SIM unless KYC is updated now.'},
+  prize: {icon:'i-gift', hi:'लॉटरी/इनाम झाँसा', en:'Lottery/prize bait', dhi:'ऐसा इनाम/लॉटरी जिसमें भाग ही नहीं लिया।', den:'A prize or lottery win for something you never entered.'},
+  link: {icon:'i-link', hi:'संदिग्ध लिंक', en:'Suspicious link', dhi:'छोटा किया गया या असली जैसा दिखने वाला नकली लिंक।', den:'A shortened or lookalike link pretending to be official.'},
+  urgency: {icon:'i-clock', hi:'जल्दबाज़ी बनाना', en:'Manufactured urgency', dhi:"'तुरंत', 'अभी' जैसे शब्द सोचने का समय नहीं देते।", den:"Words like 'immediately' or 'within 10 minutes' pressure you not to think."},
+  payment: {icon:'i-credit-card', hi:'फर्जी रिफंड/UPI पिन', en:'Fake refund/UPI PIN', dhi:'रिफंड पाने के लिए UPI पिन माँगना — पिन सिर्फ भुगतान भेजने में लगता है।', den:'Asks for your UPI PIN to "receive" a refund — a PIN is only needed to send money.'},
+  courier: {icon:'i-package', hi:'कूरियर/कस्टम झाँसा', en:'Courier/customs bait', dhi:'पार्सल कस्टम में रुकने का बहाना बनाकर पैसे माँगना।', den:'A parcel "held at customs" story used to demand a payment.'},
+  arrest: {icon:'i-alert-octagon', hi:"'डिजिटल अरेस्ट' धमकी", en:"'Digital arrest' threat", dhi:'कोई भी भारतीय एजेंसी वीडियो कॉल पर गिरफ़्तार नहीं करती।', den:'No Indian agency ever "arrests" anyone over a video call.'},
+  job: {icon:'i-briefcase', hi:'फर्जी नौकरी ऑफर', en:'Fake job offer', dhi:'बिना इंटरव्यू भारी कमाई वाली घर बैठे नौकरी।', den:'A high-paying work-from-home job offered with no interview.'},
+  investment: {icon:'i-trending-up', hi:'गारंटीड रिटर्न झाँसा', en:'Guaranteed-return bait', dhi:"असली निवेश में कभी 'गारंटीड' मुनाफ़ा नहीं होता।", den:"Real investments never promise a 'guaranteed' profit."},
+  loan: {icon:'i-landmark', hi:'फर्जी इंस्टेंट लोन', en:'Fake instant loan', dhi:'बिना दस्तावेज़ स्वीकृत लोन, पहले फीस माँगते हैं।', den:'A loan "approved" with no paperwork, then asks for a fee upfront.'},
+  idtheft: {icon:'i-id-card', hi:'आधार/पैन चोरी', en:'Aadhaar/PAN harvesting', dhi:'फ़ोन/मैसेज पर आधार या पैन का पूरा विवरण माँगना।', den:'Asks for your full Aadhaar or PAN details over phone/message.'}
 };
-Object.keys(catMeta).forEach(function(c){
-  var m = catMeta[c];
-  var div = document.createElement('div');
-  div.className='card';
-  div.innerHTML = '<div style="font-size:26px;">'+m.icon+'</div><h3 style="font-size:15px;margin:8px 0 0;" data-en="'+m.en+'">'+m.hi+'</h3>';
-  lgrid.appendChild(div);
-});
+
+/* "what the model looks for": pinned (sticky) radial + timeline, stepping through
+   all 12 red-flag categories as the user scrolls — same sticky-pin scrollytelling
+   pattern as the homepage's "how it works" walking character. */
+(function(){
+  var wrapper = document.getElementById('flag-wrapper');
+  var radial = document.getElementById('flag-radial');
+  var timelineEl = document.getElementById('flag-timeline');
+  var tooltipEl = document.getElementById('flag-tooltip');
+  var tooltipTextEl = document.getElementById('flag-tooltip-text');
+  if(!wrapper) return;
+
+  var keys = Object.keys(catMeta);
+  var N = keys.length;
+
+  function isEn(){ return document.documentElement.lang === 'en'; }
+
+  function setHeaderHeight(){
+    var header = document.querySelector('.site-header');
+    document.documentElement.style.setProperty('--header-h', (header ? header.offsetHeight : 0) + 'px');
+  }
+  setHeaderHeight();
+
+  // build radial nodes (positioned via CSS custom props, see .flag-node[style])
+  keys.forEach(function(key, i){
+    var m = catMeta[key];
+    var angle = (i / N) * 2 * Math.PI - Math.PI / 2;
+    var x = 50 + 42 * Math.cos(angle);
+    var y = 50 + 42 * Math.sin(angle);
+    var node = document.createElement('div');
+    node.className = 'flag-node';
+    node.dataset.index = i;
+    node.style.left = x + '%';
+    node.style.top = y + '%';
+    node.innerHTML = '<div class="flag-node-dot"><svg class="icon"><use href="../assets/icons.svg?v=2#'+m.icon+'"></use></svg></div>' +
+      '<div class="flag-node-label" data-en="'+m.en+'">'+m.hi+'</div>';
+    radial.appendChild(node);
+  });
+  var nodeEls = radial.querySelectorAll('.flag-node');
+
+  // build left timeline
+  keys.forEach(function(key, i){
+    var m = catMeta[key];
+    var item = document.createElement('div');
+    item.className = 'flag-item';
+    item.dataset.index = i;
+    item.innerHTML =
+      '<div class="flag-item-dot"></div>' +
+      '<div class="flag-item-icon"><svg class="icon"><use href="../assets/icons.svg?v=2#'+m.icon+'"></use></svg></div>' +
+      '<div class="flag-item-text">' +
+        '<h4 data-en="'+m.en+'">'+m.hi+'</h4>' +
+        '<p data-en="'+m.den+'">'+m.dhi+'</p>' +
+      '</div>';
+    timelineEl.appendChild(item);
+  });
+  var itemEls = timelineEl.querySelectorAll('.flag-item');
+
+  var lastIndex = -1;
+  function applyIndex(i){
+    lastIndex = i;
+    var key = keys[i], m = catMeta[key];
+    nodeEls.forEach(function(n){ n.classList.toggle('active', Number(n.dataset.index) === i); });
+    itemEls.forEach(function(el){
+      var active = Number(el.dataset.index) === i;
+      el.classList.toggle('active', active);
+      if(active) el.scrollIntoView({ block: 'nearest' });
+    });
+    tooltipTextEl.textContent = isEn() ? m.en : m.hi;
+    var active = nodeEls[i];
+    tooltipEl.style.left = active.style.left;
+    tooltipEl.style.top = active.style.top;
+  }
+
+  function update(){
+    var headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 0;
+    var rect = wrapper.getBoundingClientRect();
+    var vh = window.innerHeight;
+    var scrollableRange = wrapper.offsetHeight - (vh - headerH);
+    var scrolled = headerH - rect.top;
+    var progress = scrollableRange > 0 ? Math.min(1, Math.max(0, scrolled/scrollableRange)) : 0;
+    var idx = Math.min(N - 1, Math.floor(progress * N));
+    if(idx !== lastIndex) applyIndex(idx);
+  }
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){ update(); ticking = false; });
+  }
+  window.addEventListener('scroll', onScroll, { passive:true });
+  window.addEventListener('resize', function(){ setHeaderHeight(); onScroll(); });
+  document.addEventListener('cg:langchange', function(){ lastIndex = -1; update(); });
+  applyIndex(0);
+  update();
+})();
 </script>
 </body>
 </html>
