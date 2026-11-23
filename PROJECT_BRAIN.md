@@ -174,6 +174,15 @@ meaningful change from here on** (the user asked for this explicitly) — `git a
 
 ## Change Log (newest first)
 
+- **Filled the blank space beside the scam-scripts accordion.** The new accordion (see previous
+  entry) is deliberately narrower than the container, which left a wide empty gap to its right on
+  desktop. Added a sticky `.script-aside` card there — not decorative filler, but the actual
+  cross-cutting insight across all 6 scripts: "the pattern behind all of them" (claims authority →
+  creates urgency → demands OTP/PIN/UPI payment), plus a "Report a call like this →" link to
+  report.html. `.script-file` and the new `.script-aside` sit in a `.script-layout` grid
+  (`1fr 320px`, collapses to one column under 900px). Verified at 1100px width — card renders
+  fully, nothing clipped, stays sticky alongside the accordion while scrolling.
+
 - **Call Scam Detector: audio file upload + "known scam call scripts" redesigned as a minimalist
   accordion.**
   1. **Audio upload** (`pages/call-checker.html`): investigated whether an uploaded audio FILE
