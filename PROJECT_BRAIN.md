@@ -174,6 +174,25 @@ meaningful change from here on** (the user asked for this explicitly) — `git a
 
 ## Change Log (newest first)
 
+- **Fixed the radial red-flags section getting cut off on wide/short windows.** The sticky panel
+  had no height limit of its own, so on a wide-but-not-tall browser window (confirmed with the
+  user's own 1920×~750 screenshot) the 460px-wide circle and the 12-item timeline both overflowed
+  past the bottom of the viewport with no way to scroll and reveal the rest — the whole point of
+  `position:sticky` is that the page scroll is "spent" driving the animation, so anything that
+  doesn't fit in that one sticky slice was just invisible. Fixed by giving `.flag-sticky` an
+  explicit `height:calc(100vh - var(--header-h) - 24px)` (clamped between 420px and 640px) instead
+  of unconstrained `padding:30px 0`, then making both children fit exactly inside that: `.flag-radial`
+  now derives its size from `height:100%` + `aspect-ratio:1/1` (instead of a fixed `max-width:460px`
+  that ignored available height) so the circle always fits and stays centered, and `.flag-timeline`
+  is now its own `overflow-y:auto` scroll box with the scrollbar hidden, with the active item kept
+  centered by setting `timelineEl.scrollTop` directly in JS (replaced the old
+  `el.scrollIntoView()` call, which would have scrolled the whole page instead of just the inner
+  list and fought with the progress calculation). Mobile (`max-width:760px`) resets all of this
+  back to `height:auto`/`overflow:visible` since that breakpoint already drops the sticky-pin
+  behavior entirely. Verified by emulating a 1920×768 window (matching the bug report) — full
+  circle now visible and centered, timeline scrolls to keep the active item in view — and
+  re-checked mobile still renders unaffected.
+
 - **"What the model looks for" (detector.html) rebuilt as a scroll-driven radial diagram +
   timeline**, replacing the static 12-box `.grid.cols-4`. Matches a reference design the user
   provided (left vertical timeline with one expanded active item, right circular layout of all 12

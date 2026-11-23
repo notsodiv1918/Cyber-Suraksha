@@ -264,11 +264,17 @@ var catMeta = {
     lastIndex = i;
     var key = keys[i], m = catMeta[key];
     nodeEls.forEach(function(n){ n.classList.toggle('active', Number(n.dataset.index) === i); });
+    var activeItem = null;
     itemEls.forEach(function(el){
       var active = Number(el.dataset.index) === i;
       el.classList.toggle('active', active);
-      if(active) el.scrollIntoView({ block: 'nearest' });
+      if(active) activeItem = el;
     });
+    // scroll the timeline's own box (not the page) so the active item stays centered —
+    // keeps this independent of the page-scroll progress calculation above it.
+    if(activeItem && window.innerWidth > 760){
+      timelineEl.scrollTop = activeItem.offsetTop - (timelineEl.clientHeight/2) + (activeItem.clientHeight/2);
+    }
     tooltipTextEl.textContent = isEn() ? m.en : m.hi;
     var active = nodeEls[i];
     tooltipEl.style.left = active.style.left;
