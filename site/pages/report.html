@@ -13,7 +13,7 @@
   <div class="container">
     <div class="topbar-left">
       <span><svg class="icon"><use href="../assets/icons.svg?v=2#i-shield"></use></svg> <strong data-en="Prototype — Hackathon build, not an official production site">प्रोटोटाइप — हैकाथॉन निर्माण, आधिकारिक उत्पादन साइट नहीं</strong></span>
-      <span><svg class="icon"><use href="../assets/icons.svg?v=2#i-phone"></use></svg> <span data-en="National Cybercrime Helpline">राष्ट्रीय साइबर अपराध हेल्पलाइन</span>: <strong>1930</strong></span>
+      <span><svg class="icon"><use href="../assets/icons.svg?v=2#i-phone"></use></svg> <span data-en="National Cybercrime Helpline">राष्ट्रीय साइबर अपराध हेल्पलाइन</span>: <a href="tel:1930"><strong>1930</strong></a></span>
     </div>
     <div class="topbar-right">
       <div class="textsize"><button data-textsize="base">A</button><button data-textsize="text-lg">A+</button><button data-textsize="text-xl">A++</button></div>
@@ -57,11 +57,18 @@
 <main id="main">
   <section>
     <div class="container">
+      <div class="alert alert-danger" style="margin-bottom:20px;">
+        <div class="icon"><svg class="icon"><use href="../assets/icons.svg?v=2#i-clock"></use></svg></div>
+        <div>
+          <h3 data-en="The first hour matters most">पहला घंटा सबसे ज़्यादा मायने रखता है</h3>
+          <p data-en="If money has already been deducted, call 1930 right now. Banks can often freeze the fraudster's account only within this 'Golden Hour' — every minute you wait reduces the chance of recovery.">अगर पैसे पहले ही कट चुके हैं, तो अभी 1930 पर कॉल करें। बैंक अक्सर इस 'गोल्डन आवर' में ही धोखेबाज़ का खाता फ्रीज़ कर पाते हैं — हर बीतता मिनट वापसी की संभावना घटाता है।</p>
+        </div>
+      </div>
       <div class="grid cols-2">
 
         <div class="card" style="border-top:4px solid var(--danger);">
           <h2 data-en="<svg class='icon'><use href='../assets/icons.svg?v=2#i-x-circle'></use></svg> I have already lost money"><svg class="icon"><use href="../assets/icons.svg?v=2#i-x-circle"></use></svg> मेरे पैसे पहले ही कट चुके हैं / गँवा चुका हूँ</h2>
-          <p data-en="Call immediately or file online — speed matters. Banks can sometimes freeze the fraudster's account within the 'Golden Hour' (first 1 hour).">तुरंत कॉल करें या ऑनलाइन दर्ज करें — गति मायने रखती है। बैंक कई बार पहले 1 घंटे ('गोल्डन आवर') में धोखेबाज़ का खाता फ्रीज़ कर सकते हैं।</p>
+          <p data-en="Call immediately or file online — speed matters.">तुरंत कॉल करें या ऑनलाइन दर्ज करें — गति मायने रखती है।</p>
           <div style="display:flex;gap:12px;flex-wrap:wrap;margin:14px 0;">
             <a href="tel:1930" class="btn btn-danger" data-en="Call 1930 now">1930 पर कॉल करें</a>
             <a href="https://cybercrime.gov.in" target="_blank" rel="noopener" class="btn btn-navy" data-en="File complaint on cybercrime.gov.in">cybercrime.gov.in पर शिकायत दर्ज करें</a>
@@ -78,6 +85,7 @@
         <div class="card" style="border-top:4px solid var(--warn);">
           <h2 data-en="<svg class='icon'><use href='../assets/icons.svg?v=2#i-alert-triangle'></use></svg> Suspicious call/message, no loss yet"><svg class="icon"><use href="../assets/icons.svg?v=2#i-alert-triangle"></use></svg> संदिग्ध कॉल/मैसेज, अभी नुकसान नहीं हुआ</h2>
           <p data-en="Report it on Chakshu (Sanchar Saathi) so the number/message pattern can be blocked before someone else is cheated.">चक्षु (संचार साथी) पर रिपोर्ट करें ताकि किसी और को ठगे जाने से पहले उस नंबर/पैटर्न को ब्लॉक किया जा सके।</p>
+          <p class="hint" style="display:flex;align-items:center;gap:6px;"><svg class="icon" style="color:var(--warn);width:16px;height:16px;flex:none;"><use href="../assets/icons.svg?v=2#i-clock"></use></svg><span data-en="Chakshu asks you to report within 30 days of receiving the call/message.">चक्षु पर कॉल/मैसेज मिलने के 30 दिनों के भीतर रिपोर्ट करना होता है।</span></p>
           <div style="display:flex;gap:12px;flex-wrap:wrap;margin:14px 0;">
             <a href="https://sancharsaathi.gov.in/sfc/" target="_blank" rel="noopener" class="btn btn-green" data-en="Report on Chakshu">चक्षु पर रिपोर्ट करें</a>
             <a href="detector.html" class="btn btn-outline" style="border-color:var(--text);color:var(--text);" data-en="Run it through the detector first">पहले डिटेक्टर से जाँचें</a>
@@ -119,7 +127,7 @@
           </tr>
           <tr>
             <td><strong data-en="Chakshu (Sanchar Saathi)">चक्षु (संचार साथी)</strong></td>
-            <td data-en="Reporting a suspected fraud communication (call/SMS/WhatsApp) before any loss">नुकसान होने से पहले संदिग्ध धोखाधड़ी संचार (कॉल/SMS/व्हाट्सऐप) की रिपोर्ट</td>
+            <td data-en="Reporting a suspected fraud communication (call/SMS/WhatsApp) before any loss — within 30 days of receiving it">नुकसान होने से पहले संदिग्ध धोखाधड़ी संचार (कॉल/SMS/व्हाट्सऐप) की रिपोर्ट — मिलने के 30 दिनों के भीतर</td>
             <td><a href="https://sancharsaathi.gov.in/sfc/" target="_blank" rel="noopener">sancharsaathi.gov.in</a></td>
           </tr>
           <tr>

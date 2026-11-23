@@ -65,6 +65,39 @@ those you your i we my me it as be by from has have had will would can
 could please dear not so if but just now your u ur
 `.split(/\s+/).filter(Boolean));
 
+  // Human-readable label for each LEXICON category, used to surface a scam "type"
+  // headline (e.g. "Fake KYC") instead of just a verdict + score.
+  const CATEGORY_LABELS = {
+    otp: { hi: "OTP/पिन स्कैम", en: "OTP/PIN scam" },
+    kyc: { hi: "फर्ज़ी KYC", en: "Fake KYC" },
+    prize: { hi: "लॉटरी/इनाम स्कैम", en: "Lottery/prize scam" },
+    link: { hi: "संदिग्ध लिंक", en: "Suspicious link" },
+    urgency: { hi: "जल्दबाज़ी बनाने वाला संदेश", en: "Urgency-pressure message" },
+    payment: { hi: "फर्ज़ी रिफंड/भुगतान स्कैम", en: "Fake refund/payment scam" },
+    courier: { hi: "कूरियर/कस्टम स्कैम", en: "Courier/customs scam" },
+    arrest: { hi: "'डिजिटल अरेस्ट' स्कैम", en: "'Digital arrest' scam" },
+    job: { hi: "फर्ज़ी नौकरी ऑफर", en: "Fake job offer" },
+    investment: { hi: "निवेश स्कैम", en: "Investment scam" },
+    loan: { hi: "फर्ज़ी लोन ऑफर", en: "Fake loan offer" },
+    idtheft: { hi: "पहचान चोरी (आधार/पैन)", en: "ID theft (Aadhaar/PAN)" },
+  };
+  // Categories that describe a tactic rather than the scam's actual "type" —
+  // skipped when picking the headline label (they still appear as reason bullets).
+  const CATEGORY_NOT_A_TYPE = { urgency: true };
+
+  function topCategory(hits) {
+    const counts = {};
+    for (const h of hits) {
+      if (CATEGORY_NOT_A_TYPE[h.cat]) continue;
+      counts[h.cat] = (counts[h.cat] || 0) + 1;
+    }
+    let best = null, bestCount = 0;
+    for (const cat in counts) {
+      if (counts[cat] > bestCount) { best = cat; bestCount = counts[cat]; }
+    }
+    return best;
+  }
+
   const state = { model: null };
 
   function tryFetch(url) {
@@ -154,6 +187,8 @@ could please dear not so if but just now your u ur
     if (prob >= 0.6) verdict = "scam";
     else if (prob >= 0.3) verdict = "suspicious";
 
+    const cat = verdict !== "genuine" ? topCategory(hits) : null;
+
     return {
       verdict, // 'scam' | 'suspicious' | 'genuine'
       probability: prob,
@@ -161,6 +196,7 @@ could please dear not so if but just now your u ur
       hits,
       usedModel,
       text: rawText,
+      scamType: cat, // e.g. 'kyc', 'prize', 'loan' — null if no category stood out
     };
   }
 
@@ -189,14 +225,41 @@ could please dear not so if but just now your u ur
       ? (isEn ? "Scored by the on-device Naive Bayes model." : "ऑन-डिवाइस नैव बेज़ मॉडल द्वारा जाँचा गया।")
       : (isEn ? "Model still loading — showing rule-based estimate." : "मॉडल अभी लोड हो रहा है — नियम-आधारित अनुमान दिखाया जा रहा है।");
 
+    const typeLabel = result.scamType && CATEGORY_LABELS[result.scamType];
+    const typeBadge = typeLabel
+      ? `<span class="badge badge-red" style="margin-left:6px;">${isEn ? typeLabel.en : typeLabel.hi}</span>`
+      : "";
+
+    let nextSteps = "";
+    if (result.verdict !== "genuine") {
+      const steps = [
+        { icon: "i-x-circle", color: "var(--danger)", hi: "कोई भी लिंक न खोलें, OTP/PIN किसी को न बताएँ", en: "Don't open any link or share your OTP/PIN" },
+        { icon: "i-x-circle", color: "var(--danger)", hi: "संदेश/कॉल में दिए नंबर पर वापस कॉल न करें", en: "Don't call back on any number given in the message" },
+        { icon: "i-shield-check", color: "var(--safe)", hi: "भेजने वाले को ब्लॉक करें", en: "Block the sender" },
+        result.verdict === "scam"
+          ? { icon: "i-phone", color: "var(--safe)", hi: "पैसे गँवाए हैं तो अभी 1930 पर कॉल करें", en: "If money is already gone, call 1930 right now" }
+          : { icon: "i-shield-check", color: "var(--safe)", hi: "चक्षु पर रिपोर्ट करें — 30 दिनों के भीतर", en: "Report on Chakshu — within 30 days" },
+      ];
+      nextSteps = `
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(0,0,0,.08);">
+          <h4 style="margin:0 0 8px;font-size:13.5px;">${isEn ? "What to do now" : "अभी क्या करें"}</h4>
+          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;">
+            ${steps.map((s) =>
+              `<li style="display:flex;align-items:center;gap:8px;font-size:13.5px;"><svg class="icon" style="color:${s.color};width:17px;height:17px;flex:none;"><use href="${iconHref}#${s.icon}"></use></svg><span>${isEn ? s.en : s.hi}</span></li>`
+            ).join("")}
+          </ul>
+        </div>`;
+    }
+
     return `
       <div class="alert ${cfg.cls}">
         <div class="icon" style="font-size:26px;"><svg class="icon"><use href="${iconHref}#${cfg.icon}"></use></svg></div>
         <div style="flex:1">
-          <h3>${isEn ? cfg.en : cfg.hi} <span class="badge badge-amber" style="margin-left:6px;">${pct}% ${isEn ? "scam score" : "स्कैम स्कोर"}</span></h3>
+          <h3>${isEn ? cfg.en : cfg.hi} <span class="badge badge-amber" style="margin-left:6px;">${pct}% ${isEn ? "scam score" : "स्कैम स्कोर"}</span>${typeBadge}</h3>
           <div class="progress" style="margin:8px 0;"><span style="width:${pct}%;background:${result.verdict === "genuine" ? "var(--safe)" : result.verdict === "suspicious" ? "var(--warn)" : "var(--danger)"}"></span></div>
           <p>${modelNote}</p>
           ${reasons}
+          ${nextSteps}
           ${result.verdict !== "genuine" ? `<p style="margin-top:10px;"><a class="btn btn-sm btn-danger" href="${base}report.html" data-en="Report this">इसकी शिकायत करें</a></p>` : ""}
         </div>
       </div>`;

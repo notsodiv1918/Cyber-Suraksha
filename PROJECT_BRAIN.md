@@ -174,6 +174,31 @@ meaningful change from here on** (the user asked for this explicitly) — `git a
 
 ## Change Log (newest first)
 
+- **1930 bug fix + 4 cheap wins from a teammate's gap-analysis doc.** All verified against the
+  actual codebase (via a fork audit) before touching anything, to separate "already exists" from
+  genuine gaps.
+  1. **Real bug fixed**: the topbar's "1930" was plain `<strong>1930</strong>` text — not a link —
+     on all 7 pages (including index.html, despite index.html having tappable 1930 links
+     elsewhere on the page). Wrapped in `<a href="tel:1930">` on every page; added
+     `.topbar-left a{color:inherit;text-decoration:none;}` + hover underline to
+     `css/style.css` so it blends into the existing topbar palette instead of turning blue/purple
+     (link-default) against the blue bar.
+  2. **Scam "type" headline** (`css/style.css`/`js/nb-model.js`): `classify()` now picks the
+     most-frequent lexicon category among the hits (skipping `urgency`, which is a tactic not a
+     type) and returns it as `result.scamType`; `renderVerdict()` shows it as a red badge next to
+     the score, e.g. "Fake KYC" / "Lottery/prize scam" — via a new `CATEGORY_LABELS` map, bilingual.
+  3. **Structured "What to do now" card** in `renderVerdict()`: replaced the single "Report this"
+     button with 4 bulleted steps (don't click/share OTP, don't call back, block sender, then
+     either "call 1930 now" for a `scam` verdict or "report on Chakshu within 30 days" for
+     `suspicious`) — uses the existing `i-x-circle`/`i-shield-check`/`i-phone` icons and
+     `var(--danger)`/`var(--safe)` colors already in the palette, no new colors introduced.
+  4. **Chakshu 30-day reminder** added in two places on `pages/report.html`: a line under the
+     Chakshu card's description, and appended to the Chakshu row in the official-channels table.
+  5. **Golden Hour banner** on `pages/report.html`: pulled the "banks can freeze within the first
+     hour" messaging out of a buried sentence inside the "lost money" card and into its own
+     `.alert.alert-danger` banner above both cards (reusing the alert component's existing danger
+     palette) — shortened the card's own paragraph afterward so the point isn't said twice.
+
 - **Added photo/video upload to the Message Detector, with on-device OCR.** New "Upload photo /
   video" button next to Check/Clear on `pages/detector.html`, backed by a new
   `site/js/ocr-upload.js`. Images are OCR'd directly with Tesseract.js
