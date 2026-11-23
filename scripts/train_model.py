@@ -40,6 +40,7 @@ hota wala wali wale banaa bana rha rhi rhe
 the is are was were a an and or to of in on at for with this that these
 those you your i we my me it as be by from has have had will would can
 could please dear not so if but just now your u ur
+he she they them him her his hers their theirs its who whom which what
 """.split())
 
 
@@ -81,12 +82,41 @@ def load_jsonl(name):
     return rows
 
 
+_DIGIT_RE = re.compile(r"\d+")
+
+
+def dedup_cap(rows, text_field, cap=5):
+    """india_spam_sms.jsonl turned out to be itself template-generated: e.g. the same
+    "Myntra: ...Shop now..." line repeated 353 times and "Amazon order delivered" 602
+    times, differing only in digits (random order IDs / amounts). Counted at face value,
+    a handful of such templates dominate the whole corpus's word statistics — any word
+    that happens to appear in one of these repeated templates (like "shop") gets an
+    artificially extreme, non-representative log-odds, which no amount of added genuine
+    training data can outweigh since it's being out-duplicated 300-600x by one line.
+    Cap each near-identical template (after normalising digits to '#') to `cap` copies
+    so the model learns from the actual diversity of templates, not their raw repeat
+    count in this particular synthetic source.
+    """
+    groups = {}
+    for row in rows:
+        text = row.get(text_field, "")
+        norm = _DIGIT_RE.sub("#", text)
+        groups.setdefault(norm, []).append(row)
+    out = []
+    for norm, group in groups.items():
+        random.shuffle(group)
+        out.extend(group[:cap])
+    random.shuffle(out)
+    return out
+
+
 def build_corpus():
     """Returns list of (text, label) with label 1=scam/spam, 0=genuine/ham."""
     examples = []
 
-    # 1) India-specific SMS, already labeled 0/1
-    for row in load_jsonl("india_spam_sms.jsonl"):
+    # 1) India-specific SMS, already labeled 0/1. Deduplicated (see dedup_cap) since
+    #    this source is itself template-generated with heavy digit-only repetition.
+    for row in dedup_cap(load_jsonl("india_spam_sms.jsonl"), "text", cap=5):
         text = row.get("text", "")
         label = int(row.get("label", 0))
         if text:

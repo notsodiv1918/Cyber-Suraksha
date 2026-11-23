@@ -70,6 +70,19 @@ object Classifier {
         LexEntry("प्रोसेसिंग फीस", "loan", "लोन से पहले 'प्रोसेसिंग फीस' माँगना", "Demands 'processing fee' before a loan"),
         LexEntry("aadhaar", "idtheft", "आधार/पैन विवरण माँगना", "Asks for Aadhaar/PAN details"),
         LexEntry("आधार", "idtheft", "आधार विवरण साझा करने को कहा गया", "Asks you to share Aadhaar details"),
+        // Classic "family member on a new number" scam — flagged on structure (claims a
+        // changed number AND asks for money in the same message), not word frequency,
+        // since it's deliberately written in plain innocent-sounding language. Kept
+        // identical to site/js/nb-model.js's fix for the same bug.
+        LexEntry(
+            "new-number-money", "familyemergency",
+            "'नया नंबर' बताकर पैसे भेजने को कहा गया — यह एक जाना-पहचाना धोखा है",
+            "Claims a new number and asks for money — a known family-emergency scam pattern",
+            regex = Regex(
+                "(?=.*\\b(new number|naya number|number (badal|change)|number badla|temporary number|temp number|lost my phone|phone (broke|broken|chori|stolen))\\b)(?=.*\\b(send|bhej|bhejo|transfer|paytm|upi|gpay|phonepe)\\b)",
+                RegexOption.IGNORE_CASE
+            )
+        ),
     )
 
     private val CATEGORY_LABEL_EN = mapOf(
@@ -93,7 +106,8 @@ object Classifier {
         "गई गए रहा रही रहे होती होते होता वाला वाली वाले बना रहे रहें हुआ हुई हुए " +
         "the is are was were a an and or to of in on at for with this that these " +
         "those you your i we my me it as be by from has have had will would can " +
-        "could please dear not so if but just now your u ur"
+        "could please dear not so if but just now your u ur " +
+        "he she they them him her his hers their theirs its who whom which what"
     ).split(Regex("\\s+")).filter { it.isNotEmpty() }.toHashSet()
 
     private var vocab: JSONObject? = null

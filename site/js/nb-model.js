@@ -51,6 +51,16 @@
     { p: "प्रोसेसिंग फीस", cat: "loan", hi: "लोन से पहले 'प्रोसेसिंग फीस' माँगना", en: "Demands 'processing fee' before a loan" },
     { p: "aadhaar", cat: "idtheft", hi: "आधार/पैन विवरण माँगना", en: "Asks for Aadhaar/PAN details" },
     { p: "आधार", cat: "idtheft", hi: "आधार विवरण साझा करने को कहा गया", en: "Asks you to share Aadhaar details" },
+    // Classic "family member on a new number" scam: deliberately written in plain,
+    // innocent-sounding language to defeat word-statistics-based detection (confirmed
+    // in testing: this message alone drags NB probability down to ~genuine once the
+    // genuine training vocabulary is broad enough to cover "mom"/"phone"/"send"/etc in
+    // normal contexts). A fraud claiming a changed number AND asking for money/UPI in
+    // the same message is a known, specific pattern worth flagging on structure alone,
+    // not word frequency.
+    { p: "new-number-money", cat: "familyemergency", hi: "'नया नंबर' बताकर पैसे भेजने को कहा गया — यह एक जाना-पहचाना धोखा है",
+      en: "Claims a new number and asks for money — a known family-emergency scam pattern",
+      re: /(?=.*\b(new number|naya number|number (badal|change)|number badla|temporary number|temp number|lost my phone|phone (broke|broken|chori|stolen))\b)(?=.*\b(send|bhej|bhejo|transfer|paytm|upi|gpay|phonepe)\b)/i },
   ];
 
   // Must stay identical to STOPWORDS in scripts/train_model.py.
@@ -67,6 +77,7 @@ hota wala wali wale banaa bana rha rhi rhe
 the is are was were a an and or to of in on at for with this that these
 those you your i we my me it as be by from has have had will would can
 could please dear not so if but just now your u ur
+he she they them him her his hers their theirs its who whom which what
 `.split(/\s+/).filter(Boolean));
 
   // Human-readable label for each LEXICON category, used to surface a scam "type"
