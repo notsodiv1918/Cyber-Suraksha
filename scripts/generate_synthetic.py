@@ -64,6 +64,64 @@ GENUINE_TEMPLATES_HINGLISH = [
     "Aapki salary {amt} rupaye {bank} account me credit ho gayi hai.",
 ]
 
+# Casual personal chat between friends/family — deliberately NOT transactional.
+# Added after a real false positive: a plain "Yooo how are you? Long time no
+# see" was flagged as a likely scam, because every genuine example above is
+# bank/order/appointment style and the model had never seen ordinary short
+# conversational English/Hindi/Hinglish labelled genuine — so words like
+# "how", "long", "time", "see" existed almost only in the scam vocabulary and
+# pulled any short casual message toward "scam". These templates exist only
+# to give the genuine class real coverage of everyday chat register.
+GENUINE_CASUAL_EN = [
+    "Yo {name}, how are you? Long time no see!",
+    "Hey, long time no talk, how have you been?",
+    "Hi {name}, what are you up to today?",
+    "Hey, just checking in — how's everything going?",
+    "Good morning {name}! Have a great day ahead.",
+    "Hey {name}, are you free to talk tonight?",
+    "Hi {name}, happy birthday! Hope you have an amazing day.",
+    "Running a bit late, will reach in 10 minutes.",
+    "Thanks so much for your help yesterday, really appreciate it.",
+    "Can we catch up this weekend? Been a while.",
+    "Haha that's so funny, send me the video too.",
+    "Did you watch the match last night? What a game.",
+    "I'll call you once I'm done with work, around 7.",
+    "Miss you guys, let's plan a trip soon.",
+    "Congrats on the new job, so happy for you!",
+]
+GENUINE_CASUAL_HI = [
+    "अरे {name}, कैसे हो? बहुत दिन हो गए मिले नहीं!",
+    "काफ़ी समय से बात नहीं हुई, कैसे हो तुम?",
+    "क्या कर रहे हो आजकल?",
+    "बस हाल-चाल पूछने के लिए मैसेज किया, सब ठीक है?",
+    "गुड मॉर्निंग {name}! आपका दिन शुभ हो।",
+    "रात को फ़्री हो क्या बात करने के लिए?",
+    "जन्मदिन मुबारक हो {name}! बहुत मस्त दिन हो।",
+    "थोड़ी देर हो जाएगी, 10 मिनट में पहुँच रहा हूँ।",
+    "कल की मदद के लिए बहुत-बहुत धन्यवाद।",
+    "इस वीकेंड मिलते हैं क्या? बहुत दिन हो गए।",
+    "कल रात का मैच देखा क्या? कमाल का खेल था।",
+    "काम ख़त्म होते ही कॉल करता हूँ, लगभग 7 बजे।",
+    "बहुत याद आ रहे हो, जल्दी कहीं घूमने चलते हैं।",
+    "नई नौकरी की बधाई, बहुत खुशी हुई सुनकर!",
+]
+GENUINE_CASUAL_HINGLISH = [
+    "Yo {name}, kaisa hai? Bahut time ho gaya mile hue!",
+    "Bahut time se baat nahi hui, kaisa hai tu?",
+    "Aajkal kya kar raha hai?",
+    "Bas hi bolne ke liye message kiya, sab theek?",
+    "Good morning {name}! Din achha jaaye.",
+    "Raat ko free hai kya baat karne ke liye?",
+    "Happy birthday {name}! Mast din ho tera.",
+    "Thoda late ho jaunga, 10 minute mein pahunch raha hu.",
+    "Kal ki help ke liye bahut thanks yaar.",
+    "Is weekend milte hai kya? Bahut time ho gaya.",
+    "Kal raat ka match dekha? Kamaal ka game tha.",
+    "Kaam khatam hote hi call karta hu, 7 baje tak.",
+    "Bahut yaad aa raha hai, jaldi trip plan karte hai.",
+    "Nayi job ki badhai, suna to bahut khushi hui!",
+]
+
 # ---------------- SCAM (label 1) ----------------
 SCAM_TEMPLATES_EN = [
     "Dear customer, your {bank} KYC is pending. Update within 24 hours via this link or your account will be blocked: http://{bank_lc}-kyc-update.in/verify",
@@ -139,6 +197,9 @@ def main():
     rows += generate(GENUINE_TEMPLATES_EN, 0, 14)
     rows += generate(GENUINE_TEMPLATES_HI, 0, 14)
     rows += generate(GENUINE_TEMPLATES_HINGLISH, 0, 14)
+    rows += generate(GENUINE_CASUAL_EN, 0, 24)
+    rows += generate(GENUINE_CASUAL_HI, 0, 24)
+    rows += generate(GENUINE_CASUAL_HINGLISH, 0, 24)
     rows += generate(SCAM_TEMPLATES_EN, 1, 14)
     rows += generate(SCAM_TEMPLATES_HI, 1, 14)
     rows += generate(SCAM_TEMPLATES_HINGLISH, 1, 14)

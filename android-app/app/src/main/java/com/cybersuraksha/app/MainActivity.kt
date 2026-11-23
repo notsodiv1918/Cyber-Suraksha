@@ -89,6 +89,7 @@ class MainActivity : AppCompatActivity() {
         val smsGranted = ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
         b.smsStatusText.text = if (smsGranted) T.smsOn else T.smsOff
         b.smsEnableBtn.visibility = if (smsGranted) android.view.View.GONE else android.view.View.VISIBLE
+        tintDot(b.smsDot, smsGranted)
 
         var callActive = false
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -98,15 +99,18 @@ class MainActivity : AppCompatActivity() {
         }
         b.callStatusText.text = if (callActive) T.callOn else T.callOff
         b.callEnableBtn.visibility = if (callActive) android.view.View.GONE else android.view.View.VISIBLE
+        tintDot(b.callDot, callActive)
+    }
+
+    private fun tintDot(dot: android.view.View, on: Boolean) {
+        val color = ContextCompat.getColor(this, if (on) R.color.safe else R.color.text_muted)
+        (dot.background.mutate() as android.graphics.drawable.GradientDrawable).setColor(color)
     }
 
     private fun runCheck() {
         val text = b.messageInput.text.toString().trim()
         if (text.isEmpty()) {
-            b.resultText.visibility = android.view.View.VISIBLE
-            b.resultText.text = T.emptyInput
-            b.resultText.setBackgroundColor(ContextCompat.getColor(this, R.color.warn_bg))
-            b.resultText.setTextColor(ContextCompat.getColor(this, R.color.warn))
+            setBanner(R.color.warn_bg, R.color.warn, R.drawable.ic_alert_triangle, T.emptyInput)
             return
         }
         val result = Classifier.classify(text)
@@ -116,17 +120,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showResult(result: ClassifyResult) {
-        val (bg, fg, label) = when (result.verdict) {
-            "scam" -> Triple(R.color.danger_bg, R.color.danger, T.verdictScam)
-            "suspicious" -> Triple(R.color.warn_bg, R.color.warn, T.verdictSuspicious)
-            else -> Triple(R.color.safe_bg, R.color.safe, T.verdictGenuine)
+        val style = when (result.verdict) {
+            "scam" -> VerdictStyle(R.color.danger_bg, R.color.danger, R.drawable.ic_x_circle, T.verdictScam)
+            "suspicious" -> VerdictStyle(R.color.warn_bg, R.color.warn, R.drawable.ic_alert_triangle, T.verdictSuspicious)
+            else -> VerdictStyle(R.color.safe_bg, R.color.safe, R.drawable.ic_check_circle, T.verdictGenuine)
         }
         val pct = Math.round(result.probability * 100)
         val typeLine = result.scamType?.let { " · " + T.categoryLabel(it) } ?: ""
-        b.resultText.visibility = android.view.View.VISIBLE
-        b.resultText.text = "$label ($pct%)$typeLine"
-        b.resultText.setBackgroundColor(ContextCompat.getColor(this, bg))
-        b.resultText.setTextColor(ContextCompat.getColor(this, fg))
+        setBanner(style.bg, style.fg, style.icon, "${style.label} ($pct%)$typeLine")
+    }
+
+    private data class VerdictStyle(val bg: Int, val fg: Int, val icon: Int, val label: String)
+
+    private fun setBanner(bgColor: Int, fgColor: Int, icon: Int, text: String) {
+        b.resultBanner.visibility = android.view.View.VISIBLE
+        (b.resultBanner.background.mutate() as android.graphics.drawable.GradientDrawable)
+            .setColor(ContextCompat.getColor(this, bgColor))
+        b.resultIcon.setImageResource(icon)
+        b.resultIcon.setColorFilter(ContextCompat.getColor(this, fgColor))
+        b.resultText.text = text
+        b.resultText.setTextColor(ContextCompat.getColor(this, fgColor))
     }
 
     private fun renderHistory() {
@@ -147,12 +160,38 @@ class MainActivity : AppCompatActivity() {
 
     private fun historyRow(item: HistoryItem): LinearLayout {
         val row = LinearLayout(this)
-        row.orientation = LinearLayout.VERTICAL
-        row.setBackgroundColor(Color.WHITE)
+        row.orientation = LinearLayout.HORIZONTAL
+        row.background = ContextCompat.getDrawable(this, R.drawable.bg_card)
         val lp = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         lp.bottomMargin = dp(8)
         row.layoutParams = lp
-        row.setPadding(dp(12), dp(10), dp(12), dp(10))
+        row.setPadding(dp(12), dp(12), dp(12), dp(12))
+        row.gravity = Gravity.TOP
+
+        val (typeIcon, chipColor) = when (item.type) {
+            "sms" -> R.drawable.ic_mail to R.color.navy
+            "call" -> R.drawable.ic_phone to R.color.navy
+            else -> R.drawable.ic_shield_check to R.color.saffron
+        }
+        val chip = android.widget.FrameLayout(this)
+        val chipLp = LinearLayout.LayoutParams(dp(32), dp(32))
+        chip.layoutParams = chipLp
+        chip.background = ContextCompat.getDrawable(this, R.drawable.bg_icon_chip)?.mutate()
+        (chip.background as android.graphics.drawable.GradientDrawable).setColor(ContextCompat.getColor(this, chipColor))
+        val chipIcon = android.widget.ImageView(this)
+        val ciLp = android.widget.FrameLayout.LayoutParams(dp(16), dp(16))
+        ciLp.gravity = Gravity.CENTER
+        chipIcon.layoutParams = ciLp
+        chipIcon.setImageResource(typeIcon)
+        chipIcon.setColorFilter(Color.WHITE)
+        chip.addView(chipIcon)
+        row.addView(chip)
+
+        val col = LinearLayout(this)
+        col.orientation = LinearLayout.VERTICAL
+        val colLp = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+        colLp.marginStart = dp(12)
+        col.layoutParams = colLp
 
         val header = TextView(this)
         val who = when (item.type) {
@@ -164,7 +203,7 @@ class MainActivity : AppCompatActivity() {
         header.setTextColor(ContextCompat.getColor(this, R.color.text_main))
         header.setTypeface(null, android.graphics.Typeface.BOLD)
         header.textSize = 13.5f
-        row.addView(header)
+        col.addView(header)
 
         if (item.text.isNotBlank()) {
             val body = TextView(this)
@@ -174,7 +213,7 @@ class MainActivity : AppCompatActivity() {
             val blp = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             blp.topMargin = dp(2)
             body.layoutParams = blp
-            row.addView(body)
+            col.addView(body)
         }
 
         val footer = LinearLayout(this)
@@ -185,16 +224,18 @@ class MainActivity : AppCompatActivity() {
         footer.layoutParams = flp
 
         val badge = TextView(this)
-        val (bg, fg, label) = when (item.verdict) {
+        val (bgCol, fgCol, label) = when (item.verdict) {
             "scam" -> Triple(R.color.danger_bg, R.color.danger, T.verdictScam)
             "suspicious", "unscreened" -> Triple(R.color.warn_bg, R.color.warn, T.verdictSuspicious)
             else -> Triple(R.color.safe_bg, R.color.safe, T.verdictGenuine)
         }
         badge.text = label
-        badge.setTextColor(ContextCompat.getColor(this, fg))
-        badge.setBackgroundColor(ContextCompat.getColor(this, bg))
+        badge.setTextColor(ContextCompat.getColor(this, fgCol))
+        badge.background = ContextCompat.getDrawable(this, R.drawable.bg_badge)?.mutate()
+        (badge.background as android.graphics.drawable.GradientDrawable).setColor(ContextCompat.getColor(this, bgCol))
         badge.setPadding(dp(8), dp(3), dp(8), dp(3))
         badge.textSize = 11f
+        badge.setTypeface(null, android.graphics.Typeface.BOLD)
         footer.addView(badge)
 
         val time = TextView(this)
@@ -208,7 +249,8 @@ class MainActivity : AppCompatActivity() {
         time.gravity = Gravity.END
         footer.addView(time)
 
-        row.addView(footer)
+        col.addView(footer)
+        row.addView(col)
         return row
     }
 

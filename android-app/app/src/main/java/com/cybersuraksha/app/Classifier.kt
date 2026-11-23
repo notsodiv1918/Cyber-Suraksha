@@ -163,9 +163,16 @@ object Classifier {
         val lexProb = lexiconScore(hits.size)
         val prob = 1 - (1 - nbProb) * (1 - lexProb)
 
+        // No lexicon hits means the verdict rests purely on NB word statistics, which can
+        // misfire on short casual messages (see site/js/nb-model.js for the full story —
+        // kept identical here so the app and website never disagree on the same text).
+        val hasLexiconSupport = hits.isNotEmpty()
+        val scamThreshold = if (hasLexiconSupport) 0.6 else 0.85
+        val suspiciousThreshold = if (hasLexiconSupport) 0.3 else 0.5
+
         val verdict = when {
-            prob >= 0.6 -> "scam"
-            prob >= 0.3 -> "suspicious"
+            prob >= scamThreshold -> "scam"
+            prob >= suspiciousThreshold -> "suspicious"
             else -> "genuine"
         }
 

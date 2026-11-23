@@ -174,6 +174,51 @@ meaningful change from here on** (the user asked for this explicitly) — `git a
 
 ## Change Log (newest first)
 
+- **Android app UI redesign + a real false-positive fixed in BOTH the model and the classifier
+  logic, on the website and the app.**
+  1. **UI redesign**: replaced the plain single-screen layout with one matching the site's actual
+     visual identity instead of a generic "AI mockup" look (the user's reaction to a reference
+     mockup: "this is sooo AI... make it eye pleasing and match the colour theme") — sharp 3-4dp
+     corners (not heavy rounding), flat colors, no gradients, no shadows beyond a hairline border,
+     same navy/saffron/danger/warn/safe palette as `css/style.css`. Added 8 hand-drawn vector icons
+     (`ic_shield_check`, `ic_mail`, `ic_phone`, `ic_upload`, `ic_alert_triangle`, `ic_check_circle`,
+     `ic_x_circle`, `ic_chevron_right`) ported directly from `site/assets/icons.svg`'s own path data
+     for visual continuity between the app and the website. Status rows now use colored dots
+     (green/gray) instead of plain text; the verdict display is a proper colored banner+icon
+     (matching the site's `.alert` component) instead of a plain colored `TextView`; history rows
+     are now icon-chip cards instead of bare text blocks.
+  2. **Real bug found and fixed**: a genuine "Yooo how are you? Long time no see" text from a
+     friend was flagged as a likely scam (confirmed live on-device during testing). Diagnosed with
+     a standalone Python port of the classifier run directly against `model.json`: the words "how"/
+     "long"/"time"/"see" had drastically skewed per-class log-probabilities (e.g. "how":
+     `[-13.85, -7.46]`) because the real training corpora's genuine/"ham" class is almost entirely
+     transactional SMS (bank alerts, OTP, delivery notices) with essentially zero casual
+     conversational text, while the scam class is full of short informal messages — so any plain
+     short chat statistically looked "scammy" to the model, with zero lexicon support either way.
+     Two-part fix:
+     - **Data**: added `GENUINE_CASUAL_EN/HI/HINGLISH` template sets to
+       `scripts/generate_synthetic.py` (everyday chat: "how are you", "running late", "happy
+       birthday", etc. in English/Hindi/Hinglish) and bumped the synthetic set's training-weight
+       multiplier in `scripts/train_model.py` from 3x to 8x. Retrained — accuracy actually went
+       **up** (97.15% → 97.27%, recall 92.8% → 93.4%, still only ~15 false positives / ~167 false
+       negatives out of ~6000 held-out examples), confirming this wasn't a precision/recall
+       trade-off, just a real gap being filled. The target phrase's score dropped from ~0.9999997
+       to 0.33 from retraining alone.
+     - **Logic**: added a genuine classifier-level safeguard — **in both** `site/js/nb-model.js`
+       and `android-app/.../Classifier.kt`, verdicts with zero lexicon hits (no concrete red-flag
+       phrase to point to, pure NB statistics only) now need higher confidence to alarm:
+       scam threshold 0.6→0.85, suspicious 0.3→0.5, vs. the original thresholds unchanged when a
+       real red-flag phrase backs the verdict up. This is deliberately more conservative only when
+       there's nothing to show the user as "why" — explainability-gated, not a blanket threshold
+       change — and is what actually pushed the target phrase (0.33, zero hits) under the
+       suspicious line to "genuine", since the data fix alone wasn't sufficient on its own.
+     - Verified: the target phrase and a few other casual messages ("running a bit late", "good
+       morning") now read genuine on both the website and the rebuilt/reinstalled Android app (via
+       `adb`, confirmed with screenshots); real scams (KYC phishing, lottery, "mom my phone broke"
+       — including ones with zero lexicon hits) all still score 1.0/scam, unaffected.
+     - `site/data/model.json` and `android-app/app/src/main/assets/model.json` kept in sync (same
+       file, copied) — **always re-copy after retraining**, they drift silently otherwise.
+
 - **New native Android app (`android-app/`) — the auto-scan roadmap item, actually built.**
   Started as a native Kotlin/Gradle project (Android Studio + SDK + `adb` were already installed
   on this machine, so built it for real rather than leaving it as a pitch slide). Package

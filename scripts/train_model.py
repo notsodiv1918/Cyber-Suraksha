@@ -132,9 +132,8 @@ def build_corpus():
         label = int(row.get("label", 0))
         if text:
             synth.append((text, label))
-    examples.extend(synth)
-    examples.extend(synth)
-    examples.extend(synth)
+    for _ in range(8):
+        examples.extend(synth)
 
     return examples
 

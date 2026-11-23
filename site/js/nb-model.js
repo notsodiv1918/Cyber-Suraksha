@@ -183,9 +183,21 @@ could please dear not so if but just now your u ur
     // noisy-OR: combined is high if EITHER signal is confident
     const prob = 1 - (1 - nbProb) * (1 - lexProb);
 
+    // With zero lexicon hits, "scam"/"suspicious" rests entirely on the NB model's
+    // word-frequency statistics — and short, casual messages ("Long time no see!")
+    // can score misleadingly high purely because their everyday words (how/long/
+    // time) are statistically more common in the scam training corpus than in the
+    // mostly-transactional genuine corpus, with no actual red flag present. Require
+    // more confidence before alarming when there's no concrete reason to point to;
+    // keep the original, more sensitive thresholds when a real red-flag phrase
+    // backs the verdict up.
+    const hasLexiconSupport = hits.length > 0;
+    const scamThreshold = hasLexiconSupport ? 0.6 : 0.85;
+    const suspiciousThreshold = hasLexiconSupport ? 0.3 : 0.5;
+
     let verdict = "genuine";
-    if (prob >= 0.6) verdict = "scam";
-    else if (prob >= 0.3) verdict = "suspicious";
+    if (prob >= scamThreshold) verdict = "scam";
+    else if (prob >= suspiciousThreshold) verdict = "suspicious";
 
     const cat = verdict !== "genuine" ? topCategory(hits) : null;
 

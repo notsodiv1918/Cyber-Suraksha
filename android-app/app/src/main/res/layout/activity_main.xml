@@ -10,57 +10,72 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- ============ HEADER ============ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/navy"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="40dp"
-            android:paddingBottom="14dp">
+            android:orientation="vertical"
+            android:paddingHorizontal="18dp"
+            android:paddingTop="44dp"
+            android:paddingBottom="18dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_shield_check"
+                    android:tint="@color/white"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:id="@+id/titleText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:text="Cyber Suraksha"
+                    android:textColor="@color/white"
+                    android:textSize="19sp"
+                    android:fontFamily="sans-serif-medium" />
+
+                <TextView
+                    android:id="@+id/langBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_btn_outline_white"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="5dp"
+                    android:text="EN"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif-medium" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/titleText"
-                android:layout_width="0dp"
+                android:id="@+id/subtitleText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Cyber Suraksha"
-                android:textColor="@color/white"
-                android:textSize="19sp"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/langBtn"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="EN"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:paddingHorizontal="12dp" />
+                android:layout_marginTop="6dp"
+                android:text="On-device SMS and call scam detector"
+                android:textColor="#D9E8F7"
+                android:textSize="13sp" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/subtitleText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/navy"
-            android:paddingHorizontal="16dp"
-            android:paddingBottom="14dp"
-            android:text="On-device SMS and call scam detector"
-            android:textColor="#D9E8F7"
-            android:textSize="13sp" />
-
+        <!-- ============ STATUS CARD ============ -->
         <LinearLayout
             android:id="@+id/statusCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/white"
+            android:background="@drawable/bg_card"
             android:layout_margin="14dp"
-            android:padding="16dp"
-            android:elevation="1dp">
+            android:padding="16dp">
 
             <TextView
                 android:id="@+id/statusTitle"
@@ -68,34 +83,44 @@
                 android:layout_height="wrap_content"
                 android:text="Protection status"
                 android:textColor="@color/text_main"
-                android:textStyle="bold"
-                android:textSize="15sp"
-                android:layout_marginBottom="10dp" />
+                android:fontFamily="sans-serif-medium"
+                android:textSize="14.5sp"
+                android:layout_marginBottom="12dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="12dp">
+
+                <View
+                    android:id="@+id/smsDot"
+                    android:layout_width="9dp"
+                    android:layout_height="9dp"
+                    android:background="@drawable/bg_dot" />
 
                 <TextView
                     android:id="@+id/smsStatusText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginStart="10dp"
                     android:text="SMS auto-scan: off"
-                    android:textColor="@color/text_muted"
+                    android:textColor="@color/text_main"
                     android:textSize="13.5sp" />
 
-                <Button
+                <TextView
                     android:id="@+id/smsEnableBtn"
-                    style="?android:attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_btn_outline"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="5dp"
                     android:text="Enable"
-                    android:textColor="@color/saffron"
-                    android:textSize="13sp" />
+                    android:textColor="@color/text_main"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif-medium" />
             </LinearLayout>
 
             <LinearLayout
@@ -104,92 +129,153 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
+                <View
+                    android:id="@+id/callDot"
+                    android:layout_width="9dp"
+                    android:layout_height="9dp"
+                    android:background="@drawable/bg_dot" />
+
                 <TextView
                     android:id="@+id/callStatusText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginStart="10dp"
                     android:text="Call screening: off"
-                    android:textColor="@color/text_muted"
+                    android:textColor="@color/text_main"
                     android:textSize="13.5sp" />
 
-                <Button
+                <TextView
                     android:id="@+id/callEnableBtn"
-                    style="?android:attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_btn_outline"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="5dp"
                     android:text="Enable"
-                    android:textColor="@color/saffron"
-                    android:textSize="13sp" />
+                    android:textColor="@color/text_main"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif-medium" />
             </LinearLayout>
         </LinearLayout>
 
+        <!-- ============ CHECK MESSAGE CARD ============ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/white"
+            android:background="@drawable/bg_card"
             android:layout_marginHorizontal="14dp"
             android:layout_marginBottom="14dp"
-            android:padding="16dp"
-            android:elevation="1dp">
+            android:padding="16dp">
 
-            <TextView
-                android:id="@+id/checkLabel"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Paste a message to check"
-                android:textColor="@color/text_main"
-                android:textStyle="bold"
-                android:textSize="15sp"
-                android:layout_marginBottom="8dp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <FrameLayout
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:background="@drawable/bg_icon_chip">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_mail"
+                        android:tint="@color/white"
+                        android:contentDescription="@null" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/checkLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:text="Paste a message to check"
+                    android:textColor="@color/text_main"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="14.5sp" />
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/messageInput"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:background="@color/bg"
+                android:layout_height="96dp"
+                android:background="@drawable/bg_input"
                 android:gravity="top|start"
-                android:padding="10dp"
+                android:padding="12dp"
                 android:hint="Paste SMS text here..."
+                android:textColorHint="@color/text_muted"
                 android:inputType="textMultiLine"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColor="@color/text_main" />
 
             <Button
                 android:id="@+id/checkBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="@color/saffron"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_btn_primary"
                 android:text="Check message"
-                android:textColor="@color/white" />
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="14.5sp"
+                android:stateListAnimator="@null" />
 
-            <TextView
-                android:id="@+id/resultText"
+            <LinearLayout
+                android:id="@+id/resultBanner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_banner"
+                android:layout_marginTop="14dp"
                 android:padding="12dp"
-                android:textSize="13.5sp"
-                android:visibility="gone" />
+                android:gravity="center_vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/resultIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_check_circle"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:id="@+id/resultText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:textSize="13.5sp"
+                    android:fontFamily="sans-serif-medium" />
+            </LinearLayout>
         </LinearLayout>
 
+        <!-- ============ HISTORY ============ -->
         <TextView
             android:id="@+id/historyLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="14dp"
+            android:layout_marginBottom="8dp"
             android:text="Recent activity"
             android:textColor="@color/text_main"
-            android:textStyle="bold"
-            android:textSize="15sp" />
+            android:fontFamily="sans-serif-medium"
+            android:textSize="14.5sp" />
 
         <LinearLayout
             android:id="@+id/historyList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_margin="14dp" />
+            android:layout_marginHorizontal="14dp"
+            android:layout_marginBottom="24dp" />
 
     </LinearLayout>
 </ScrollView>
