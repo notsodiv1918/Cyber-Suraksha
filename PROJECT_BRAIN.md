@@ -174,6 +174,12 @@ meaningful change from here on** (the user asked for this explicitly) — `git a
 
 ## Change Log (newest first)
 
+- **Cycling stat tiles (the yellow/red/green boxes right under the hero) lightened.** `.cycle-tile
+  .c1/.c2/.c3` backgrounds in `css/style.css` went from dark, muddy tones (`#9c8426` ochre,
+  `#9c3240` brick red, `#43815a` forest green) to brighter, lighter ones (`#d9a62b` gold,
+  `#d8465a` crimson, `#2fa066` green) — user felt the originals were too dark. Checked the white
+  tile text still reads clearly against the lightest one (gold) before calling it done.
+
 - **Repo pushed to GitHub for the first time.** `git init`'d at the repo root, added a
   `.gitignore` excluding `data/raw/` (large third-party dataset dumps, not needed at runtime) plus
   the usual `__pycache__`/OS-junk/`.claude/settings.local.json`, committed all 40 remaining

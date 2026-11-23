@@ -284,9 +284,9 @@ section{padding:40px 0;}
 .cycle-tile{
   padding:22px 24px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between;color:#fff;
 }
-.cycle-tile.c1{background:#9c8426;}
-.cycle-tile.c2{background:#9c3240;}
-.cycle-tile.c3{background:#43815a;}
+.cycle-tile.c1{background:#d9a62b;}
+.cycle-tile.c2{background:#d8465a;}
+.cycle-tile.c3{background:#2fa066;}
 .cycle-content{transition:opacity .35s ease;opacity:1;}
 .cycle-content.fade{opacity:0;}
 .cycle-content .icon{width:26px;height:26px;stroke-width:1.5;color:#fff;opacity:.85;}
