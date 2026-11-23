@@ -2,6 +2,7 @@ package com.cybersuraksha.app
 
 import android.app.role.RoleManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
@@ -66,6 +67,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         b.checkBtn.setOnClickListener { runCheck() }
+        b.qrCard.setOnClickListener { startActivity(Intent(this, QrCheckActivity::class.java)) }
 
         applyLanguage()
     }
@@ -85,6 +87,7 @@ class MainActivity : AppCompatActivity() {
         b.messageInput.hint = T.hint
         b.checkBtn.text = T.checkBtn
         b.historyLabel.text = T.historyLabel
+        b.qrCardLabel.text = T.qrCardLabel
         refreshStatus()
         renderHistory()
     }
@@ -175,6 +178,7 @@ class MainActivity : AppCompatActivity() {
         val (typeIcon, chipColor) = when (item.type) {
             "sms" -> R.drawable.ic_mail to R.color.navy
             "call" -> R.drawable.ic_phone to R.color.navy
+            "qr" -> R.drawable.ic_qr to R.color.navy
             else -> R.drawable.ic_shield_check to R.color.saffron
         }
         val chip = android.widget.FrameLayout(this)
@@ -201,6 +205,7 @@ class MainActivity : AppCompatActivity() {
         val who = when (item.type) {
             "sms" -> T.smsScannedLine(item.who)
             "call" -> T.callScreenedLine(item.who)
+            "qr" -> T.qrTitle
             else -> if (T.lang == Lang.EN) "Manual check" else "मैन्युअल जाँच"
         }
         header.text = who

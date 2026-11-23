@@ -34,6 +34,7 @@ object T {
     val hint get() = pick("Paste SMS text here...", "यहाँ SMS टेक्स्ट पेस्ट करें...", "इहाँ SMS टेक्स्ट पेस्ट करव...")
     val checkBtn get() = pick("Check message", "मैसेज जाँचें", "मैसेज जाँचव")
     val historyLabel get() = pick("Recent activity", "हाल की गतिविधि", "हाल के गतिविधि")
+    val qrCardLabel get() = pick("QR Code Checker — scan before you pay", "QR कोड चेकर — भुगतान से पहले स्कैन करें", "QR कोड चेकर — भुगतान के पहिली स्कैन करव")
     val emptyHistory get() = pick(
         "Nothing scanned yet — incoming SMS will appear here automatically.",
         "अभी तक कुछ स्कैन नहीं हुआ — आने वाले SMS यहाँ अपने-आप दिखेंगे।",
@@ -61,4 +62,56 @@ object T {
 
     fun smsScannedLine(sender: String) = pick("SMS from $sender", "$sender से SMS", "$sender ले SMS")
     fun callScreenedLine(number: String) = pick("Call from $number", "$number से कॉल", "$number ले कॉल")
+
+    // ---- QR checker ----
+    val qrTitle get() = pick("QR Code Checker", "QR कोड चेकर", "QR कोड चेकर")
+    val qrSubtitle get() = pick(
+        "Scan or upload a QR code before paying",
+        "भुगतान से पहले QR कोड स्कैन या अपलोड करें",
+        "भुगतान के पहिली QR कोड स्कैन या अपलोड करव"
+    )
+    val qrTabCamera get() = pick("Camera", "कैमरा", "कैमरा")
+    val qrTabUpload get() = pick("Upload", "अपलोड", "अपलोड")
+    val qrStartCamera get() = pick("Start camera", "कैमरा शुरू करें", "कैमरा चालू करव")
+    val qrStopCamera get() = pick("Stop camera", "कैमरा बंद करें", "कैमरा बंद करव")
+    val qrUploadBtn get() = pick("Upload QR image", "QR छवि अपलोड करें", "QR फोटो अपलोड करव")
+    val qrScanHint get() = pick(
+        "Point your camera at the QR code.",
+        "अपना कैमरा QR कोड की ओर रखें।",
+        "अपन कैमरा QR कोड कोती रखव।"
+    )
+    val qrNoQrFound get() = pick(
+        "No QR code found in that image. Try a clearer photo.",
+        "इस छवि में कोई QR कोड नहीं मिला। बेहतर फ़ोटो आज़माएँ।",
+        "ए फोटो म कोनो QR कोड नइ मिलिस। बने फोटो आजमाव।"
+    )
+    val qrCameraPermNeeded get() = pick(
+        "Camera permission is needed to scan a QR code.",
+        "QR कोड स्कैन करने हेतु कैमरा अनुमति चाहिए।",
+        "QR कोड स्कैन करे बर कैमरा अनुमति चाही।"
+    )
+    val qrVerdictDanger get() = pick("Dangerous — do not pay or click", "खतरनाक — भुगतान/क्लिक न करें", "खतरनाक — भुगतान/क्लिक झन करव")
+    val qrVerdictWarn get() = pick("Suspicious — proceed with caution", "संदिग्ध — सावधानी से आगे बढ़ें", "संदेहास्पद — सावधानी ले आघू बढ़व")
+    val qrVerdictSafe get() = pick("No known danger found", "कोई ज्ञात खतरा नहीं मिला", "कोनो जानत खतरा नइ मिलिस")
+    val qrTypeUpi get() = pick("UPI payment QR", "UPI भुगतान QR", "UPI भुगतान QR")
+    val qrTypeUrl get() = pick("Web link QR", "वेब लिंक QR", "वेब लिंक QR")
+    val qrTypeOther get() = pick("Other QR content", "अन्य QR सामग्री", "अउ QR सामग्री")
+    val qrWhatNow get() = pick("What to do now", "अभी क्या करें", "अभी का करव")
+    val qrStepConfirmName get() = pick(
+        "Confirm the payee name out loud with the shopkeeper before paying",
+        "भुगतान से पहले दुकानदार से नाम बोलकर पुष्टि करें",
+        "भुगतान के पहिली दुकानदार ले नाम बोलके पुष्टि करव"
+    )
+    val qrStepTellShopkeeper get() = pick(
+        "If this looks like a sticker pasted over a shop's real QR, tell the shopkeeper",
+        "अगर यह स्टिकर किसी दुकान के असली QR पर चिपका लगे, तो दुकानदार को बताएँ",
+        "यदि ए स्टिकर कोनो दुकान के असली QR उपर चिपकाय लगत हे, त दुकानदार ला बताव"
+    )
+    val qrStepPayCash get() = pick("If in doubt, pay with cash instead", "संदेह होने पर कैश से भुगतान करें", "संदेह होय त कैश ले भुगतान करव")
+    val qrStepDontOpen get() = pick("Don't open this link", "इस लिंक को न खोलें", "ए लिंक ला झन खोलव")
+    val qrStepDontEnter get() = pick("Don't enter any details, OTP or PIN", "कोई भी जानकारी, OTP या पिन न भरें", "कोनो जानकारी, OTP या पिन झन भरव")
+    val qrSevRisk get() = pick("Risk", "खतरा", "खतरा")
+    val qrSevCaution get() = pick("Caution", "सावधानी", "सावधानी")
+    val qrSevInfo get() = pick("Info", "जानकारी", "जानकारी")
+    val qrFieldsNone get() = pick("No decoded fields.", "कोई डिकोडेड फ़ील्ड नहीं।", "कोनो डिकोडेड फील्ड नइहे।")
 }

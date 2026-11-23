@@ -22,7 +22,9 @@ data class ClassifyResult(
 
 object Classifier {
 
-    private val LEXICON = listOf(
+    // internal, not private: QrAnalyzer.kt reuses this exact lexicon for QR-encoded URLs,
+    // so a phishing link scores identically whether it arrives by SMS or by QR code.
+    internal val LEXICON = listOf(
         // Plain "otp" as a bare substring flagged every normal OTP-delivery message too
         // ("Your OTP for transaction is 482917" is completely routine) — a real false positive
         // caught in testing. Only flag it when the message actually asks the user to hand the
