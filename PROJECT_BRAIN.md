@@ -48,7 +48,9 @@ D:\hackasol\
     pages/
       detector.html           <- message scam detector
       call-checker.html       <- call scam detector (paste-transcript + experimental live mic)
-      report.html             <- reporting handoff (1930 / cybercrime.gov.in / Chakshu)
+      report.html             <- reporting handoff (1930 / cybercrime.gov.in / Chakshu) + opt-in
+                                  "share with district" (new-scam-pattern alerts, see §7)
+      officials.html           <- officials-facing view of emerging scam-pattern alerts (§7)
       learn.html              <- lessons (Hindi/Chhattisgarhi) + quiz
       dashboard.html          <- scam-trend dashboard (charts + district table)
       about.html              <- datasets, architecture, accuracy, limitations
@@ -66,6 +68,10 @@ D:\hackasol\
       model.json               <- trained Naive Bayes model (generated, don't hand-edit)
       dashboard.json            <- aggregated scam-trend data (generated, don't hand-edit)
   .claude/launch.json         <- `python -m http.server 8080 --directory site` preview config
+  backend/                    <- the ONE non-offline piece of this project — see §7
+    app.py                    <- Flask + SQLite scam-pattern-clustering/alert server
+    requirements.txt          <- just `flask`
+    reports.db                <- gitignored, created on first run
 ```
 
 ## 3. Running / previewing
@@ -162,13 +168,77 @@ meaningful change from here on** (the user asked for this explicitly) — `git a
 
 ## 6. Known limitations (stated honestly in `about.html` — keep them true or update both places)
 
-- Call-scam "detector" is really the same text classifier run on a pasted/typed transcript; there
-  is no real on-device speech-to-text in this prototype (described as a production-roadmap item).
+- Website's call-scam "detector" is the same text classifier run on a pasted/typed transcript;
+  there is no speech-to-text on the website (browsers can't reliably capture call audio either —
+  confirmed by direct testing, see Change Log). The **Android app** now has an opt-in exception
+  to this (live call warning, beta, §7) using the device mic + Android's own SpeechRecognizer —
+  still not real-time analysis of the actual call-audio stream (Android blocks that for all
+  third-party apps), just mic pickup, so it depends on speakerphone being on.
 - District-level numbers on the dashboard are **synthesised** (the real source data — National
   Cybercrime Reporting Portal — has no location field); only the scam-*type* totals are real.
+  (This is separate from the §7 district alerts, which cluster real opted-in user reports.)
 - Chhattisgarhi lesson text is hand-written for this prototype, not a linguist-verified corpus.
 - Model accuracy (97.2%) is a held-out split of a corpus partly assembled from different source
   datasets per class — treat as a prototype baseline, not a production guarantee.
+
+## 7. Live call warning (Android) + new-scam-pattern district alerts (backend)
+
+Two features added together after the user asked "do we have live call warning, and new-scam
+district alerts — if not, build them." Neither existed before; both are now real, working, and
+their real limits are stated here and in-product rather than glossed over.
+
+**Live call warning (beta) — Android only, opt-in, `MoreActivity`'s toggle.**
+Android blocks third-party apps from capturing the actual call-audio stream on modern SDKs (the
+`VOICE_CALL` audio source returns silence) — this is an OS policy, not a missing permission, and
+was confirmed before building anything. The honest workaround the user asked to pursue instead:
+`LiveCallWarningService` records through the **normal microphone** while a call is active
+(`CallStateReceiver` watches `ACTION_PHONE_STATE_CHANGED`, which any app with `READ_PHONE_STATE`
+can receive — no call-screening role needed), which only meaningfully hears the other party when
+the call is on speakerphone. Recognized speech comes from Android's own `SpeechRecognizer`
+(`EXTRA_PREFER_OFFLINE=true`, silently falls back to network recognition if no offline language
+pack is installed — the one feature in this app that isn't guaranteed fully offline, stated in
+the toggle's own description) run in a restart-on-result/restart-on-error loop for continuous
+listening, since `SpeechRecognizer` only natively handles one utterance at a time. Each
+recognized chunk goes through the same `Classifier.classify()` used everywhere else; a scam-like
+result fires an immediate high-priority notification via the existing `Notifier`, while the call
+is still in progress. **Verified**: toggle UI, `RECORD_AUDIO` permission flow, and that the
+service/receiver are correctly *not* externally triggerable (confirmed by `adb`'s own
+`SecurityException` refusing to start the service or send the protected `PHONE_STATE` broadcast —
+itself proof the security model is right) — the actual speech-recognition-during-a-real-call path
+could **not** be exercised in this sandboxed session (no way to place/receive a real call), so
+this needs a live on-device test with an actual call before trusting it fully.
+
+**New-scam district alerts — `backend/app.py`, the one non-offline piece of this project.**
+Detecting a pattern across *different users'* reports fundamentally needs a server — this
+directly conflicts with "100% on-device, zero data uploads," so it's built as a separate,
+explicit opt-in: the website's report.html share box and the app's Result-screen "Share with
+district" button only send text when the user deliberately picks a district and taps share.
+`backend/app.py` is a small from-scratch Flask + SQLite server (not a vendored clustering
+library, matching this project's "explain what the model actually does" convention elsewhere):
+normalises each report's text, computes Jaccard token-set similarity against same-district
+reports from the last 72h, union-finds them into clusters, and flags any cluster reaching 3+
+reports as an active alert — recomputed fresh on every new report (`recompute_clusters`), fine at
+hackathon-demo scale, not a production-scale design. District identity is keyed by the **English**
+name everywhere (`DashboardActivity`/`Districts.kt`/the website's dashboard.json districts list)
+specifically so a Hindi-submitted report and an English-submitted report for the same district
+still cluster together — **a real bug caught and fixed during testing**: the first pass kept each
+UI language's own district label as the stored value, which silently fragmented every district
+into two non-clustering buckets.
+Also caught and fixed in testing: the Android app's requests to `http://localhost:5000` were
+silently failing with no useful error until realising Android blocks cleartext HTTP by default
+since API 28 — fixed with `res/xml/network_security_config.xml` scoping cleartext permission to
+just `localhost`/`127.0.0.1`/`10.0.2.2`, not the whole app.
+Run it with `python backend/app.py` (serves `0.0.0.0:5000`); for the Android app to reach a
+backend running on the dev machine over USB, `adb reverse tcp:5000 tcp:5000` first. **Verified
+end-to-end**: submitted reports from both the website (`report-share.js`, tested directly in the
+browser against a live local server) and the Android app (`ShareReport.kt`/`AlertApi.kt`) into
+the same running backend, confirmed clustering correctly groups similar-but-differently-phrased
+reports (and keeps dissimilar ones separate) via `curl`, and confirmed `officials.html`
+(`officials-alerts.js`) renders the resulting alert with the right district label, sample text,
+and report count, auto-refreshing every 15s. This is a hackathon-prototype clustering method
+(Jaccard similarity, not an ML pipeline) and a local-only demo server, not a deployed or
+production-security-reviewed system — both are stated in-product (officials.html's own "how this
+works" banner, report.html's share-box hint) rather than only here.
 
 ---
 

@@ -60,6 +60,7 @@ class CallDetectorActivity : AppCompatActivity() {
         }
         b.uploadBtn.setOnClickListener { launchAudioPicker() }
         b.audioPlayBtn.setOnClickListener { toggleAudioPlayback() }
+        ShareReport.wire(this, b.shareBtn, b.shareStatusText, { rememberedText }, { lastResult?.verdict ?: "" }, "call")
 
         swipeDetector = DetectTabs.gestureDetector(this, DetectTabs.Tab.CALL)
         buildSamples()
@@ -97,6 +98,7 @@ class CallDetectorActivity : AppCompatActivity() {
         b.trySampleLabel.text = T.trySampleCall
         b.historyLabel.text = T.historyCalls
         b.reportBtnText.text = T.reportThis
+        b.shareBtnText.text = T.sharePattern
         b.checkAnotherBtnText.text = T.checkAnother
         b.onDeviceNoteText.text = T.onDeviceNote
         buildSamples()
@@ -264,6 +266,8 @@ class CallDetectorActivity : AppCompatActivity() {
             }
         }
         b.reportBtn.visibility = if (result.verdict == "genuine") View.GONE else View.VISIBLE
+        b.shareBtn.visibility = if (result.verdict == "genuine") View.GONE else View.VISIBLE
+        b.shareStatusText.text = ""
     }
 
     private fun renderHistory() {

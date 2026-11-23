@@ -210,6 +210,20 @@ object T {
     val whySafe get() = pick("No known red flags found in this text.", "इस टेक्स्ट में कोई ज्ञात खतरे का संकेत नहीं मिला।", "ए टेक्स्ट म कोनो जानत खतरा के संकेत नइ मिलिस।")
     val reportThis get() = pick("Report This", "रिपोर्ट करें", "रिपोर्ट करव")
     val checkAnother get() = pick("Check Another", "दूसरा जाँचें", "दूसर जाँचव")
+    val sharePattern get() = pick("Share with district (optional)", "जिले के साथ साझा करें (वैकल्पिक)", "जिला के साथ साझा करव (वैकल्पिक)")
+    val sharePatternHint get() = pick(
+        "Help officials spot this pattern spreading in your district — sends only this text and the district you pick.",
+        "अधिकारियों को आपके जिले में फैलते पैटर्न का पता लगाने में मदद करें — केवल यह टेक्स्ट एवं चुना गया जिला भेजा जाता है।",
+        "अधिकारी मन ला तुम्हर जिला म फैलत पैटर्न के पता लगाय म मदद करव — सिरिफ ए टेक्स्ट अउ चुने गे जिला भेजे जाथे।"
+    )
+    val shareSending get() = pick("Sending…", "भेजा जा रहा है…", "भेजे जात हे…")
+    val shareSent get() = pick("Shared — thank you.", "साझा किया गया — धन्यवाद।", "साझा होगे — धन्यवाद।")
+    val shareError get() = pick(
+        "Could not reach the alert server (needs backend/app.py running).",
+        "अलर्ट सर्वर से संपर्क नहीं हो सका (backend/app.py चालू होना चाहिए)।",
+        "अलर्ट सर्वर ले संपर्क नइ होइस (backend/app.py चालू होना चाही)।"
+    )
+    val chooseDistrict get() = pick("Choose district", "जिला चुनें", "जिला चुनव")
     val onDeviceNote get() = pick(
         "Analysed on your device. No message is sent to the internet.",
         "आपके डिवाइस पर विश्लेषित। कोई मैसेज इंटरनेट पर नहीं भेजा गया।",
@@ -276,6 +290,25 @@ object T {
 
     // ---- more / protection status screen ----
     val moreTitle get() = pick("More", "अधिक", "अउ")
+    val liveCallWarningTitle get() = pick("Live call warning (beta)", "लाइव कॉल चेतावनी (बीटा)", "लाइव कॉल चेतावनी (बीटा)")
+    val liveCallWarningDesc get() = pick(
+        "Listens through the mic during a call and warns you immediately if it sounds like a scam. Works best on speakerphone; may use mobile data if no offline voice pack is installed.",
+        "कॉल के दौरान माइक्रोफ़ोन से सुनता है और स्कैम जैसा लगने पर तुरंत चेतावनी देता है। स्पीकरफ़ोन पर सबसे बेहतर काम करता है; ऑफ़लाइन वॉइस पैक न होने पर मोबाइल डेटा उपयोग हो सकता है।",
+        "कॉल के बेरा माइक्रोफोन ले सुनथे अउ स्कैम जइसे लगे म तुरते चेतावनी देथे। स्पीकरफोन म सबले बने काम करथे; ऑफलाइन वॉइस पैक नइ रहे म मोबाइल डेटा लगे सकथे।"
+    )
+    val liveWarningActiveTitle get() = pick("Live call warning active", "लाइव कॉल चेतावनी सक्रिय", "लाइव कॉल चेतावनी सक्रिय")
+    val liveWarningActiveBody get() = pick(
+        "Listening for scam red-flags during this call.",
+        "इस कॉल के दौरान स्कैम के संकेतों हेतु सुन रहा है।",
+        "ए कॉल के बेरा स्कैम के संकेत बर सुनत हे।"
+    )
+    val liveWarningAlertTitle get() = pick("Warning: this call sounds like a scam", "चेतावनी: यह कॉल स्कैम जैसा लगता है", "चेतावनी: ए कॉल स्कैम जइसे लगत हे")
+    val liveWarningUnavailableTitle get() = pick("Live call warning unavailable", "लाइव कॉल चेतावनी उपलब्ध नहीं", "लाइव कॉल चेतावनी उपलब्ध नइहे")
+    val liveWarningUnavailableBody get() = pick(
+        "This device doesn't support on-device speech recognition.",
+        "यह डिवाइस ऑन-डिवाइस वाक् पहचान समर्थित नहीं करता।",
+        "ए डिवाइस ऑन-डिवाइस आवाज पहिचान समर्थित नइ करय।"
+    )
     val aboutTitle get() = pick("About this app", "इस ऐप के बारे में", "ए ऐप के बारे म")
     val aboutDesc get() = pick(
         "Cyber Suraksha is an offline, on-device scam detector for SMS, calls and QR codes — a hackathon prototype, not an official government app.",

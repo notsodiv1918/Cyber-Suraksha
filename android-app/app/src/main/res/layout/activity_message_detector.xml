@@ -376,6 +376,37 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/shareBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/bg_btn_outline_green"
+                    android:layout_marginBottom="6dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        android:id="@+id/shareBtnText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Share with district (optional)"
+                        android:textColor="@color/primary"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="13.5sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/shareStatusText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/text_muted"
+                    android:textSize="11.5sp" />
+
+                <LinearLayout
                     android:id="@+id/checkAnotherBtn"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"

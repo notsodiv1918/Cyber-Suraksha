@@ -42,6 +42,7 @@
       <li><a href="report.html" class="current" data-en="Report Fraud">धोखाधड़ी की शिकायत</a></li>
       <li><a href="learn.html" data-en="Safety Lessons &amp; Quiz">सुरक्षा पाठ एवं क्विज़</a></li>
       <li><a href="dashboard.html" data-en="Scam Trend Dashboard">स्कैम ट्रेंड डैशबोर्ड</a></li>
+      <li><a href="officials.html" data-en="New-Scam Alerts">नए स्कैम अलर्ट</a></li>
       <li><a href="about.html" data-en="About &amp; Data Sources">परिचय एवं डेटा स्रोत</a></li>
     </ul>
   </div></nav>
@@ -141,6 +142,27 @@
     </div>
   </section>
 
+  <section style="background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="container">
+      <div class="section-title"><div>
+        <span class="eyebrow" data-en="HELP SPOT NEW SCAM PATTERNS">नए स्कैम पैटर्न पहचानने में मदद करें</span>
+        <h2 data-en="Share this report with your district (optional)">अपनी शिकायत अपने जिले के साथ साझा करें (वैकल्पिक)</h2>
+      </div></div>
+      <div class="card" style="max-width:640px;">
+        <p style="color:var(--text-muted);margin-top:0;" data-en="If several people in the same district report a similar message or call within a few days, that pattern is flagged so officials can act before it spreads further. This is completely optional and separate from the on-device checks above — only the text you paste here and the district you pick are sent, nothing else.">अगर कुछ ही दिनों में एक ही जिले के कई लोग मिलता-जुलता मैसेज या कॉल रिपोर्ट करते हैं, तो उस पैटर्न को चिन्हित किया जाता है ताकि अधिकारी उसके और फैलने से पहले कार्रवाई कर सकें। यह पूरी तरह वैकल्पिक है और ऊपर की ऑन-डिवाइस जाँच से अलग है — केवल यहाँ पेस्ट किया गया टेक्स्ट एवं चुना गया जिला भेजा जाता है, और कुछ नहीं।</p>
+        <label for="share-text" data-en="Message or call summary">मैसेज या कॉल का सारांश</label>
+        <textarea id="share-text" rows="3" data-en-ph="Paste the scam message, or summarise what the caller said..." placeholder="स्कैम मैसेज पेस्ट करें, या कॉलर ने जो कहा उसका सार लिखें..."></textarea>
+        <label for="share-district" style="margin-top:12px;" data-en="District">जिला</label>
+        <select id="share-district"></select>
+        <div style="margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <button id="share-submit-btn" class="btn btn-green" type="button" data-en="Share report">रिपोर्ट साझा करें</button>
+          <span id="share-status-text" style="font-size:13px;color:var(--text-muted);"></span>
+        </div>
+        <p class="hint" style="margin-top:10px;" data-en="Needs the local alert server running (see about.html) — this is a hackathon prototype feature, not a live government system.">स्थानीय अलर्ट सर्वर चालू होना आवश्यक है (about.html देखें) — यह एक हैकाथॉन प्रोटोटाइप सुविधा है, कोई लाइव सरकारी प्रणाली नहीं।</p>
+      </div>
+    </div>
+  </section>
+
   <section>
     <div class="container">
       <div class="alert alert-warn">
@@ -172,6 +194,7 @@
       <li><a href="qr-checker.html"><span data-en="QR Checker">QR चेकर</span> <strong>→</strong></a></li>
       <li><a href="learn.html"><span data-en="Lessons &amp; Quiz">पाठ एवं क्विज़</span> <strong>→</strong></a></li>
       <li><a href="dashboard.html"><span data-en="Dashboard">डैशबोर्ड</span> <strong>→</strong></a></li>
+      <li><a href="officials.html"><span data-en="New-Scam Alerts">नए स्कैम अलर्ट</span> <strong>→</strong></a></li>
       <li><a href="about.html"><span data-en="Data Sources">डेटा स्रोत</span> <strong>→</strong></a></li>
     </ul>
   </div>
@@ -179,5 +202,6 @@
 </div>
 
 <script src="../js/app.js"></script>
+<script src="../js/report-share.js"></script>
 </body>
 </html>

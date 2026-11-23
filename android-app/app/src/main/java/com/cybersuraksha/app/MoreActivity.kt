@@ -21,6 +21,10 @@ class MoreActivity : AppCompatActivity() {
     private val requestCallRole = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         refreshStatus()
     }
+    private val requestMicPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        LiveCallWarning.setEnabled(this, granted)
+        b.liveWarningSwitch.isChecked = granted
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +49,19 @@ class MoreActivity : AppCompatActivity() {
             }
         }
 
+        b.liveWarningSwitch.isChecked = LiveCallWarning.isEnabled(this)
+        b.liveWarningSwitch.setOnCheckedChangeListener { _, checked ->
+            if (checked) {
+                if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                    LiveCallWarning.setEnabled(this, true)
+                } else {
+                    requestMicPermission.launch(android.Manifest.permission.RECORD_AUDIO)
+                }
+            } else {
+                LiveCallWarning.setEnabled(this, false)
+            }
+        }
+
         NavBar.wire(this, b.navBottom.root, NavBar.Tab.MORE)
         applyLanguage()
     }
@@ -60,6 +77,8 @@ class MoreActivity : AppCompatActivity() {
         b.statusTitle.text = T.statusTitle
         b.smsEnableBtn.text = T.enable
         b.callEnableBtn.text = T.enable
+        b.liveWarningTitle.text = T.liveCallWarningTitle
+        b.liveWarningDesc.text = T.liveCallWarningDesc
         b.aboutTitleText.text = T.aboutTitle
         b.aboutDescText.text = T.aboutDesc
         refreshStatus()

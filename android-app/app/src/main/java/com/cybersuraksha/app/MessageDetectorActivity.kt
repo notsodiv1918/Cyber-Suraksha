@@ -61,6 +61,7 @@ class MessageDetectorActivity : AppCompatActivity() {
             showInput()
         }
         b.uploadBtn.setOnClickListener { launchMediaPicker() }
+        ShareReport.wire(this, b.shareBtn, b.shareStatusText, { rememberedText }, { lastResult?.verdict ?: "" }, "message")
 
         swipeDetector = DetectTabs.gestureDetector(this, DetectTabs.Tab.MESSAGE)
         buildSamples()
@@ -97,6 +98,7 @@ class MessageDetectorActivity : AppCompatActivity() {
         b.trySampleLabel.text = T.trySample
         b.historyLabel.text = T.historyMessages
         b.reportBtnText.text = T.reportThis
+        b.shareBtnText.text = T.sharePattern
         b.checkAnotherBtnText.text = T.checkAnother
         b.onDeviceNoteText.text = T.onDeviceNote
         buildSamples()
@@ -246,6 +248,8 @@ class MessageDetectorActivity : AppCompatActivity() {
             }
         }
         b.reportBtn.visibility = if (result.verdict == "genuine") View.GONE else View.VISIBLE
+        b.shareBtn.visibility = if (result.verdict == "genuine") View.GONE else View.VISIBLE
+        b.shareStatusText.text = ""
     }
 
     private fun renderHistory() {
