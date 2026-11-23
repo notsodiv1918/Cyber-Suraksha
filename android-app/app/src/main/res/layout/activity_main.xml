@@ -159,15 +159,31 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- ============ SERVICES EYEBROW (mirrors the website's section-title pattern) ============ -->
+        <TextView
+            android:id="@+id/servicesEyebrow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="14dp"
+            android:layout_marginBottom="8dp"
+            android:text="मुख्य सेवाएँ"
+            android:textColor="@color/india_green"
+            android:fontFamily="sans-serif-medium"
+            android:textAllCaps="true"
+            android:letterSpacing="0.04"
+            android:textSize="11.5sp" />
+
         <!-- ============ CHECK MESSAGE CARD ============ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/bg_card"
+            android:background="@drawable/bg_card_accent"
             android:layout_marginHorizontal="14dp"
             android:layout_marginBottom="14dp"
-            android:padding="16dp">
+            android:paddingHorizontal="16dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -223,7 +239,7 @@
                 android:background="@drawable/bg_btn_primary"
                 android:text="Check message"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/on_saffron"
                 android:fontFamily="sans-serif-medium"
                 android:textSize="14.5sp"
                 android:stateListAnimator="@null" />
@@ -264,10 +280,12 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:background="@drawable/bg_card"
+            android:background="@drawable/bg_card_accent"
             android:layout_marginHorizontal="14dp"
             android:layout_marginBottom="14dp"
-            android:padding="16dp"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="16dp"
             android:clickable="true"
             android:focusable="true">
 

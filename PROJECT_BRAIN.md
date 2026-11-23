@@ -174,6 +174,42 @@ meaningful change from here on** (the user asked for this explicitly) — `git a
 
 ## Change Log (newest first)
 
+- **Restyled the Android app's home screen (and QR checker) to actually match the website's design
+  tokens, after a first attempt at copying a rounded-corner dashboard mockup was explicitly
+  rejected mid-session.** The user showed two rounded, shadow-heavy mockup screenshots and initially
+  asked for "exactly this but not so AI" — before any of that was built, they redirected: instead
+  restyle the existing native screens to match the *actual website* more closely, and guaranteed no
+  feature breaks. Scope was kept deliberately conservative — only drawable/color/attribute edits,
+  zero view IDs, click listeners, or Kotlin logic touched:
+  1. Pulled the website's real tokens from `site/css/style.css` (`--radius:2px`, `.service-card`'s
+     `border-top:4px solid var(--saffron)` icon-box pattern, `.btn-primary{background:var(--saffron);
+     color:#211400}` — dark text on saffron, not white) rather than inventing new values.
+  2. Tightened every drawable's corner radius from the previous 3–6dp down to the site's own 2dp
+     (`bg_card`, `bg_btn_primary`, `bg_btn_outline`, `bg_btn_outline_white`, `bg_banner`, `bg_input`,
+     `bg_icon_chip` — the last was 6dp, furthest off).
+  3. Added `bg_card_accent.xml` (a 2-item layer-list: full saffron rect behind, white bordered card
+     inset by `top="4dp"`) to reproduce the website's `.service-card` top-accent strip without
+     rounding anything, applied to the two tappable home-screen cards (Check Message, QR Checker).
+  4. Added `@color/on_saffron` (`#211400`, lifted straight from the site's `--saffron-dark`-adjacent
+     button text) and fixed every saffron-background button/active-tab to use it instead of white,
+     in both `activity_main.xml` (`checkBtn`) and `QrCheckActivity`'s camera/upload tab toggle
+     (previously `R.color.white`, which the real site never does on saffron).
+  5. Added a small green "मुख्य सेवाएँ" / "Core services" eyebrow label above the service cards,
+     mirroring the site's `.section-title .eyebrow` (india-green, bold, small caps) pattern — a new
+     `T.servicesEyebrow` string (EN/HI/CG) and one new non-ID-colliding `TextView`, wired in
+     `MainActivity.applyLanguage()`.
+  6. **Verified on the connected physical device (Oppo Reno, via `adb`), not just a clean build**:
+     installed the rebuilt debug APK (install had stalled once because the phone was dozing/locked —
+     same known issue as a previous session, resolved by the user unlocking it), screenshotted the
+     restyled home screen, then ran a real end-to-end smoke test — typed a scam message
+     ("Congratulations! you won Rs 2500000. Share OTP to claim prize.") into the message box, tapped
+     "मैसेज जाँचें", confirmed it classified correctly ("संभावित स्कैम (100%) · OTP/पिन स्कैम") with
+     no crash in `logcat`, and confirmed it landed in Recent Activity. Also tapped into the QR
+     Checker card and confirmed it opens with the same restyled saffron/dark-text tab correctly.
+     (Learned after two wrong taps: don't eyeball coordinates off the image shown at its *displayed*
+     resolution — `uiautomator dump`'s `bounds=` attribute gives real device-pixel coordinates and
+     should be used directly instead of guessing a scale factor.)
+
 - **Ported the Fake QR Checker to the native Android app (CameraX + ML Kit, line-for-line Kotlin port of the detection logic).**
   1. `QrAnalyzer.kt` — exact Kotlin port of `site/js/qr-check.js`'s `analysePayload()`: same UPI-field checks, same URL checks (reusing `Classifier.kt`'s lexicon, now exposed as `internal` instead of `private` for this reuse), same noisy-OR risk combination, same 0.6/0.3 danger/warn thresholds. Verified every risk-weight constant and threshold matches the JS version exactly (diffed side by side).
   2. `QrCheckActivity.kt` — new activity, launched from a new "QR Code Checker" card on the main screen. Two input modes: live camera scan (CameraX `ImageAnalysis` feeding frames to ML Kit's bundled on-device barcode scanner — `com.google.mlkit:barcode-scanning:17.3.0`, the standalone model bundled into the APK, not the Play-Services-download variant, matching the project's offline-first rule) and gallery image pick (`ActivityResultContracts.GetContent` + `InputImage.fromFilePath`). Both decode fully on-device, no network call.

@@ -14,4 +14,5 @@
     <color name="border">#E1E6EC</color>
     <color name="bg">#F4F6F9</color>
     <color name="white">#FFFFFF</color>
+    <color name="on_saffron">#211400</color>
 </resources>

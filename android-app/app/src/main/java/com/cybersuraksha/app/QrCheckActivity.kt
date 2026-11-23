@@ -94,9 +94,9 @@ class QrCheckActivity : AppCompatActivity() {
         val activeBg = R.drawable.bg_btn_primary
         val inactiveBg = R.drawable.bg_btn_outline
         b.tabCamera.setBackgroundResource(if (camera) activeBg else inactiveBg)
-        b.tabCamera.setTextColor(ContextCompat.getColor(this, if (camera) R.color.white else R.color.text_main))
+        b.tabCamera.setTextColor(ContextCompat.getColor(this, if (camera) R.color.on_saffron else R.color.text_main))
         b.tabUpload.setBackgroundResource(if (camera) inactiveBg else activeBg)
-        b.tabUpload.setTextColor(ContextCompat.getColor(this, if (camera) R.color.text_main else R.color.white))
+        b.tabUpload.setTextColor(ContextCompat.getColor(this, if (camera) R.color.text_main else R.color.on_saffron))
         if (!camera) stopCamera()
     }
 

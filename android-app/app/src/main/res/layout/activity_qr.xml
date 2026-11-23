@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:text="Camera"
                 android:gravity="center"
-                android:textColor="@color/white"
+                android:textColor="@color/on_saffron"
                 android:background="@drawable/bg_btn_primary"
                 android:paddingVertical="10dp"
                 android:fontFamily="sans-serif-medium"
@@ -147,7 +147,7 @@
                 android:background="@drawable/bg_btn_primary"
                 android:text="Start camera"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/on_saffron"
                 android:fontFamily="sans-serif-medium"
                 android:textSize="14.5sp"
                 android:stateListAnimator="@null" />

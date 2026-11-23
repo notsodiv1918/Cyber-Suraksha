@@ -25,6 +25,7 @@ object T {
         "डिवाइस म ही SMS अउ कॉल स्कैम डिटेक्टर"
     )
     val statusTitle get() = pick("Protection status", "सुरक्षा स्थिति", "सुरक्षा स्थिति")
+    val servicesEyebrow get() = pick("Core services", "मुख्य सेवाएँ", "मुख्य सेवाएँ")
     val smsOn get() = pick("SMS auto-scan: on", "SMS ऑटो-स्कैन: चालू", "SMS ऑटो-स्कैन: चालू")
     val smsOff get() = pick("SMS auto-scan: off", "SMS ऑटो-स्कैन: बंद", "SMS ऑटो-स्कैन: बंद")
     val callOn get() = pick("Call screening: on", "कॉल स्क्रीनिंग: चालू", "कॉल स्क्रीनिंग: चालू")

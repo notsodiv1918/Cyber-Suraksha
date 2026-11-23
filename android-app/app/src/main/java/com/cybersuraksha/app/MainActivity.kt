@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity() {
         b.titleText.text = T.appTitle
         b.subtitleText.text = T.subtitle
         b.statusTitle.text = T.statusTitle
+        b.servicesEyebrow.text = T.servicesEyebrow
         b.checkLabel.text = T.checkLabel
         b.messageInput.hint = T.hint
         b.checkBtn.text = T.checkBtn
