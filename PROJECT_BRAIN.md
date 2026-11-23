@@ -174,6 +174,41 @@ meaningful change from here on** (the user asked for this explicitly) — `git a
 
 ## Change Log (newest first)
 
+- **New native Android app (`android-app/`) — the auto-scan roadmap item, actually built.**
+  Started as a native Kotlin/Gradle project (Android Studio + SDK + `adb` were already installed
+  on this machine, so built it for real rather than leaving it as a pitch slide). Package
+  `com.cybersuraksha.app`, minSdk 26, compileSdk/targetSdk 35, Gradle wrapper pinned to 8.9 (AGP
+  8.7.3, Kotlin 2.0.21) — builds clean with `./gradlew.bat :app:assembleDebug` using the JDK 21
+  bundled inside Android Studio's own `jbr/` folder (the system `java` on this machine is only
+  Java 8, too old for modern Gradle — always point `JAVA_HOME` at
+  `C:\Program Files\Android\Android Studio\jbr` when building this project, not the system JDK).
+  - **`Classifier.kt`** is a line-for-line Kotlin port of `site/js/nb-model.js`'s `classify()` —
+    same tokenizer (Devanagari+Latin, word + char-4-gram tokens, shared stopword list), same
+    12-category lexicon, same noisy-OR combination, same 0.6/0.3 thresholds — reading the
+    identical `site/data/model.json` (copied into `app/src/main/assets/`), so a message gets the
+    same verdict on-device in the app as it would on the website. No retraining, no new model.
+  - **`SmsReceiver.kt`**: a `RECEIVE_SMS` broadcast receiver (not SMS Retriever — that API only
+    sees messages carrying a special app-signature hash, useless for scanning arbitrary incoming
+    SMS; corrected this out loud to the user when asked, since an earlier conversation turn had
+    said the wrong API). Classifies every incoming SMS immediately and posts a notification if
+    scam/suspicious (silent for genuine, so it doesn't nag).
+  - **`CallScreenService.kt`** (`CallScreeningService`, Android 10+): deliberately **never
+    auto-blocks or auto-labels a call as scam** — we have no real caller-reputation/phone-number
+    dataset (the training data is message text), so pretending to classify a phone *number* would
+    be a false claim. It logs the number and shows a generic caution notification instead,
+    nudging the user toward the same transcript-check flow as the website's Call Scam Detector.
+  - **UI**: one Activity, plain Views (no Compose — kept dependencies light), matching the
+    website's palette via `colors.xml` (`navy` #4A9BDB, `saffron` #FF9933, `danger`/`warn`/`safe`
+    tokens lifted straight from `css/style.css`). Trilingual EN/Hindi/Chhattisgarhi via a manual
+    `T` object (`Strings.kt`) cycling languages on a button tap — same "no Android locale-qualifier
+    juggling, just a plain data lookup" approach as the site's `data-en`/`data-hi` pattern, since
+    Chhattisgarhi has no well-supported Android resource qualifier. `HistoryStore.kt` is a simple
+    SharedPreferences-backed JSON list (last 30 scans) — no Room/SQLite, intentionally, for a
+    prototype's "recent activity" feed.
+  - Debug APK builds successfully (~6MB, `app/build/outputs/apk/debug/app-debug.apk`). Added a
+    `.gitignore` for `build/`, `.gradle/`, `local.properties` (machine-specific SDK path, never
+    commit it) before pushing.
+
 - **Filled the blank space beside the scam-scripts accordion.** The new accordion (see previous
   entry) is deliberately narrower than the container, which left a wide empty gap to its right on
   desktop. Added a sticky `.script-aside` card there — not decorative filler, but the actual

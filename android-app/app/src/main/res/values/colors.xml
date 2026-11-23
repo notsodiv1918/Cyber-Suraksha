@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="navy">#4A9BDB</color>
+    <color name="saffron">#FF9933</color>
+    <color name="india_green">#138808</color>
+    <color name="danger">#C62828</color>
+    <color name="danger_bg">#FDEAEA</color>
+    <color name="warn">#9A6700</color>
+    <color name="warn_bg">#FFF6E5</color>
+    <color name="safe">#0C6B05</color>
+    <color name="safe_bg">#EAF7E8</color>
+    <color name="text_main">#1B2430</color>
+    <color name="text_muted">#5A6472</color>
+    <color name="border">#E1E6EC</color>
+    <color name="bg">#F4F6F9</color>
+    <color name="white">#FFFFFF</color>
+</resources>
