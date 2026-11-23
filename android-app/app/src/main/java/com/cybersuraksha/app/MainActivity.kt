@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var b: ActivityMainBinding
 
-    private val requestSmsPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+    private val requestSmsPermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
         refreshStatus()
     }
     private val requestNotifPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
@@ -47,7 +47,11 @@ class MainActivity : AppCompatActivity() {
             applyLanguage()
         }
         b.smsEnableBtn.setOnClickListener {
-            requestSmsPermission.launch(android.Manifest.permission.RECEIVE_SMS)
+            // Request RECEIVE_SMS and READ_SMS together — they're in the same permission
+            // group, and requesting only one has caused inconsistent partial-grant state
+            // on some OEM builds (confirmed via `adb shell appops get`: READ_SMS stayed
+            // "ignore" even after RECEIVE_SMS was granted through the single-permission path).
+            requestSmsPermissions.launch(arrayOf(android.Manifest.permission.RECEIVE_SMS, android.Manifest.permission.READ_SMS))
         }
         b.callEnableBtn.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

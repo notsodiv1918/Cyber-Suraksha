@@ -11,7 +11,11 @@
   // Each entry: pattern (lowercase substring, matched against normalised text),
   // category, and a short bilingual explanation.
   const LEXICON = [
-    { p: "otp", cat: "otp", hi: "OTP माँगना — बैंक/कंपनियाँ कभी OTP नहीं माँगतीं", en: "Asks for OTP — banks/companies never ask for your OTP" },
+    // Plain "otp" as a bare substring used to flag every normal OTP-delivery message too
+    // ("Your OTP for transaction is 482917" is completely routine) — a real false positive
+    // caught in testing. Only flag it when the message actually asks the user to hand the
+    // OTP over (scam pattern), not when it's just delivering their own code to them.
+    { p: "share otp", re: /\b(share|send|sent|give|tell|provide|read\s*out|bata|batao|bhej|bhejo|bolo|bol\s*do)\w*\b[^.?!\n]{0,25}\botp\b|\botp\b[^.?!\n]{0,25}\b(share|send|give|tell|provide|bata|batao|bhej|bhejo|bolo)\w*\b/i, cat: "otp", hi: "OTP माँगना/साझा करने को कहा गया — बैंक/कंपनियाँ कभी OTP नहीं माँगतीं", en: "Asks you to share your OTP — banks/companies never ask for it" },
     { p: "पिन", cat: "otp", hi: "पिन/OTP साझा करने को कहा गया", en: "Asks you to share PIN/OTP" },
     { p: "kyc", cat: "kyc", hi: "KYC अपडेट/ब्लॉक की धमकी — आम बैंक-धोखाधड़ी पैटर्न", en: "KYC update/block threat — a common bank-fraud pattern" },
     { p: "केवाईसी", cat: "kyc", hi: "केवाईसी अपडेट की धमकी", en: "KYC update threat" },
@@ -140,7 +144,8 @@ could please dear not so if but just now your u ur
   function lexiconHits(normText) {
     const hits = [];
     for (const entry of LEXICON) {
-      if (normText.indexOf(entry.p) !== -1) hits.push(entry);
+      const matched = entry.re ? entry.re.test(normText) : normText.indexOf(entry.p) !== -1;
+      if (matched) hits.push(entry);
     }
     return hits;
   }

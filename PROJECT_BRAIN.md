@@ -174,6 +174,66 @@ meaningful change from here on** (the user asked for this explicitly) — `git a
 
 ## Change Log (newest first)
 
+- **Diagnosed and fixed why real incoming SMS weren't triggering the app at all, then found and
+  fixed three more real false positives via live on-device testing.**
+  1. **Root cause of "nothing happens on a new SMS"**: confirmed via `adb shell dumpsys package`
+     that `RECEIVE_SMS` was granted and `SmsReceiver` was correctly registered for
+     `SMS_RECEIVED` with the system — so the receiver itself wasn't broken. Live logcat during a
+     real test showed **zero** telephony/SMS broadcast activity at all. Root cause: the phone's
+     Google Messages had RCS ("Chat features") on — RCS messages travel over Google's IP-based
+     Jibe network, never over classic carrier SMS, so `SMS_RECEIVED` (which only fires for real
+     SMS) never sees them. No public Android API lets a third-party app intercept RCS content.
+     Confirmed by having the user disable RCS chat features and resend — the receiver fired
+     immediately after. Documented so this doesn't get mistaken for a code bug again.
+  2. Added defensive logging (`Log.d`/`Log.e`, tag `"CyberSuraksha"`) throughout `SmsReceiver.kt`
+     and wrapped its body in try/catch, specifically so a future silent failure shows up in
+     logcat instead of vanishing without a trace. Also changed `MainActivity`'s SMS permission
+     request to ask for `RECEIVE_SMS` **and** `READ_SMS` together (`RequestMultiplePermissions`)
+     instead of just the one — `adb shell appops get` showed `READ_SMS` stuck on "ignore" even
+     after `RECEIVE_SMS` was granted via the single-permission path on this OEM build. (Not
+     actually required for our PDU-from-broadcast-extras approach, but requesting the sibling
+     permission in the group avoids relying on undocumented OEM grant behavior.)
+  3. **Real false positive 1 — "Test message" scored 99.99% scam.** Diagnosed with the same
+     Python classifier replica: the bare words "test" and "message" (plus message's char-4-grams)
+     were themselves heavily scam-skewed in the training corpora — same systemic gap as the
+     casual-chat fix, different vocabulary. Added `GENUINE_CASUAL_EN/HI/HINGLISH` entries putting
+     "test"/"message"/"hi"/"hello" in boring, normal contexts ("This is just a test message,
+     please ignore it.", "Hi, just testing if this number works.") and bumped synthetic weight
+     3x→8x. Accuracy kept climbing (97.27%→97.21%, recall 93.4%→93.0% — noise-level, still net
+     positive vs. the original 92.8%).
+  4. **Real false positive 2 — genuine bank SMS flagged scam.** User explicitly asked to verify
+     "if it's really from a bank it should not flag" — tested 8 realistic Indian bank SMS
+     (debit/credit alerts, OTP delivery, credit card billing, cheque clearance, salary credit,
+     UPI, statement, FD maturity) against the live model and found 2 more false positives: a
+     credit-card-billing-due-date message and a cheque-clearance message both scored >96% scam,
+     because "billed"/"due"/"statement"/"cleared" are *also* scam-skewed in the real corpora (the
+     genuine class is almost entirely "simple debit/credit" style, with no billing-statement
+     phrasing). Added `GENUINE_TEMPLATES_EN/HI` entries covering credit-card billing, cheque
+     clearance, EMI standing instructions, FD maturity, mini-statements, and NetBanking-login
+     notifications. Retrained — **accuracy improved again to 97.62%, recall to 94.3%** (vs.
+     93.0%/92.8% before this round), confirming these were genuine corpus gaps, not
+     precision/recall trade-offs.
+  5. **Real design flaw found in the same pass — the lexicon's "otp" rule was too blunt.** It
+     flagged *any* message containing the substring "otp", including a totally routine "Your OTP
+     for transaction is 482917, do not share" — which is the bank's own legitimate delivery of
+     the code, not a request to hand it over. Reworked the rule in **both**
+     `site/js/nb-model.js` and `android-app/.../Classifier.kt` into a regex requiring a
+     request-verb near "otp" (share/send/give/tell/bata/batao/bhejo/etc., either side, within ~25
+     chars) — so "Your OTP is X" no longer matches, but "share your OTP" / "OTP batao" still does.
+     `LexEntry` gained an optional `regex` field (Kotlin) / `re` field (JS) alongside the plain
+     substring `pattern`, with `lexiconHits()` checking the regex when present.
+  6. Verified all of the above with a 12-case battery (8 genuine incl. bank messages, 4 scam incl.
+     an explicit "share your OTP" attempt) on both the website (live in-browser) and via the
+     Python classifier replica against the final retrained `model.json` — all passed. Android
+     side verified via live on-device testing through most of this (manual check + real incoming
+     SMS, including the RCS-disabled resend), with the final OTP-regex-fix build built clean
+     (`BUILD SUCCESSFUL`) but **not yet reinstalled on the physical device** — the phone's lock
+     screen blocked the `adb install` confirmation prompt mid-session; install was paused by
+     request and needs to be resumed (`adb install -r
+     android-app/app/build/outputs/apk/debug/app-debug.apk` with the phone unlocked) before this
+     specific round of fixes is confirmed live on-device. `model.json` is already synced to
+     `android-app/app/src/main/assets/` either way.
+
 - **Android app UI redesign + a real false-positive fixed in BOTH the model and the classifier
   logic, on the website and the app.**
   1. **UI redesign**: replaced the plain single-screen layout with one matching the site's actual

@@ -41,6 +41,18 @@ GENUINE_TEMPLATES_EN = [
     "Hi {name}, are we still meeting tomorrow at 6pm for the project review?",
     "Your salary of Rs.{amt} has been credited to your {bank} account.",
     "Thank you for shopping with us. Your invoice for Rs.{amt} has been generated.",
+    # Real bank-statement/billing phrasing — caught two more false positives in testing:
+    # "Dear Customer, your ... Credit Card ... billed Rs.X. Due date ... Min due ..." and
+    # "Thank you for banking with ... cheque ... cleared" both scored ~0.97-0.99 scam,
+    # because words like "billed"/"due"/"statement"/"cleared" are heavily scam-skewed in
+    # the real corpora too (same systemic gap as the casual-chat and test-message fixes).
+    "Dear Customer, your {bank} Credit Card XX{acct} has been billed Rs.{amt}. Due date {date}. Min due Rs.{bal}.",
+    "Thank you for banking with {bank}. Your cheque no {order} for Rs.{amt} has been cleared.",
+    "Your {bank} Credit Card statement for this month is ready. Total due: Rs.{amt} by {date}.",
+    "Standing instruction of Rs.{amt} for your {bank} EMI has been processed successfully on {date}.",
+    "Your Fixed Deposit with {bank} worth Rs.{amt} has matured on {date}. Amount credited to your account.",
+    "Mini statement for your {bank} A/c XX{acct}: last 3 transactions available on request.",
+    "You have successfully logged in to {bank} NetBanking at {date}. If this wasn't you, contact your branch.",
 ]
 GENUINE_TEMPLATES_HI = [
     "आपके {bank} खाते में {date} को {amt} रुपये जमा हुए हैं। उपलब्ध शेष {bal} रुपये।",
@@ -53,6 +65,9 @@ GENUINE_TEMPLATES_HI = [
     "आपका बिजली बिल {amt} रुपये सफलतापूर्वक जमा हो गया है, धन्यवाद।",
     "नमस्ते {name}, क्या कल शाम 6 बजे मीटिंग पक्की है?",
     "आपका वेतन {amt} रुपये आपके {bank} खाते में जमा कर दिया गया है।",
+    "प्रिय ग्राहक, आपके {bank} क्रेडिट कार्ड XX{acct} पर {amt} रुपये का बिल बना है। देय तिथि {date}।",
+    "{bank} में बैंकिंग हेतु धन्यवाद। आपका चेक नंबर {order} ({amt} रुपये) क्लियर हो गया है।",
+    "आपकी {bank} फिक्स्ड डिपॉज़िट ({amt} रुपये) {date} को परिपक्व हो गई है, राशि खाते में जमा।",
 ]
 GENUINE_TEMPLATES_HINGLISH = [
     "Aapke {bank} account me {amt} rupaye credit hue hain, available balance {bal} rupaye hai.",
@@ -88,6 +103,19 @@ GENUINE_CASUAL_EN = [
     "I'll call you once I'm done with work, around 7.",
     "Miss you guys, let's plan a trip soon.",
     "Congrats on the new job, so happy for you!",
+    # Plain generic/filler phrasing — "test", "message", "hi", "hello" turned out
+    # to be strongly scam-skewed on their own in the real corpora (checked a real
+    # false positive: a bare "Test message" scored 99.99% scam), so these exist
+    # specifically to put that vocabulary in a normal, boring context too.
+    "This is just a test message, please ignore it.",
+    "Hi, just testing if this number works, reply when you get this.",
+    "Hey {name}, testing my new phone, how's the signal on your end?",
+    "Just a quick message to say hi, nothing important.",
+    "Sorry, wrong number, please ignore this message.",
+    "Hello {name}, hope this message finds you well.",
+    "Hi, this is {name}, saving my new number, please save it too.",
+    "Testing testing, can you see this message?",
+    "Hey, sent you a message on WhatsApp too, check when free.",
 ]
 GENUINE_CASUAL_HI = [
     "अरे {name}, कैसे हो? बहुत दिन हो गए मिले नहीं!",
@@ -104,6 +132,9 @@ GENUINE_CASUAL_HI = [
     "काम ख़त्म होते ही कॉल करता हूँ, लगभग 7 बजे।",
     "बहुत याद आ रहे हो, जल्दी कहीं घूमने चलते हैं।",
     "नई नौकरी की बधाई, बहुत खुशी हुई सुनकर!",
+    "यह सिर्फ़ एक टेस्ट मैसेज है, कृपया इसे अनदेखा करें।",
+    "बस टेस्ट कर रहा हूँ कि यह नंबर काम करता है या नहीं।",
+    "गलत नंबर लग गया, इस मैसेज को अनदेखा करें।",
 ]
 GENUINE_CASUAL_HINGLISH = [
     "Yo {name}, kaisa hai? Bahut time ho gaya mile hue!",
@@ -120,6 +151,9 @@ GENUINE_CASUAL_HINGLISH = [
     "Kaam khatam hote hi call karta hu, 7 baje tak.",
     "Bahut yaad aa raha hai, jaldi trip plan karte hai.",
     "Nayi job ki badhai, suna to bahut khushi hui!",
+    "Yeh bas ek test message hai, ignore kar dena.",
+    "Bas test kar raha hu ki yeh number kaam karta hai ya nahi.",
+    "Wrong number lag gaya, is message ko ignore karo.",
 ]
 
 # ---------------- SCAM (label 1) ----------------

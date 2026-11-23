@@ -11,7 +11,7 @@ import kotlin.math.pow
  * same tokenizer, same lexicon, same noisy-OR combination and thresholds, so a message
  * scored here gets the identical verdict it would get on the website.
  */
-data class LexEntry(val pattern: String, val cat: String, val hi: String, val en: String)
+data class LexEntry(val pattern: String, val cat: String, val hi: String, val en: String, val regex: Regex? = null)
 
 data class ClassifyResult(
     val verdict: String, // "scam" | "suspicious" | "genuine"
@@ -23,7 +23,18 @@ data class ClassifyResult(
 object Classifier {
 
     private val LEXICON = listOf(
-        LexEntry("otp", "otp", "OTP माँगना", "Asks for OTP"),
+        // Plain "otp" as a bare substring flagged every normal OTP-delivery message too
+        // ("Your OTP for transaction is 482917" is completely routine) — a real false positive
+        // caught in testing. Only flag it when the message actually asks the user to hand the
+        // OTP over, not when it's just delivering their own code to them. Kept identical to
+        // site/js/nb-model.js's fix for the same bug.
+        LexEntry(
+            "share otp", "otp", "OTP माँगना/साझा करने को कहा गया", "Asks you to share your OTP",
+            regex = Regex(
+                "\\b(share|send|sent|give|tell|provide|read\\s*out|bata|batao|bhej|bhejo|bolo|bol\\s*do)\\w*\\b[^.?!\\n]{0,25}\\botp\\b|\\botp\\b[^.?!\\n]{0,25}\\b(share|send|give|tell|provide|bata|batao|bhej|bhejo|bolo)\\w*\\b",
+                RegexOption.IGNORE_CASE
+            )
+        ),
         LexEntry("पिन", "otp", "पिन/OTP साझा करने को कहा गया", "Asks you to share PIN/OTP"),
         LexEntry("kyc", "kyc", "KYC अपडेट/ब्लॉक की धमकी", "KYC update/block threat"),
         LexEntry("केवाईसी", "kyc", "केवाईसी अपडेट की धमकी", "KYC update threat"),
@@ -130,7 +141,7 @@ object Classifier {
     }
 
     private fun lexiconHits(normSpaced: String): List<LexEntry> =
-        LEXICON.filter { normSpaced.contains(it.pattern) }
+        LEXICON.filter { entry -> entry.regex?.containsMatchIn(normSpaced) ?: normSpaced.contains(entry.pattern) }
 
     private fun nbProbability(norm: String): Double {
         val tokens = tokenize(norm)
