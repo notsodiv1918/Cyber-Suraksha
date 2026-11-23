@@ -174,6 +174,26 @@ meaningful change from here on** (the user asked for this explicitly) — `git a
 
 ## Change Log (newest first)
 
+- **Added photo/video upload to the Message Detector, with on-device OCR.** New "Upload photo /
+  video" button next to Check/Clear on `pages/detector.html`, backed by a new
+  `site/js/ocr-upload.js`. Images are OCR'd directly with Tesseract.js
+  (`eng+hin`); videos have up to 3 frames grabbed from a playing (muted, autoplaying) `<video>`
+  via `<canvas>` roughly 600ms apart, each OCR'd, then the recognized lines are deduped and
+  merged. Extracted text is dropped into `#msg-text` and `runCheck()` is called automatically, so
+  it flows straight into the same NB+lexicon classifier used for pasted text. Tesseract.js is
+  loaded from `cdn.jsdelivr.net` (pinned `tesseract.js@5.1.1`) — this is the one piece of the site
+  that needs an internet connection (one-time, to fetch the OCR engine + `eng`/`hin` language
+  data; the actual recognition and classification both still run on-device, nothing is uploaded
+  anywhere). Said so explicitly in the UI copy under the upload button.
+  **Bug found and fixed during testing**: the video path originally sought to fixed fractions of
+  `video.duration` (15%/50%/85%), but some recordings (confirmed with a `MediaRecorder`-captured
+  webm, which is a very plausible real "screen recording of a scam text" input) report an
+  unreliable/`Infinity` duration, so every seek silently failed and no frames were ever grabbed.
+  Rewrote it to capture frames by playing the video and grabbing whatever's on-screen every
+  ~600ms instead of seeking to duration-relative timestamps — verified end-to-end (image path and
+  video path both) by synthesizing a canvas-drawn test image/video with known scam text in the
+  browser and confirming the extracted text and the resulting verdict.
+
 - **Cycling stat tiles (the yellow/red/green boxes right under the hero) lightened.** `.cycle-tile
   .c1/.c2/.c3` backgrounds in `css/style.css` went from dark, muddy tones (`#9c8426` ochre,
   `#9c3240` brick red, `#43815a` forest green) to brighter, lighter ones (`#d9a62b` gold,

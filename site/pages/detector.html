@@ -68,7 +68,14 @@
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
             <button id="check-btn" class="btn btn-primary" data-en="Check message">मैसेज जाँचें</button>
             <button id="clear-btn" class="btn btn-outline" style="border-color:var(--text);color:var(--text);" data-en="Clear">साफ़ करें</button>
+            <button id="upload-btn" type="button" class="btn btn-outline" style="border-color:var(--text);color:var(--text);">
+              <svg class="icon"><use href="../assets/icons.svg?v=2#i-upload"></use></svg>
+              <span data-en="Upload photo / video">फ़ोटो / वीडियो अपलोड करें</span>
+            </button>
+            <input type="file" id="media-upload" accept="image/*,video/*" style="display:none;">
           </div>
+          <p class="hint" id="ocr-status" style="display:none;margin-top:10px;"></p>
+          <p class="hint" data-en="Upload a screenshot or a short video of the message — text is extracted on-device in your browser, then checked the same way as pasted text.">मैसेज का स्क्रीनशॉट या एक छोटा वीडियो अपलोड करें — टेक्स्ट आपके ब्राउज़र में ही निकाला जाता है, फिर पेस्ट किए गए टेक्स्ट की तरह जाँचा जाता है।</p>
           <div id="result-box" style="margin-top:20px;"></div>
         </div>
 
@@ -117,6 +124,8 @@
 
 <script src="../js/app.js"></script>
 <script src="../js/nb-model.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+<script src="../js/ocr-upload.js"></script>
 <script>
 var SAMPLES = [
   { hi: "प्रिय ग्राहक, आपका KYC अपडेट लंबित है। 10 मिनट में इस लिंक पर क्लिक कर अपडेट करें वरना खाता ब्लॉक हो जाएगा: http://bit.ly/kyc-update", en: "Dear customer, your KYC update is pending. Click this link within 10 minutes or your account will be blocked: http://bit.ly/kyc-update" },
