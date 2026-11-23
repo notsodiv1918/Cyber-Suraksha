@@ -650,6 +650,29 @@ body.text-xl{font-size:125%;}
   .flag-item.active{background:transparent;}
 }
 
+/* ---------- known scam call scripts: minimalist "case file" accordion ---------- */
+.script-file{border-top:1px solid var(--border);max-width:760px;}
+.script-row{border-bottom:1px solid var(--border);}
+.script-row-head{
+  width:100%;display:flex;align-items:center;gap:16px;padding:18px 6px;background:none;border:none;
+  cursor:pointer;text-align:left;font:inherit;
+}
+.script-row-head:hover{background:var(--bg);}
+.script-num{font-size:13px;font-weight:800;color:var(--text-muted);min-width:24px;flex:none;}
+.script-row-icon{color:var(--text-muted);flex:none;display:flex;transition:color .2s ease;}
+.script-row-icon .icon{width:20px;height:20px;}
+.script-row-title{flex:1;font-size:15.5px;font-weight:600;color:var(--text);}
+.script-chevron{width:16px;height:16px;color:var(--text-muted);transition:transform .25s ease,color .2s ease;flex:none;}
+.script-row.open .script-chevron{transform:rotate(90deg);color:var(--danger);}
+.script-row.open .script-row-icon{color:var(--danger);}
+.script-row.open .script-num{color:var(--danger);}
+.script-row-body{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.script-row-body p{margin:0 0 18px 64px;font-size:14px;color:var(--text-muted);line-height:1.6;max-width:600px;}
+.script-row.open .script-row-body{max-height:180px;}
+@media (max-width:640px){
+  .script-row-body p{margin-left:40px;}
+}
+
 /* ---------- "try it / file a complaint" CTA panels ---------- */
 .cta-panel{
   position:relative;overflow:hidden;padding:28px;border:1px solid var(--border);

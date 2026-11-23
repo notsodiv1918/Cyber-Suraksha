@@ -61,12 +61,13 @@
         <div class="icon"><svg class="icon"><use href="../assets/icons.svg?v=2#i-info"></use></svg></div>
         <div>
           <h3 data-en="How transcription works in the full app">पूर्ण ऐप में ट्रांसक्रिप्शन कैसे काम करता है</h3>
-          <p data-en="The production app would run an offline Hindi/English speech-to-text model (e.g. Vosk / whisper.cpp) on-device to transcribe a recorded call automatically, then run the same scam-script classifier shown below. Browser security prevents in-page apps from transcribing arbitrary audio files offline, so this prototype lets you paste or type the transcript directly — the detection logic itself is real and fully offline.">उत्पादन ऐप में डिवाइस पर ही एक ऑफ़लाइन हिन्दी/अंग्रेज़ी स्पीच-टू-टेक्स्ट मॉडल (जैसे Vosk / whisper.cpp) चलाकर रिकॉर्ड की गई कॉल को स्वतः ट्रांसक्राइब किया जाता, फिर नीचे दिखाया गया वही स्कैम-स्क्रिप्ट क्लासिफायर चलता। ब्राउज़र सुरक्षा के कारण इन-पेज ऐप किसी भी ऑडियो फ़ाइल को ऑफ़लाइन ट्रांसक्राइब नहीं कर सकते, इसलिए यह प्रोटोटाइप आपको ट्रांसक्रिप्ट सीधे पेस्ट/टाइप करने देता है — डिटेक्शन लॉजिक स्वयं वास्तविक व पूर्ण ऑफ़लाइन है।</p>
+          <p data-en="The production app would run an offline Hindi/English speech-to-text model (e.g. Vosk / whisper.cpp) on-device to transcribe a recorded call automatically, then run the same scam-script classifier shown below. Browser security prevents in-page apps from transcribing arbitrary audio files offline, so this prototype lets you upload the recording to play it back (or use live mic/paste), and type what's said — the detection logic itself is real and fully offline.">उत्पादन ऐप में डिवाइस पर ही एक ऑफ़लाइन हिन्दी/अंग्रेज़ी स्पीच-टू-टेक्स्ट मॉडल (जैसे Vosk / whisper.cpp) चलाकर रिकॉर्ड की गई कॉल को स्वतः ट्रांसक्राइब किया जाता, फिर नीचे दिखाया गया वही स्कैम-स्क्रिप्ट क्लासिफायर चलता। ब्राउज़र सुरक्षा के कारण इन-पेज ऐप किसी भी ऑडियो फ़ाइल को ऑफ़लाइन ट्रांसक्राइब नहीं कर सकते, इसलिए यह प्रोटोटाइप आपको रिकॉर्डिंग अपलोड कर सुनने (या लाइव माइक/पेस्ट का उपयोग करने) एवं जो कहा गया वह टाइप करने देता है — डिटेक्शन लॉजिक स्वयं वास्तविक व पूर्ण ऑफ़लाइन है।</p>
         </div>
       </div>
 
       <div class="tabs" data-group="call">
         <button class="tab-btn active" data-tab="panel-paste" data-en="Paste transcript">ट्रांसक्रिप्ट पेस्ट करें</button>
+        <button class="tab-btn" data-tab="panel-upload" data-en="Upload audio">ऑडियो अपलोड करें</button>
         <button class="tab-btn" data-tab="panel-mic" data-en="Try live mic (experimental)">लाइव माइक आज़माएँ (प्रायोगिक)</button>
       </div>
 
@@ -79,6 +80,20 @@
             </div>
             <button id="call-check-btn" class="btn btn-primary" data-en="Analyse transcript">ट्रांसक्रिप्ट जाँचें</button>
             <div id="call-result" style="margin-top:18px;"></div>
+          </div>
+          <div class="tab-panel card" id="panel-upload" data-group="call">
+            <p class="hint" data-en="Upload the recorded call (audio or video file). Play it back below, and type what the caller said into the box — then analyse it.">रिकॉर्ड की गई कॉल (ऑडियो या वीडियो फ़ाइल) अपलोड करें। नीचे इसे चलाएँ, और कॉलर ने जो कहा वह बॉक्स में टाइप करें — फिर जाँचें।</p>
+            <button id="call-upload-btn" type="button" class="btn btn-outline" style="border-color:var(--text);color:var(--text);">
+              <svg class="icon"><use href="../assets/icons.svg?v=2#i-upload"></use></svg>
+              <span data-en="Upload recording">रिकॉर्डिंग अपलोड करें</span>
+            </button>
+            <input type="file" id="call-audio-input" accept="audio/*,video/*" style="display:none;">
+            <audio id="call-audio-player" controls style="width:100%;margin-top:12px;display:none;"></audio>
+            <div class="field" style="margin-top:12px;">
+              <label for="upload-text" data-en="What the caller said (type while listening)">कॉलर ने क्या कहा (सुनते हुए टाइप करें)</label>
+              <textarea id="upload-text" rows="5" placeholder="रिकॉर्डिंग सुनें और यहाँ टाइप करें..." data-en-ph="Listen to the recording and type here..."></textarea>
+            </div>
+            <button id="upload-analyse-btn" class="btn btn-primary" data-en="Analyse this transcript">इस ट्रांसक्रिप्ट को जाँचें</button>
           </div>
           <div class="tab-panel card" id="panel-mic" data-group="call">
             <p data-en="This uses your browser's built-in speech recognition (needs mic permission and, in most browsers, an internet connection for the recognition service itself — it is a convenience demo, not the offline path).">यह आपके ब्राउज़र की अंतर्निहित स्पीच रिकग्निशन सुविधा का उपयोग करता है (माइक अनुमति चाहिए एवं अधिकतर ब्राउज़रों में रिकग्निशन सेवा हेतु इंटरनेट चाहिए — यह सुविधा डेमो है, ऑफ़लाइन मार्ग नहीं)।</p>
@@ -103,7 +118,7 @@
         <span class="eyebrow" data-en="KNOWN SCAM CALL SCRIPTS">ज्ञात स्कैम कॉल स्क्रिप्ट</span>
         <h2 data-en="Patterns mined from real cybercrime complaint data">असली साइबर शिकायत डेटा से निकाले गए पैटर्न</h2>
       </div></div>
-      <div class="grid cols-3" id="scripts-grid"></div>
+      <div class="script-file" id="scripts-grid"></div>
     </div>
   </section>
 </main>
@@ -169,6 +184,25 @@ document.getElementById('mic-analyse-btn').addEventListener('click', function(){
   analyseCall(document.getElementById('mic-text').value.trim(), document.getElementById('call-result'));
 });
 
+// Upload-a-recording panel: play the file back so the user can listen and type
+// what was said — browsers can't transcribe an arbitrary audio file offline
+// (Web Speech API only ever listens to the real microphone), so this keeps the
+// same honest, fully-offline classify step as the other two tabs.
+var callAudioInput = document.getElementById('call-audio-input');
+var callAudioPlayer = document.getElementById('call-audio-player');
+document.getElementById('call-upload-btn').addEventListener('click', function(){ callAudioInput.click(); });
+callAudioInput.addEventListener('change', function(){
+  var file = callAudioInput.files && callAudioInput.files[0];
+  if(!file) return;
+  var url = URL.createObjectURL(file);
+  callAudioPlayer.src = url;
+  callAudioPlayer.style.display = 'block';
+  callAudioPlayer.play().catch(function(){});
+});
+document.getElementById('upload-analyse-btn').addEventListener('click', function(){
+  analyseCall(document.getElementById('upload-text').value.trim(), document.getElementById('call-result'));
+});
+
 // Optional live mic demo via Web Speech API
 var micBtn = document.getElementById('mic-btn');
 var micStatus = document.getElementById('mic-status');
@@ -208,11 +242,23 @@ var SCRIPTS = [
 var sgrid = document.getElementById('scripts-grid');
 function renderScripts(lang){
   sgrid.innerHTML='';
-  SCRIPTS.forEach(function(s){
-    var div=document.createElement('div');
-    div.className='card';
-    div.innerHTML = '<div style="font-size:26px;">'+s.icon+'</div><h3 style="font-size:15.5px;margin:8px 0 6px;">'+(lang==='en'?s.en:s.hi)+'</h3><p style="font-size:13.5px;color:var(--text-muted);margin:0;">'+(lang==='en'?s.d_en:s.d_hi)+'</p>';
-    sgrid.appendChild(div);
+  SCRIPTS.forEach(function(s, i){
+    var row = document.createElement('div');
+    row.className = 'script-row' + (i===0 ? ' open' : '');
+    row.innerHTML =
+      '<button type="button" class="script-row-head">' +
+        '<span class="script-num">'+String(i+1).padStart(2,'0')+'</span>' +
+        '<span class="script-row-icon">'+s.icon+'</span>' +
+        '<span class="script-row-title">'+(lang==='en'?s.en:s.hi)+'</span>' +
+        '<svg class="icon script-chevron"><use href="../assets/icons.svg?v=2#i-chevron-right"></use></svg>' +
+      '</button>' +
+      '<div class="script-row-body"><p>'+(lang==='en'?s.d_en:s.d_hi)+'</p></div>';
+    row.querySelector('.script-row-head').addEventListener('click', function(){
+      var wasOpen = row.classList.contains('open');
+      sgrid.querySelectorAll('.script-row.open').forEach(function(r){ r.classList.remove('open'); });
+      if(!wasOpen) row.classList.add('open');
+    });
+    sgrid.appendChild(row);
   });
 }
 renderScripts(document.documentElement.lang);

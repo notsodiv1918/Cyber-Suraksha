@@ -174,6 +174,32 @@ meaningful change from here on** (the user asked for this explicitly) — `git a
 
 ## Change Log (newest first)
 
+- **Call Scam Detector: audio file upload + "known scam call scripts" redesigned as a minimalist
+  accordion.**
+  1. **Audio upload** (`pages/call-checker.html`): investigated whether an uploaded audio FILE
+     could be auto-transcribed in-browser before building anything. Tried the classic
+     "spoof `navigator.mediaDevices.getUserMedia` to feed a file's `MediaStreamAudioDestinationNode`
+     into `SpeechRecognition`" trick — **tested it for real** with a genuine synthesized-speech WAV
+     (via Windows SAPI/PowerShell `System.Speech`, not just a tone) and confirmed it does NOT work
+     in this Chromium build: `webkitSpeechRecognition.start()` triggers a real OS mic-permission
+     prompt regardless of the override, meaning Chrome's implementation doesn't actually route
+     through the page-overridable `getUserMedia` the way some blog posts claim. So there is no
+     reliable way to transcribe an arbitrary audio file offline in-browser (confirms what the
+     page's own disclaimer already said). Built the honest version instead: a third tab "Upload
+     audio" next to Paste/Live-mic, with a styled upload button (matching the detector page's own
+     photo/video upload button), an `<audio controls>` player for the uploaded file, and its own
+     transcript textarea + analyse button — upload plays back, user listens and types, same
+     `analyseCall()`/classifier path as the other two tabs. Verified the full pipeline end-to-end
+     with a synthetic WAV (built in-browser from an `OfflineAudioContext` + a hand-rolled WAV
+     encoder, since no test audio asset existed in the repo).
+  2. **"Known scam call scripts" section**: replaced the 6-box `.grid.cols-3` (same static-card
+     pattern as the old message-detector red-flags grid) with a single-column "case file" accordion
+     — numbered rows (`01`–`06`) with icon + title, one row open at a time showing its description,
+     danger-red accent (`var(--danger)`) on the open row's number/icon/chevron. Deliberately a
+     different interaction pattern from the message-detector's scroll-driven radial diagram (per
+     explicit instruction not to repeat that), while staying equally minimalist and using only
+     existing tokens (`var(--danger)`, `var(--border)`, `var(--text-muted)`, `var(--bg)`).
+
 - **Fixed the radial red-flags section getting cut off on wide/short windows.** The sticky panel
   had no height limit of its own, so on a wide-but-not-tall browser window (confirmed with the
   user's own 1920×~750 screenshot) the 460px-wide circle and the 12-item timeline both overflowed
