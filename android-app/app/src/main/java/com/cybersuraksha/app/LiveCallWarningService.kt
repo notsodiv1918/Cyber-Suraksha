@@ -15,6 +15,7 @@ import android.os.Looper
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 
@@ -40,6 +41,7 @@ class LiveCallWarningService : Service() {
         const val ACTION_STOP = "com.cybersuraksha.app.action.STOP_LIVE_WARNING"
         private const val FG_CHANNEL_ID = "live_call_warning_fg"
         private const val FG_NOTIF_ID = 2001
+        private const val TAG = "CyberSuraksha"
     }
 
     private var recognizer: SpeechRecognizer? = null
@@ -50,18 +52,26 @@ class LiveCallWarningService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
-            ACTION_STOP -> {
-                stopListening()
-                stopSelf()
+        Log.d(TAG, "LiveCallWarningService.onStartCommand action=${intent?.action}")
+        try {
+            when (intent?.action) {
+                ACTION_STOP -> {
+                    stopListening()
+                    stopSelf()
+                }
+                else -> startForegroundAndListen()
             }
-            else -> startForegroundAndListen()
+        } catch (e: Exception) {
+            Log.e(TAG, "onStartCommand failed", e)
         }
         return START_NOT_STICKY
     }
 
     private fun startForegroundAndListen() {
-        if (running) return
+        if (running) {
+            Log.d(TAG, "startForegroundAndListen: already running, ignoring")
+            return
+        }
         Classifier.load(this)
         ensureForegroundChannel()
         val notification = NotificationCompat.Builder(this, FG_CHANNEL_ID)
@@ -76,12 +86,15 @@ class LiveCallWarningService : Service() {
         } else {
             startForeground(FG_NOTIF_ID, notification)
         }
+        Log.d(TAG, "Foreground notification shown, checking permission/availability")
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            Log.w(TAG, "RECORD_AUDIO not granted, stopping")
             stopSelf()
             return
         }
         if (!SpeechRecognizer.isRecognitionAvailable(this)) {
+            Log.w(TAG, "SpeechRecognizer.isRecognitionAvailable() = false on this device")
             Notifier.notifyVerdict(this, T.liveWarningUnavailableTitle, T.liveWarningUnavailableBody, "suspicious")
             stopSelf()
             return
@@ -89,6 +102,7 @@ class LiveCallWarningService : Service() {
 
         running = true
         lastWarnedNormalized = ""
+        Log.d(TAG, "Starting continuous recognition loop")
         mainHandler.post { startRecognizer() }
     }
 
@@ -98,25 +112,26 @@ class LiveCallWarningService : Service() {
         val r = SpeechRecognizer.createSpeechRecognizer(this)
         recognizer = r
         r.setRecognitionListener(object : RecognitionListener {
-            override fun onReadyForSpeech(params: Bundle?) {}
-            override fun onBeginningOfSpeech() {}
+            override fun onReadyForSpeech(params: Bundle?) { Log.d(TAG, "onReadyForSpeech") }
+            override fun onBeginningOfSpeech() { Log.d(TAG, "onBeginningOfSpeech") }
             override fun onRmsChanged(rmsdB: Float) {}
             override fun onBufferReceived(buffer: ByteArray?) {}
-            override fun onEndOfSpeech() {}
+            override fun onEndOfSpeech() { Log.d(TAG, "onEndOfSpeech") }
             override fun onEvent(eventType: Int, params: Bundle?) {}
 
             override fun onPartialResults(partialResults: Bundle?) {
-                handleResults(partialResults)
+                handleResults(partialResults, partial = true)
             }
 
             override fun onResults(results: Bundle?) {
-                handleResults(results)
+                handleResults(results, partial = false)
                 restartSoon()
             }
 
             override fun onError(error: Int) {
                 // ERROR_NO_MATCH / ERROR_SPEECH_TIMEOUT are routine in a continuous loop —
                 // just restart. A short delay avoids a tight error loop on persistent failures.
+                Log.d(TAG, "onError code=$error (${errorName(error)})")
                 restartSoon()
             }
         })
@@ -130,8 +145,22 @@ class LiveCallWarningService : Service() {
         try {
             r.startListening(intent)
         } catch (e: Exception) {
+            Log.e(TAG, "startListening threw", e)
             restartSoon()
         }
+    }
+
+    private fun errorName(code: Int): String = when (code) {
+        SpeechRecognizer.ERROR_AUDIO -> "ERROR_AUDIO"
+        SpeechRecognizer.ERROR_CLIENT -> "ERROR_CLIENT"
+        SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> "ERROR_INSUFFICIENT_PERMISSIONS"
+        SpeechRecognizer.ERROR_NETWORK -> "ERROR_NETWORK"
+        SpeechRecognizer.ERROR_NETWORK_TIMEOUT -> "ERROR_NETWORK_TIMEOUT"
+        SpeechRecognizer.ERROR_NO_MATCH -> "ERROR_NO_MATCH"
+        SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> "ERROR_RECOGNIZER_BUSY"
+        SpeechRecognizer.ERROR_SERVER -> "ERROR_SERVER"
+        SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "ERROR_SPEECH_TIMEOUT"
+        else -> "UNKNOWN"
     }
 
     private fun restartSoon() {
@@ -139,17 +168,21 @@ class LiveCallWarningService : Service() {
         mainHandler.postDelayed({ startRecognizer() }, 400)
     }
 
-    private fun handleResults(bundle: Bundle?) {
-        val matches = bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) ?: return
-        val text = matches.firstOrNull()?.trim() ?: return
+    private fun handleResults(bundle: Bundle?, partial: Boolean) {
+        val matches = bundle?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+        val text = matches?.firstOrNull()?.trim()
+        Log.d(TAG, "handleResults partial=$partial text=${text ?: "(none)"}")
+        if (text.isNullOrEmpty()) return
         if (text.length < 8) return // too short to mean anything
         val normalized = text.lowercase()
         if (normalized == lastWarnedNormalized) return
 
         val result = Classifier.classify(text)
+        Log.d(TAG, "Classified '$text' as ${result.verdict} (${result.probability})")
         if (result.verdict == "scam" || (result.verdict == "suspicious" && result.hits.isNotEmpty())) {
             lastWarnedNormalized = normalized
             val typeLine = result.scamType?.let { " · " + T.categoryLabel(it) } ?: ""
+            Log.i(TAG, "SCAM DETECTED during live call — firing warning notification")
             Notifier.notifyVerdict(
                 this,
                 T.liveWarningAlertTitle,
@@ -161,6 +194,7 @@ class LiveCallWarningService : Service() {
     }
 
     private fun stopListening() {
+        Log.d(TAG, "stopListening")
         running = false
         mainHandler.removeCallbacksAndMessages(null)
         recognizer?.let {

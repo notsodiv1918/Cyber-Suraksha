@@ -21,9 +21,19 @@ class MoreActivity : AppCompatActivity() {
     private val requestCallRole = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         refreshStatus()
     }
-    private val requestMicPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        LiveCallWarning.setEnabled(this, granted)
-        b.liveWarningSwitch.isChecked = granted
+    private val requestLiveWarningPermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
+        // Live call warning needs BOTH: RECORD_AUDIO to listen, and READ_PHONE_STATE so the
+        // system will even deliver the PHONE_STATE broadcast that starts the listening service
+        // in the first place — without READ_PHONE_STATE the broadcast is silently never
+        // delivered at all, which was a real bug here (caught via a real on-device call test
+        // producing no warning, then confirmed via `adb shell dumpsys package`: READ_PHONE_STATE
+        // showed granted=false even though RECORD_AUDIO alone had been granted).
+        val allGranted = grants.values.all { it }
+        LiveCallWarning.setEnabled(this, allGranted)
+        refreshStatus()
+        if (!allGranted) {
+            Toast.makeText(this, T.liveWarningNeedsBothPerms, Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,19 +56,6 @@ class MoreActivity : AppCompatActivity() {
                 }
             } else {
                 Toast.makeText(this, "Needs Android 10+", Toast.LENGTH_LONG).show()
-            }
-        }
-
-        b.liveWarningSwitch.isChecked = LiveCallWarning.isEnabled(this)
-        b.liveWarningSwitch.setOnCheckedChangeListener { _, checked ->
-            if (checked) {
-                if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-                    LiveCallWarning.setEnabled(this, true)
-                } else {
-                    requestMicPermission.launch(android.Manifest.permission.RECORD_AUDIO)
-                }
-            } else {
-                LiveCallWarning.setEnabled(this, false)
             }
         }
 
@@ -100,7 +97,33 @@ class MoreActivity : AppCompatActivity() {
         b.callStatusText.text = if (callActive) T.callOn else T.callOff
         b.callEnableBtn.visibility = if (callActive) android.view.View.GONE else android.view.View.VISIBLE
         tintDot(b.callDot, callActive)
+
+        // Live call warning is only really "on" if both permissions are still actually granted —
+        // e.g. the user may have revoked one from system Settings since turning it on here.
+        val liveWarningReallyOn = LiveCallWarning.isEnabled(this) && hasLiveWarningPermissions()
+        if (liveWarningReallyOn != LiveCallWarning.isEnabled(this)) {
+            LiveCallWarning.setEnabled(this, false)
+        }
+        b.liveWarningSwitch.setOnCheckedChangeListener(null)
+        b.liveWarningSwitch.isChecked = liveWarningReallyOn
+        b.liveWarningSwitch.setOnCheckedChangeListener { _, checked ->
+            if (checked) {
+                if (hasLiveWarningPermissions()) {
+                    LiveCallWarning.setEnabled(this, true)
+                } else {
+                    requestLiveWarningPermissions.launch(
+                        arrayOf(android.Manifest.permission.RECORD_AUDIO, android.Manifest.permission.READ_PHONE_STATE)
+                    )
+                }
+            } else {
+                LiveCallWarning.setEnabled(this, false)
+            }
+        }
     }
+
+    private fun hasLiveWarningPermissions(): Boolean =
+        ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
 
     private fun tintDot(dot: android.view.View, on: Boolean) {
         val color = ContextCompat.getColor(this, if (on) R.color.safe else R.color.text_muted)

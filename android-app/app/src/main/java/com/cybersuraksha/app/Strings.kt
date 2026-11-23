@@ -303,6 +303,11 @@ object T {
         "ए कॉल के बेरा स्कैम के संकेत बर सुनत हे।"
     )
     val liveWarningAlertTitle get() = pick("Warning: this call sounds like a scam", "चेतावनी: यह कॉल स्कैम जैसा लगता है", "चेतावनी: ए कॉल स्कैम जइसे लगत हे")
+    val liveWarningNeedsBothPerms get() = pick(
+        "Needs both microphone and phone-state permission to work.",
+        "काम करने हेतु माइक्रोफ़ोन एवं फ़ोन-स्थिति दोनों अनुमतियाँ चाहिए।",
+        "काम करे बर माइक्रोफोन अउ फोन-स्थिति दूनों अनुमति चाही।"
+    )
     val liveWarningUnavailableTitle get() = pick("Live call warning unavailable", "लाइव कॉल चेतावनी उपलब्ध नहीं", "लाइव कॉल चेतावनी उपलब्ध नइहे")
     val liveWarningUnavailableBody get() = pick(
         "This device doesn't support on-device speech recognition.",

@@ -244,6 +244,49 @@ works" banner, report.html's share-box hint) rather than only here.
 
 ## Change Log (newest first)
 
+- **Fixed a real bug in live call warning: it never fired on an actual test call.** The user
+  made a real phone call, discussed OTP sharing on purpose, and got no warning notification —
+  only the pre-existing "unscreened" incoming-number log from `CallScreenService` (a separate,
+  already-working feature, which is why its own status row looked fine and was a red herring).
+  Diagnosed with `adb shell dumpsys package com.cybersuraksha.app`, not guesswork: found
+  `android.permission.READ_PHONE_STATE: granted=false`, even though `RECORD_AUDIO` had been
+  granted. **Root cause**: `MoreActivity`'s toggle only ever requested `RECORD_AUDIO` — it never
+  asked for `READ_PHONE_STATE` — and Android will not deliver the `PHONE_STATE` broadcast to an
+  app's manifest-registered receiver at all unless that app holds `READ_PHONE_STATE` at runtime
+  (this is OS enforcement, separate from the `<receiver android:permission=...>` attribute, which
+  only restricts *senders*, not the receiving app's own grant). So `CallStateReceiver` was never
+  invoked, `LiveCallWarningService` never started, and nothing could have fired regardless of
+  what was said on the call.
+  1. Fixed `MoreActivity` to request **both** `RECORD_AUDIO` and `READ_PHONE_STATE` together
+     (`RequestMultiplePermissions`) when the toggle is turned on, and only actually enable the
+     feature if both are granted.
+  2. Made the toggle **self-healing** on every `refreshStatus()` call (every `onResume`/language
+     switch): if the saved "enabled" flag is true but either permission has since been revoked
+     (e.g. from system Settings), it now flips itself back off and shows that honestly, instead
+     of silently claiming to be on while doing nothing — confirmed this by reinstalling with the
+     old single-permission state and watching the switch correctly show itself OFF on next
+     launch.
+  3. Added defensive `Log.d`/`Log.e` logging (tag `"CyberSuraksha"`) through the entire pipeline —
+     `CallStateReceiver.onReceive`, every `LiveCallWarningService` state transition, every
+     `SpeechRecognizer` callback including named error codes (`onError` now logs e.g.
+     `ERROR_NO_MATCH`/`ERROR_NETWORK`/`ERROR_INSUFFICIENT_PERMISSIONS` by name, not just a bare
+     int) — exactly the same "log everything so a silent failure shows up in logcat instead of
+     vanishing" convention `SmsReceiver.kt` already established for the real RCS-vs-SMS bug
+     earlier in this project. If anything *else* is still silently wrong, the next real-call test
+     should now surface it in logcat rather than requiring more guesswork.
+  4. **Verified the fix itself, not just the code**: reinstalled, confirmed via `dumpsys package`
+     that `READ_PHONE_STATE` was back to `granted=false` after a plain reinstall (permissions
+     aren't re-granted automatically), confirmed the toggle correctly showed itself OFF for that
+     reason, turned it on, confirmed the system permission dialog this time asks for phone-call
+     permission too (Android's own label for `READ_PHONE_STATE` is "make and manage phone
+     calls"), granted it, confirmed `dumpsys package` now shows `READ_PHONE_STATE: granted=true`,
+     and confirmed the toggle survives an app restart. **Not yet re-verified with another real
+     phone call** in this session (the fix was deployed and permission-checked, but the actual
+     live-call speech-recognition-and-warning path still needs a fresh real-call test now that
+     the permission gap is closed) — the user should retest with a real call and watch for the
+     warning notification; if it still doesn't fire, `adb logcat -s CyberSuraksha` during that
+     call will now show exactly which step failed instead of nothing.
+
 - **Follow-up polish on the Android redesign: fixed an uneven-height layout bug, reverted the
   rounded corners back to sharp (explicit user correction — the mockup's rounded look was only
   meant loosely, not literally), added photo/video OCR upload to the Message detector and audio
