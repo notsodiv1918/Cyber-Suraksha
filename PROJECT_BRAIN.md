@@ -244,6 +244,27 @@ works" banner, report.html's share-box hint) rather than only here.
 
 ## Change Log (newest first)
 
+- **Live call warning: fixed the first bug, found and documented a second one, then paused this
+  feature at the user's call ("we can do this later") to focus on easier wins.** After the
+  READ_PHONE_STATE fix below, a second real-call test still produced zero
+  `onCallStateChanged` log lines — despite confirming moments earlier, live on-device, that the
+  `PhoneStateListener` was correctly registered and actively connected to the telephony framework
+  (it fired an immediate `IDLE` callback on registration, and the foreground "watching" service
+  was confirmed still alive via `adb shell dumpsys activity services` both before and after the
+  call). So the listener registers and *can* receive callbacks, but didn't receive the real
+  call's state transitions. Leading hypothesis, not yet confirmed: this device
+  (`CPH2737`, MediaTek, ColorOS) is dual-SIM, and the default (non-subscription-specific)
+  `TelephonyManager.listen()` may only report state for one SIM slot/subscription — the standard
+  fix would be enumerating active subscriptions via `SubscriptionManager` and calling
+  `telephonyManager.createForSubscriptionId(subId).listen(...)` per SIM. Also possible: an OEM-
+  level restriction on delivering live `CALL_STATE` transitions to non-privileged apps regardless
+  of permission. **Left in place but unresolved** — the toggle, permission flow, and
+  always-on-while-enabled watcher service all work and fail safe (no crash, graceful permission
+  fallback), but the actual "warns you during a real call" behavior is not currently confirmed
+  working on this device and shouldn't be assumed to work elsewhere either. Next session should
+  start from the dual-SIM subscription theory above, with `adb shell dumpsys telephony.registry`
+  during a live call to see whether the listener's subscription actually matches the active call's.
+
 - **Fixed a real bug in live call warning: it never fired on an actual test call.** The user
   made a real phone call, discussed OTP sharing on purpose, and got no warning notification —
   only the pre-existing "unscreened" incoming-number log from `CallScreenService` (a separate,

@@ -103,6 +103,12 @@ class MoreActivity : AppCompatActivity() {
         val liveWarningReallyOn = LiveCallWarning.isEnabled(this) && hasLiveWarningPermissions()
         if (liveWarningReallyOn != LiveCallWarning.isEnabled(this)) {
             LiveCallWarning.setEnabled(this, false)
+        } else if (liveWarningReallyOn) {
+            // Re-assert the watcher service is actually running every time this screen is shown
+            // — harmless if it already is (the service itself is idempotent), but necessary
+            // because the saved "on" flag alone doesn't guarantee the service survived a process
+            // death (app update, force-stop, low-memory kill) between visits.
+            LiveCallWarning.setEnabled(this, true)
         }
         b.liveWarningSwitch.setOnCheckedChangeListener(null)
         b.liveWarningSwitch.isChecked = liveWarningReallyOn

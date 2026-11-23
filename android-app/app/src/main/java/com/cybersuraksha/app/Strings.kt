@@ -292,9 +292,15 @@ object T {
     val moreTitle get() = pick("More", "अधिक", "अउ")
     val liveCallWarningTitle get() = pick("Live call warning (beta)", "लाइव कॉल चेतावनी (बीटा)", "लाइव कॉल चेतावनी (बीटा)")
     val liveCallWarningDesc get() = pick(
-        "Listens through the mic during a call and warns you immediately if it sounds like a scam. Works best on speakerphone; may use mobile data if no offline voice pack is installed.",
-        "कॉल के दौरान माइक्रोफ़ोन से सुनता है और स्कैम जैसा लगने पर तुरंत चेतावनी देता है। स्पीकरफ़ोन पर सबसे बेहतर काम करता है; ऑफ़लाइन वॉइस पैक न होने पर मोबाइल डेटा उपयोग हो सकता है।",
-        "कॉल के बेरा माइक्रोफोन ले सुनथे अउ स्कैम जइसे लगे म तुरते चेतावनी देथे। स्पीकरफोन म सबले बने काम करथे; ऑफलाइन वॉइस पैक नइ रहे म मोबाइल डेटा लगे सकथे।"
+        "While on, keeps a low-priority notification running to reliably catch when a call starts (Android needs this for it to work at all). Listens through the mic during the call and warns you immediately if it sounds like a scam. Works best on speakerphone; may use mobile data if no offline voice pack is installed.",
+        "चालू रहने पर एक कम-प्राथमिकता वाली सूचना चलती रहती है ताकि कॉल शुरू होने का पता भरोसे से चल सके (एंड्रॉइड पर काम करने हेतु यह ज़रूरी है)। कॉल के दौरान माइक्रोफ़ोन से सुनता है और स्कैम जैसा लगने पर तुरंत चेतावनी देता है। स्पीकरफ़ोन पर सबसे बेहतर काम करता है; ऑफ़लाइन वॉइस पैक न होने पर मोबाइल डेटा उपयोग हो सकता है।",
+        "चालू रहे म एक कम-प्राथमिकता वाला सूचना चलत रहिथे ताकि कॉल सुरू होय के पता भरोसा ले चल सके (एंड्रॉइड म काम करे बर ए जरूरी हे)। कॉल के बेरा माइक्रोफोन ले सुनथे अउ स्कैम जइसे लगे म तुरते चेतावनी देथे। स्पीकरफोन म सबले बने काम करथे; ऑफलाइन वॉइस पैक नइ रहे म मोबाइल डेटा लगे सकथे।"
+    )
+    val liveWarningWatchingTitle get() = pick("Live call warning on", "लाइव कॉल चेतावनी चालू", "लाइव कॉल चेतावनी चालू")
+    val liveWarningWatchingBody get() = pick(
+        "Watching for the next call. Nothing is heard until a call starts.",
+        "अगली कॉल पर नज़र है। जब तक कॉल शुरू न हो, कुछ नहीं सुना जाता।",
+        "अगली कॉल म नजर हे। जब तक कॉल सुरू नइ होय, कुछू नइ सुने जाथे।"
     )
     val liveWarningActiveTitle get() = pick("Live call warning active", "लाइव कॉल चेतावनी सक्रिय", "लाइव कॉल चेतावनी सक्रिय")
     val liveWarningActiveBody get() = pick(

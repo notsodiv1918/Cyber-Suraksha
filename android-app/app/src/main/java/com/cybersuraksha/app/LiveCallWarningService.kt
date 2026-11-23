@@ -15,19 +15,38 @@ import android.os.Looper
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 
 /**
- * Opt-in "live call warning (beta)": while a call is active, listens through the normal
- * microphone (not the restricted in-call audio stream — Android blocks that for all apps on
- * modern SDKs) and runs Android's on-device-preferred SpeechRecognizer continuously, feeding
- * each recognized chunk through the same Classifier used everywhere else in the app. If a
- * chunk reads as a scam, it fires an urgent notification immediately, while the call is still
- * going — not after.
+ * Opt-in "live call warning (beta)".
  *
- * Honest limits, also stated in the More screen's toggle copy:
+ * **Real bug fixed here, found via an actual on-device call test**: the first version started
+ * this service from a *manifest-declared* BroadcastReceiver listening for
+ * `ACTION_PHONE_STATE_CHANGED`. That silently never fires on Android 8+ (API 26+, which this app
+ * targets) — manifest-registered receivers only get implicit broadcasts that are on a short OS
+ * exemption list, and `PHONE_STATE` is not on it. Confirmed by a real call producing *zero*
+ * `CyberSuraksha`-tagged log lines at all, not even the unconditional one the old receiver logged
+ * on every invocation — proof the receiver was never invoked, not just that something inside it
+ * failed. The fix: this service is now started directly (by MoreActivity) the moment the toggle
+ * is switched on — not waiting for a call — and registers a `PhoneStateListener` **dynamically**
+ * via `TelephonyManager.listen()` from inside itself. A live, already-registered listener like
+ * this is a direct callback subscription to the telephony framework, not an implicit broadcast,
+ * so it isn't subject to that restriction — this is the same reliable mechanism real call-
+ * management apps use. The honest cost: a persistent low-priority "watching for calls"
+ * notification stays up the whole time the toggle is on, not just during a call — stated in the
+ * toggle's own description.
+ *
+ * Once a call goes active, listens through the normal microphone (not the restricted in-call
+ * audio stream — Android blocks that for all apps on modern SDKs) and runs Android's on-device-
+ * preferred SpeechRecognizer continuously, feeding each recognized chunk through the same
+ * Classifier used everywhere else in the app. If a chunk reads as a scam, it fires an urgent
+ * notification immediately, while the call is still going — not after.
+ *
+ * Other honest limits, also stated in the More screen's toggle copy:
  *  - Works well mainly on speakerphone; held to the ear, the mic mostly hears the user's own
  *    voice, not the caller's.
  *  - SpeechRecognizer prefers on-device/offline recognition when the device has an offline
@@ -47,7 +66,10 @@ class LiveCallWarningService : Service() {
     private var recognizer: SpeechRecognizer? = null
     private val mainHandler = Handler(Looper.getMainLooper())
     private var lastWarnedNormalized: String = ""
-    private var running = false
+    private var listening = false // actively running the SpeechRecognizer loop (call is active)
+    private var watching = false  // the PhoneStateListener is registered (toggle is on)
+    private var telephonyManager: TelephonyManager? = null
+    private var phoneStateListener: PhoneStateListener? = null
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -55,59 +77,105 @@ class LiveCallWarningService : Service() {
         Log.d(TAG, "LiveCallWarningService.onStartCommand action=${intent?.action}")
         try {
             when (intent?.action) {
-                ACTION_STOP -> {
-                    stopListening()
-                    stopSelf()
-                }
-                else -> startForegroundAndListen()
+                ACTION_STOP -> stopWatching()
+                else -> startWatching()
             }
         } catch (e: Exception) {
             Log.e(TAG, "onStartCommand failed", e)
         }
-        return START_NOT_STICKY
+        return START_STICKY
     }
 
-    private fun startForegroundAndListen() {
-        if (running) {
-            Log.d(TAG, "startForegroundAndListen: already running, ignoring")
+    private fun startWatching() {
+        if (watching) {
+            Log.d(TAG, "startWatching: already watching, ignoring")
             return
         }
         Classifier.load(this)
         ensureForegroundChannel()
-        val notification = NotificationCompat.Builder(this, FG_CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-            .setContentTitle(T.liveWarningActiveTitle)
-            .setContentText(T.liveWarningActiveBody)
-            .setOngoing(true)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .build()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(FG_NOTIF_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE)
-        } else {
-            startForeground(FG_NOTIF_ID, notification)
-        }
-        Log.d(TAG, "Foreground notification shown, checking permission/availability")
+        showNotification(active = false)
 
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            Log.w(TAG, "RECORD_AUDIO not granted, stopping")
-            stopSelf()
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
+        ) {
+            Log.w(TAG, "Missing RECORD_AUDIO or READ_PHONE_STATE, stopping")
+            stopWatching()
             return
         }
+
+        watching = true
+        val tm = getSystemService(TELEPHONY_SERVICE) as TelephonyManager
+        telephonyManager = tm
+        val listener = object : PhoneStateListener() {
+            override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+                val name = when (state) {
+                    TelephonyManager.CALL_STATE_IDLE -> "IDLE"
+                    TelephonyManager.CALL_STATE_RINGING -> "RINGING"
+                    TelephonyManager.CALL_STATE_OFFHOOK -> "OFFHOOK"
+                    else -> "UNKNOWN($state)"
+                }
+                Log.d(TAG, "onCallStateChanged -> $name")
+                when (state) {
+                    TelephonyManager.CALL_STATE_OFFHOOK -> startListeningLoop()
+                    TelephonyManager.CALL_STATE_IDLE -> stopListeningLoop()
+                }
+            }
+        }
+        phoneStateListener = listener
+        try {
+            @Suppress("DEPRECATION")
+            tm.listen(listener, PhoneStateListener.LISTEN_CALL_STATE)
+            Log.i(TAG, "PhoneStateListener registered — now watching for calls")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to register PhoneStateListener", e)
+            stopWatching()
+        }
+    }
+
+    private fun stopWatching() {
+        Log.d(TAG, "stopWatching")
+        stopListeningLoop()
+        watching = false
+        try {
+            @Suppress("DEPRECATION")
+            phoneStateListener?.let { telephonyManager?.listen(it, PhoneStateListener.LISTEN_NONE) }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to unregister PhoneStateListener", e)
+        }
+        phoneStateListener = null
+        telephonyManager = null
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
+    }
+
+    private fun startListeningLoop() {
+        if (listening) return
         if (!SpeechRecognizer.isRecognitionAvailable(this)) {
             Log.w(TAG, "SpeechRecognizer.isRecognitionAvailable() = false on this device")
             Notifier.notifyVerdict(this, T.liveWarningUnavailableTitle, T.liveWarningUnavailableBody, "suspicious")
-            stopSelf()
             return
         }
-
-        running = true
+        Log.i(TAG, "Call active — starting live speech recognition")
+        listening = true
         lastWarnedNormalized = ""
-        Log.d(TAG, "Starting continuous recognition loop")
+        showNotification(active = true)
         mainHandler.post { startRecognizer() }
     }
 
+    private fun stopListeningLoop() {
+        if (!listening) return
+        Log.d(TAG, "Call ended — stopping live speech recognition")
+        listening = false
+        mainHandler.removeCallbacksAndMessages(null)
+        recognizer?.let {
+            try { it.stopListening(); it.destroy() } catch (e: Exception) {}
+        }
+        recognizer = null
+        if (watching) showNotification(active = false)
+    }
+
     private fun startRecognizer() {
-        if (!running) return
+        if (!listening) return
         recognizer?.destroy()
         val r = SpeechRecognizer.createSpeechRecognizer(this)
         recognizer = r
@@ -164,7 +232,7 @@ class LiveCallWarningService : Service() {
     }
 
     private fun restartSoon() {
-        if (!running) return
+        if (!listening) return
         mainHandler.postDelayed({ startRecognizer() }, 400)
     }
 
@@ -193,14 +261,19 @@ class LiveCallWarningService : Service() {
         }
     }
 
-    private fun stopListening() {
-        Log.d(TAG, "stopListening")
-        running = false
-        mainHandler.removeCallbacksAndMessages(null)
-        recognizer?.let {
-            try { it.stopListening(); it.destroy() } catch (e: Exception) {}
+    private fun showNotification(active: Boolean) {
+        val notification = NotificationCompat.Builder(this, FG_CHANNEL_ID)
+            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setContentTitle(if (active) T.liveWarningActiveTitle else T.liveWarningWatchingTitle)
+            .setContentText(if (active) T.liveWarningActiveBody else T.liveWarningWatchingBody)
+            .setOngoing(true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(FG_NOTIF_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE)
+        } else {
+            startForeground(FG_NOTIF_ID, notification)
         }
-        recognizer = null
     }
 
     private fun ensureForegroundChannel() {
@@ -208,7 +281,7 @@ class LiveCallWarningService : Service() {
             val mgr = getSystemService(NotificationManager::class.java)
             if (mgr.getNotificationChannel(FG_CHANNEL_ID) == null) {
                 val ch = NotificationChannel(FG_CHANNEL_ID, "Live call warning", NotificationManager.IMPORTANCE_LOW)
-                ch.description = "Shows while live call warning (beta) is actively listening"
+                ch.description = "Shows while live call warning (beta) is on, watching for calls"
                 mgr.createNotificationChannel(ch)
             }
         }
@@ -216,6 +289,10 @@ class LiveCallWarningService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        stopListening()
+        stopListeningLoop()
+        try {
+            @Suppress("DEPRECATION")
+            phoneStateListener?.let { telephonyManager?.listen(it, PhoneStateListener.LISTEN_NONE) }
+        } catch (e: Exception) {}
     }
 }
