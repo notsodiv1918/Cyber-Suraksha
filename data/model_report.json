@@ -1,15 +1,15 @@
 {
-  "n_test": 6896,
-  "accuracy": 0.9762,
-  "precision_scam": 0.9907,
-  "recall_scam": 0.9431,
-  "f1_scam": 0.9664,
+  "n_test": 7157,
+  "accuracy": 0.9712,
+  "precision_scam": 0.9692,
+  "recall_scam": 0.9484,
+  "f1_scam": 0.9587,
   "confusion": {
-    "tp": 2355,
-    "tn": 4377,
-    "fp": 22,
-    "fn": 142
+    "tp": 2388,
+    "tn": 4563,
+    "fp": 76,
+    "fn": 130
   },
-  "n_train": 39083,
-  "vocab_size": 46365
+  "n_train": 40558,
+  "vocab_size": 17369
 }

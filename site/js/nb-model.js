@@ -129,16 +129,16 @@ could please dear not so if but just now your u ur
   }
 
   function tokenize(norm) {
+    // Char-4-gram augmentation (used to help generalise across Hinglish spelling
+    // variants) turned out to be the main driver of a systemic false-positive bug:
+    // every word longer than 4 chars added several correlated sub-tokens, all voting
+    // toward whichever class has broader raw-corpus vocabulary coverage — which for us
+    // is "scam" (the genuine class is narrow transactional boilerplate). A plain 10-word
+    // casual sentence compounded into 20-30 extra tokens all pulling the same way,
+    // pinning probability to ~1.0 regardless of how much genuine training data was added.
+    // Plain word tokens only now — the lexicon regexes already catch keyword variants.
     if (!norm) return [];
-    const words = norm.split(" ").filter((w) => w && !STOPWORDS.has(w));
-    const grams = [];
-    for (const w of words) grams.push(w);
-    // char 4-grams help generalise across Hinglish spelling variants
-    for (const w of words) {
-      if (w.length <= 4) continue;
-      for (let i = 0; i + 4 <= w.length; i++) grams.push("#" + w.slice(i, i + 4));
-    }
-    return grams;
+    return norm.split(" ").filter((w) => w && !STOPWORDS.has(w));
   }
 
   function lexiconHits(normText) {
@@ -197,8 +197,8 @@ could please dear not so if but just now your u ur
     // keep the original, more sensitive thresholds when a real red-flag phrase
     // backs the verdict up.
     const hasLexiconSupport = hits.length > 0;
-    const scamThreshold = hasLexiconSupport ? 0.6 : 0.85;
-    const suspiciousThreshold = hasLexiconSupport ? 0.3 : 0.5;
+    const scamThreshold = hasLexiconSupport ? 0.6 : 0.97;
+    const suspiciousThreshold = hasLexiconSupport ? 0.3 : 0.65;
 
     let verdict = "genuine";
     if (prob >= scamThreshold) verdict = "scam";

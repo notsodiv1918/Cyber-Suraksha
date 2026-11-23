@@ -52,17 +52,19 @@ def normalise(text):
 
 
 def tokenize(norm):
+    # Char-4-gram augmentation (kept until now to catch misspelled/obfuscated scam
+    # keywords) turned out to be the main driver of the systemic vocabulary-skew bug:
+    # every word longer than 4 chars added several correlated sub-tokens, all pulling
+    # toward whichever class has broader raw-corpus coverage — which for us is "scam"
+    # (the ham class is narrow transactional boilerplate). For a 10-word casual sentence
+    # this compounded into 20-30 extra tokens all voting the same way, overwhelming any
+    # amount of added genuine training data (confirmed: log-odds diffs of 12-25 on plain
+    # everyday sentences, enough to pin probability to 1.0 regardless of threshold).
+    # Plain word tokens only — the lexicon regexes already catch scam-keyword variants.
     if not norm:
         return []
     words = norm.split(" ")
-    words = [w for w in words if w and w not in STOPWORDS]
-    grams = list(words)
-    for w in words:
-        if len(w) <= 4:
-            continue
-        for i in range(0, len(w) - 3):
-            grams.append("#" + w[i:i + 4])
-    return grams
+    return [w for w in words if w and w not in STOPWORDS]
 
 
 def load_jsonl(name):

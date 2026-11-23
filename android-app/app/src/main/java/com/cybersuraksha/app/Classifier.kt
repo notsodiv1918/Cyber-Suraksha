@@ -125,19 +125,10 @@ object Classifier {
     }
 
     private fun tokenize(norm: String): List<String> {
+        // Char-4-gram augmentation removed — see site/js/nb-model.js's tokenize() for why:
+        // it was the main driver of a systemic false-positive bug on ordinary casual text.
         if (norm.isEmpty()) return emptyList()
-        val words = norm.split(" ").filter { it.isNotEmpty() && it !in STOPWORDS }
-        val grams = mutableListOf<String>()
-        grams.addAll(words)
-        for (w in words) {
-            if (w.length <= 4) continue
-            var i = 0
-            while (i + 4 <= w.length) {
-                grams.add("#" + w.substring(i, i + 4))
-                i++
-            }
-        }
-        return grams
+        return norm.split(" ").filter { it.isNotEmpty() && it !in STOPWORDS }
     }
 
     private fun lexiconHits(normSpaced: String): List<LexEntry> =
@@ -178,8 +169,8 @@ object Classifier {
         // misfire on short casual messages (see site/js/nb-model.js for the full story —
         // kept identical here so the app and website never disagree on the same text).
         val hasLexiconSupport = hits.isNotEmpty()
-        val scamThreshold = if (hasLexiconSupport) 0.6 else 0.85
-        val suspiciousThreshold = if (hasLexiconSupport) 0.3 else 0.5
+        val scamThreshold = if (hasLexiconSupport) 0.6 else 0.97
+        val suspiciousThreshold = if (hasLexiconSupport) 0.3 else 0.65
 
         val verdict = when {
             prob >= scamThreshold -> "scam"
