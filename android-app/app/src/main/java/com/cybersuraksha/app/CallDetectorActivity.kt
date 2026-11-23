@@ -2,6 +2,8 @@ package com.cybersuraksha.app
 
 import android.content.Intent
 import android.graphics.drawable.GradientDrawable
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
@@ -11,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.cybersuraksha.app.databinding.ActivityCallDetectorBinding
@@ -22,6 +25,13 @@ class CallDetectorActivity : AppCompatActivity() {
     private lateinit var b: ActivityCallDetectorBinding
     private var lastResult: ClassifyResult? = null
     private var rememberedText: String = ""
+    private var mediaPlayer: MediaPlayer? = null
+    private lateinit var swipeDetector: android.view.GestureDetector
+
+    private val pickAudio = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val uri = result.data?.data
+        if (result.resultCode == RESULT_OK && uri != null) setupAudio(uri)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,10 +58,18 @@ class CallDetectorActivity : AppCompatActivity() {
             b.messageInput.setText("")
             showInput()
         }
+        b.uploadBtn.setOnClickListener { launchAudioPicker() }
+        b.audioPlayBtn.setOnClickListener { toggleAudioPlayback() }
 
+        swipeDetector = DetectTabs.gestureDetector(this, DetectTabs.Tab.CALL)
         buildSamples()
         applyLanguage()
         showInput()
+    }
+
+    override fun dispatchTouchEvent(ev: android.view.MotionEvent): Boolean {
+        swipeDetector.onTouchEvent(ev)
+        return super.dispatchTouchEvent(ev)
     }
 
     override fun onResume() {
@@ -74,12 +92,15 @@ class CallDetectorActivity : AppCompatActivity() {
         b.messageInput.hint = T.callPlaceholder
         b.charCountText.text = "${b.messageInput.text?.length ?: 0}/$CALL_MAX_LEN"
         b.checkBtnText.text = T.checkCallBtn
+        b.uploadBtnText.text = T.uploadAudio
+        b.audioHintText.text = T.audioPlayHint
         b.trySampleLabel.text = T.trySampleCall
         b.historyLabel.text = T.historyCalls
         b.reportBtnText.text = T.reportThis
         b.checkAnotherBtnText.text = T.checkAnother
         b.onDeviceNoteText.text = T.onDeviceNote
         buildSamples()
+        DetectTabs.buildRow(this, b.detectTabRow, DetectTabs.Tab.CALL)
         lastResult?.let { showResult(it) }
         NavBar.wire(this, b.navBottom.root, NavBar.Tab.DETECT)
         renderHistory()
@@ -126,6 +147,55 @@ class CallDetectorActivity : AppCompatActivity() {
             runCheck()
         }
         return row
+    }
+
+    private fun launchAudioPicker() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "audio/*"
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        pickAudio.launch(Intent.createChooser(intent, T.uploadAudio))
+    }
+
+    private fun setupAudio(uri: Uri) {
+        releaseAudio()
+        mediaPlayer = MediaPlayer().apply {
+            try {
+                setDataSource(this@CallDetectorActivity, uri)
+                prepare()
+                setOnCompletionListener { b.audioPlayBtnText.text = "▶" }
+            } catch (e: Exception) {
+                mediaPlayer = null
+            }
+        }
+        b.audioPlayerCard.visibility = View.VISIBLE
+        b.audioPlayBtnText.text = "▶"
+    }
+
+    private fun toggleAudioPlayback() {
+        val mp = mediaPlayer ?: return
+        if (mp.isPlaying) {
+            mp.pause()
+            b.audioPlayBtnText.text = "▶"
+        } else {
+            mp.start()
+            b.audioPlayBtnText.text = "❚❚"
+        }
+    }
+
+    private fun releaseAudio() {
+        mediaPlayer?.release()
+        mediaPlayer = null
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mediaPlayer?.takeIf { it.isPlaying }?.pause()
+        b.audioPlayBtnText.text = "▶"
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        releaseAudio()
     }
 
     private fun runCheck() {

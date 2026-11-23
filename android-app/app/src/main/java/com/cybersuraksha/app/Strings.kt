@@ -175,6 +175,21 @@ object T {
         "कॉलर जे कहिस ओ जतका याद हे, पेस्ट या टाइप करव।"
     )
     val callPlaceholder get() = pick("Type the call transcript here...", "यहाँ कॉल का विवरण टाइप करें...", "इहाँ कॉल के बात टाइप करव...")
+    val uploadPhotoVideo get() = pick("Upload photo / video", "फोटो / वीडियो अपलोड करें", "फोटो / वीडियो अपलोड करव")
+    val ocrRunning get() = pick("Reading text from the file…", "फ़ाइल से टेक्स्ट पढ़ा जा रहा है…", "फाइल ले टेक्स्ट पढ़े जात हे…")
+    val ocrNoText get() = pick(
+        "No readable text found in that file. Try a clearer photo.",
+        "इस फ़ाइल में कोई पठनीय टेक्स्ट नहीं मिला। बेहतर फ़ोटो आज़माएँ।",
+        "ए फाइल म कोनो पढ़े जाय वाला टेक्स्ट नइ मिलिस। बने फोटो आजमाव।"
+    )
+    val uploadAudio get() = pick("Upload call recording", "कॉल रिकॉर्डिंग अपलोड करें", "कॉल रिकॉर्डिंग अपलोड करव")
+    val audioPlayHint get() = pick(
+        "Listen to the recording, then type what the caller said below.",
+        "रिकॉर्डिंग सुनें, फिर नीचे कॉलर ने जो कहा वह टाइप करें।",
+        "रिकॉर्डिंग सुनव, फिर तरी कॉलर जे कहिस ओ टाइप करव।"
+    )
+    val audioPlay get() = pick("Play", "चलाएँ", "चलाव")
+    val audioPause get() = pick("Pause", "रोकें", "रोकव")
     val trySample get() = pick("Try a sample message", "उदाहरण मैसेज आज़माएँ", "उदाहरण मैसेज आजमाव")
     val trySampleCall get() = pick("Try a sample call script", "उदाहरण कॉल स्क्रिप्ट आज़माएँ", "उदाहरण कॉल स्क्रिप्ट आजमाव")
     val charCount get() = pick("characters", "अक्षर", "अक्षर")

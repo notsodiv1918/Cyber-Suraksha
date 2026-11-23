@@ -65,6 +65,15 @@
             android:textSize="13sp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/detectTabRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="10dp" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"

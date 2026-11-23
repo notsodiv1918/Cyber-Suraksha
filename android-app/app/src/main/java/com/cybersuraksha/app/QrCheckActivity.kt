@@ -41,6 +41,7 @@ class QrCheckActivity : AppCompatActivity() {
     private var cameraProvider: ProcessCameraProvider? = null
     private val scanning = AtomicBoolean(false)
     private val decodeHandled = AtomicBoolean(false)
+    private lateinit var swipeDetector: android.view.GestureDetector
 
     private val requestCameraPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) startCamera() else {
@@ -72,9 +73,15 @@ class QrCheckActivity : AppCompatActivity() {
         b.camStopBtn.setOnClickListener { stopCamera() }
         b.uploadBtn.setOnClickListener { pickImage.launch("image/*") }
 
+        swipeDetector = DetectTabs.gestureDetector(this, DetectTabs.Tab.QR)
         NavBar.wire(this, b.navBottom.root, NavBar.Tab.NONE)
         applyLanguage()
         showTab(camera = true)
+    }
+
+    override fun dispatchTouchEvent(ev: android.view.MotionEvent): Boolean {
+        swipeDetector.onTouchEvent(ev)
+        return super.dispatchTouchEvent(ev)
     }
 
     override fun onResume() {
@@ -93,6 +100,7 @@ class QrCheckActivity : AppCompatActivity() {
         b.uploadBtn.text = T.qrUploadBtn
         b.qrScanHintText.text = T.qrScanHint
         b.historyLabel.text = T.historyQr
+        DetectTabs.buildRow(this, b.detectTabRow, DetectTabs.Tab.QR)
         NavBar.wire(this, b.navBottom.root, NavBar.Tab.NONE)
         renderHistory()
     }

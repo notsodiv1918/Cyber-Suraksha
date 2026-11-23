@@ -48,4 +48,10 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
     implementation "androidx.camera:camera-view:$camerax_version"
     implementation 'com.google.mlkit:barcode-scanning:17.3.0'
+
+    // Message detector photo/video upload: on-device OCR (bundled model, no network),
+    // same offline guarantee as the QR barcode scanner above. Latin + Devanagari scripts
+    // to match the site's Tesseract eng+hin OCR coverage.
+    implementation 'com.google.mlkit:text-recognition:16.0.1'
+    implementation 'com.google.mlkit:text-recognition-devanagari:16.0.1'
 }

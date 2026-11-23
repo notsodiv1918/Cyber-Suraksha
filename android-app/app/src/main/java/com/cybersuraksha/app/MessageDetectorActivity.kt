@@ -2,7 +2,10 @@ package com.cybersuraksha.app
 
 import android.content.Intent
 import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
@@ -11,9 +14,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.cybersuraksha.app.databinding.ActivityMessageDetectorBinding
+import java.util.concurrent.Executors
 
 private const val MAX_LEN = 500
 
@@ -21,6 +26,14 @@ class MessageDetectorActivity : AppCompatActivity() {
 
     private lateinit var b: ActivityMessageDetectorBinding
     private var lastResult: ClassifyResult? = null
+    private val ocrExecutor = Executors.newSingleThreadExecutor()
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private lateinit var swipeDetector: android.view.GestureDetector
+
+    private val pickMedia = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val uri = result.data?.data
+        if (result.resultCode == RESULT_OK && uri != null) runOcr(uri)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +60,17 @@ class MessageDetectorActivity : AppCompatActivity() {
             b.messageInput.setText("")
             showInput()
         }
+        b.uploadBtn.setOnClickListener { launchMediaPicker() }
 
+        swipeDetector = DetectTabs.gestureDetector(this, DetectTabs.Tab.MESSAGE)
         buildSamples()
         applyLanguage()
         showInput()
+    }
+
+    override fun dispatchTouchEvent(ev: android.view.MotionEvent): Boolean {
+        swipeDetector.onTouchEvent(ev)
+        return super.dispatchTouchEvent(ev)
     }
 
     override fun onResume() {
@@ -73,12 +93,14 @@ class MessageDetectorActivity : AppCompatActivity() {
         b.messageInput.hint = T.msgPlaceholder
         b.charCountText.text = "${b.messageInput.text?.length ?: 0}/$MAX_LEN"
         b.checkBtnText.text = T.checkBtn
+        b.uploadBtnText.text = T.uploadPhotoVideo
         b.trySampleLabel.text = T.trySample
         b.historyLabel.text = T.historyMessages
         b.reportBtnText.text = T.reportThis
         b.checkAnotherBtnText.text = T.checkAnother
         b.onDeviceNoteText.text = T.onDeviceNote
         buildSamples()
+        DetectTabs.buildRow(this, b.detectTabRow, DetectTabs.Tab.MESSAGE)
         lastResult?.let { showResult(it, rememberedText) }
         NavBar.wire(this, b.navBottom.root, NavBar.Tab.DETECT)
         renderHistory()
@@ -127,6 +149,35 @@ class MessageDetectorActivity : AppCompatActivity() {
             runCheck()
         }
         return row
+    }
+
+    private fun launchMediaPicker() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "*/*"
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*"))
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        pickMedia.launch(Intent.createChooser(intent, T.uploadPhotoVideo))
+    }
+
+    private fun runOcr(uri: Uri) {
+        val mimeType = contentResolver.getType(uri) ?: ""
+        b.uploadStatusText.visibility = View.VISIBLE
+        b.uploadStatusText.text = T.ocrRunning
+        ocrExecutor.execute {
+            val text = try {
+                if (mimeType.startsWith("video")) OcrUpload.recognizeVideo(this, uri)
+                else OcrUpload.recognizeImage(this, uri)
+            } catch (e: Exception) { "" }
+            mainHandler.post {
+                if (text.isBlank()) {
+                    b.uploadStatusText.text = T.ocrNoText
+                } else {
+                    b.uploadStatusText.visibility = View.GONE
+                    b.messageInput.setText(text.take(MAX_LEN))
+                    runCheck()
+                }
+            }
+        }
     }
 
     private fun runCheck() {
@@ -199,6 +250,11 @@ class MessageDetectorActivity : AppCompatActivity() {
 
     private fun renderHistory() {
         HistoryView.render(this, b.historyList, setOf("sms", "message"), T.emptyHistoryMessages)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ocrExecutor.shutdown()
     }
 
     private data class Quad(val text: String, val fg: Int, val bg: Int, val icon: Int)

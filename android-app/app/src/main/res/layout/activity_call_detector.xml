@@ -49,6 +49,15 @@
             android:fontFamily="sans-serif-medium" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/detectTabRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="10dp" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -111,6 +120,75 @@
                         android:text="Paste any SMS, WhatsApp message or link below."
                         android:textColor="@color/text_muted"
                         android:textSize="13sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/uploadBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/bg_btn_outline_green"
+                    android:layout_marginBottom="10dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_upload"
+                        android:tint="@color/primary"
+                        android:contentDescription="@null" />
+
+                    <TextView
+                        android:id="@+id/uploadBtnText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Upload call recording"
+                        android:textColor="@color/primary"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="13.5sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/audioPlayerCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_card_round_blue"
+                    android:padding="12dp"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:id="@+id/audioPlayBtn"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_btn_primary_green"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <TextView
+                            android:id="@+id/audioPlayBtnText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="▶"
+                            android:textColor="@color/white"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/audioHintText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:text="Listen to the recording, then type what the caller said below."
+                        android:textColor="@color/text_main"
+                        android:textSize="12.5sp" />
                 </LinearLayout>
 
                 <FrameLayout

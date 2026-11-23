@@ -174,6 +174,62 @@ meaningful change from here on** (the user asked for this explicitly) — `git a
 
 ## Change Log (newest first)
 
+- **Follow-up polish on the Android redesign: fixed an uneven-height layout bug, reverted the
+  rounded corners back to sharp (explicit user correction — the mockup's rounded look was only
+  meant loosely, not literally), added photo/video OCR upload to the Message detector and audio
+  upload to the Call detector (parity with the website's existing upload features), and merged
+  Message/Call/QR into a swipeable tab strip with slide transitions.**
+  1. **Equal-height card bug, with a real root cause**: the user circled a visible gap of raw
+     background showing through below the shorter "Check Call" card next to the taller "Check
+     Message" card (their description text wraps to different line counts). Root cause: both
+     cards sat in a horizontal `LinearLayout` with `layout_height="wrap_content"` on each child, so
+     each card's height came from its own content instead of stretching to match its sibling.
+     Fixed using the standard LinearLayout equal-height-columns technique — changed each card's
+     `android:layout_height` from `wrap_content` to `match_parent` (not the weight, which only
+     distributes width here) so both are stretched to the tallest sibling's natural height. Applied
+     the same fix to the Report/Learn/Trends 3-column row for the same latent risk.
+  2. **Sharp corners, explicit reversal of the mockup-rounded style**: the user clarified they want
+     "no curve at the end of the boxes" this time, overriding the earlier "copy the mockup exactly"
+     instruction for corner radius specifically. Every `*_round_*`/`bg_hero`/`bg_pill_*`/
+     `bg_input_round`/`bg_badge_risk` drawable's `<corners>` radius dropped from its previous
+     10–20dp down to a flat 3dp across the board (keeping the light-green/rounded-era *colors* and
+     card backgrounds, only the corner radius reverted).
+  3. **Message Detector: "Upload photo / video"** — new `OcrUpload.kt`, using ML Kit's bundled
+     on-device Latin **and** Devanagari text recognizers (two separate models,
+     `com.google.mlkit:text-recognition` + `text-recognition-devanagari`, both self-contained in
+     the APK like the existing QR barcode scanner — no network, matching the site's Tesseract
+     eng+hin OCR coverage without needing Tesseract on Android). Images are OCR'd directly;
+     for video, `MediaMetadataRetriever.getFrameAtTime` grabs 3 frames at 15/50/85% of the
+     duration (falling back to fixed early timestamps if duration is unreported — same
+     `Infinity`-duration caution the website's own OCR feature had to work around), each OCR'd and
+     the deduped lines merged, mirroring `site/js/ocr-upload.js`'s approach. Recognized text fills
+     the input and auto-runs the check, same as the website.
+  4. **Call Detector: "Upload call recording"** — deliberately the same *honest* approach as the
+     website's own audio-upload tab, not a fake transcription claim: picks an audio file via the
+     system picker, shows an inline `MediaPlayer`-backed play/pause card, and the user types what
+     they hear into the existing transcript box below before checking. No on-device speech-to-text
+     is claimed or attempted (there isn't a reliable offline one available, same conclusion the
+     website's own investigation reached).
+  5. **Message/Call/QR unified into a swipeable tab strip** (`DetectTabs.kt`), per the explicit
+     "smooth transition like swiping a photo in gallery" ask. Rather than a risky full rewrite into
+     one Activity + ViewPager2 + Fragments (would have meant moving CameraX's QR lifecycle and both
+     detectors' Result-state machines into fragments, high regression risk for a feature already
+     working), implemented as: (a) a shared 3-pill tab row at the top of all three existing
+     screens that switches via `startActivity` + `overridePendingTransition` with new slide
+     in/out anim resources (`slide_in_right`/`slide_out_left`/`slide_in_left`/`slide_out_right`),
+     and (b) a passive `GestureDetector.onFling` installed via each activity's
+     `dispatchTouchEvent` override that only *observes* touches (never consumes them, so normal
+     scrolling/typing/CameraX touch-to-focus are untouched) and triggers the same tab switch on a
+     clearly horizontal, fast fling. Net effect: tapping a tab or swiping left/right both produce
+     the same gallery-like slide, without touching the camera or result-state code at all.
+  6. Verified all of the above live on-device: card-height fix and sharp corners confirmed via
+     screenshot, the tab strip's tap-driven slide transition confirmed on all three screens (and
+     correctly shows each screen's own per-type history, e.g. real auto-scanned SMS now appearing
+     under the Message tab), and both new upload buttons confirmed to correctly launch the system
+     file/document picker with no crash (full OCR/audio pipeline not exercised end-to-end in this
+     sandboxed session — no test image/audio file or gallery content was available to pick — but
+     the picker-launch path, mime filtering, and no-crash behavior were verified).
+
 - **Full Android app UI redesign to a 5-screen green-themed architecture, driven directly from a
   reference mockup the user supplied (a set of 5 phone screenshots: Home, Message Detector, Result,
   Safety Lessons, Scam Trends).** First attempt (batch-writing a dozen new icon/drawable files before

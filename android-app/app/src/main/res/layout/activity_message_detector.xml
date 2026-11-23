@@ -49,6 +49,15 @@
             android:fontFamily="sans-serif-medium" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/detectTabRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="10dp" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -142,6 +151,45 @@
                         android:textColor="@color/text_muted"
                         android:textSize="11sp" />
                 </FrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/uploadBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/bg_btn_outline_green"
+                    android:layout_marginBottom="10dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_upload"
+                        android:tint="@color/primary"
+                        android:contentDescription="@null" />
+
+                    <TextView
+                        android:id="@+id/uploadBtnText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Upload photo / video"
+                        android:textColor="@color/primary"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="13.5sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/uploadStatusText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text=""
+                    android:textColor="@color/text_muted"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:id="@+id/checkBtn"
