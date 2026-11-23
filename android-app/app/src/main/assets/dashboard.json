@@ -1,0 +1,325 @@
+{
+  "source_note_hi": "स्कैम-प्रकार एवं कुल गणनाएँ राष्ट्रीय साइबर अपराध रिपोर्टिंग पोर्टल के 93,686 शिकायत रिकॉर्ड के 8,000 के नमूने पर आधारित वास्तविक आँकड़े हैं। मूल डेटा में जिला/स्थान फ़ील्ड नहीं है, इसलिए जिलेवार एवं माहवार विभाजन केवल प्रदर्शन हेतु आनुपातिक रूप से संश्लेषित किया गया है।",
+  "source_note_en": "Scam-type categories and totals are real, derived from an 8,000-row sample of the 93,686-row National Cybercrime Reporting Portal complaint dataset. The source data has no district/location field, so the district-wise and month-wise splits are proportionally synthesised for demonstration only.",
+  "total_sample": 8006,
+  "scam_types": [
+    {
+      "code": "upi",
+      "hi": "फर्जी UPI भुगतान",
+      "en": "Fake UPI payment",
+      "count": 3430,
+      "pct": 42.8
+    },
+    {
+      "code": "card_sim",
+      "hi": "कार्ड / सिम-स्वैप धोखाधड़ी",
+      "en": "Card / SIM-swap fraud",
+      "count": 1427,
+      "pct": 17.8
+    },
+    {
+      "code": "netbanking",
+      "hi": "इंटरनेट बैंकिंग धोखाधड़ी",
+      "en": "Internet banking fraud",
+      "count": 1124,
+      "pct": 14.0
+    },
+    {
+      "code": "vishing",
+      "hi": "फर्जी कॉल (विशिंग)",
+      "en": "Fraud call (vishing)",
+      "count": 699,
+      "pct": 8.7
+    },
+    {
+      "code": "impersonation",
+      "hi": "फर्जी प्रोफ़ाइल / प्रतिरूपण",
+      "en": "Fake profile / impersonation",
+      "count": 533,
+      "pct": 6.7
+    },
+    {
+      "code": "ewallet",
+      "hi": "ई-वॉलेट धोखाधड़ी",
+      "en": "E-wallet fraud",
+      "count": 507,
+      "pct": 6.3
+    },
+    {
+      "code": "job",
+      "hi": "फर्जी नौकरी / टास्क धोखाधड़ी",
+      "en": "Fake job / task fraud",
+      "count": 130,
+      "pct": 1.6
+    },
+    {
+      "code": "crypto",
+      "hi": "क्रिप्टोकरेंसी धोखाधड़ी",
+      "en": "Cryptocurrency fraud",
+      "count": 60,
+      "pct": 0.7
+    },
+    {
+      "code": "gambling",
+      "hi": "ऑनलाइन सट्टा / जुआ",
+      "en": "Online gambling / betting",
+      "count": 58,
+      "pct": 0.7
+    },
+    {
+      "code": "email",
+      "hi": "ईमेल अधिग्रहण धोखाधड़ी",
+      "en": "Email takeover fraud",
+      "count": 38,
+      "pct": 0.5
+    }
+  ],
+  "districts": [
+    {
+      "hi": "रायपुर",
+      "en": "Raipur",
+      "division_hi": "रायपुर संभाग",
+      "division_en": "Raipur Division",
+      "total": 186,
+      "breakdown": {
+        "upi": 93,
+        "card_sim": 23,
+        "netbanking": 25,
+        "vishing": 17,
+        "impersonation": 13,
+        "ewallet": 10,
+        "job": 2,
+        "crypto": 1,
+        "gambling": 1,
+        "email": 1
+      }
+    },
+    {
+      "hi": "दुर्ग",
+      "en": "Durg",
+      "division_hi": "दुर्ग संभाग",
+      "division_en": "Durg Division",
+      "total": 135,
+      "breakdown": {
+        "upi": 62,
+        "card_sim": 27,
+        "netbanking": 15,
+        "vishing": 12,
+        "impersonation": 7,
+        "ewallet": 7,
+        "job": 2,
+        "crypto": 1,
+        "gambling": 1,
+        "email": 1
+      }
+    },
+    {
+      "hi": "बिलासपुर",
+      "en": "Bilaspur",
+      "division_hi": "बिलासपुर संभाग",
+      "division_en": "Bilaspur Division",
+      "total": 134,
+      "breakdown": {
+        "upi": 68,
+        "card_sim": 23,
+        "netbanking": 15,
+        "vishing": 10,
+        "impersonation": 7,
+        "ewallet": 6,
+        "job": 2,
+        "crypto": 1,
+        "gambling": 1,
+        "email": 1
+      }
+    },
+    {
+      "hi": "कोरबा",
+      "en": "Korba",
+      "division_hi": "बिलासपुर संभाग",
+      "division_en": "Bilaspur Division",
+      "total": 79,
+      "breakdown": {
+        "upi": 38,
+        "card_sim": 11,
+        "netbanking": 12,
+        "vishing": 5,
+        "impersonation": 4,
+        "ewallet": 5,
+        "job": 1,
+        "crypto": 1,
+        "gambling": 1,
+        "email": 1
+      }
+    },
+    {
+      "hi": "रायगढ़",
+      "en": "Raigarh",
+      "division_hi": "बिलासपुर संभाग",
+      "division_en": "Bilaspur Division",
+      "total": 78,
+      "breakdown": {
+        "upi": 33,
+        "card_sim": 15,
+        "netbanking": 10,
+        "vishing": 8,
+        "impersonation": 4,
+        "ewallet": 4,
+        "job": 1,
+        "crypto": 1,
+        "gambling": 1,
+        "email": 1
+      }
+    },
+    {
+      "hi": "राजनांदगांव",
+      "en": "Rajnandgaon",
+      "division_hi": "दुर्ग संभाग",
+      "division_en": "Durg Division",
+      "total": 72,
+      "breakdown": {
+        "upi": 32,
+        "card_sim": 12,
+        "netbanking": 10,
+        "vishing": 7,
+        "impersonation": 3,
+        "ewallet": 4,
+        "job": 1,
+        "crypto": 1,
+        "gambling": 1,
+        "email": 1
+      }
+    },
+    {
+      "hi": "सरगुजा (अंबिकापुर)",
+      "en": "Surguja (Ambikapur)",
+      "division_hi": "सरगुजा संभाग",
+      "division_en": "Surguja Division",
+      "total": 71,
+      "breakdown": {
+        "upi": 33,
+        "card_sim": 10,
+        "netbanking": 11,
+        "vishing": 5,
+        "impersonation": 4,
+        "ewallet": 4,
+        "job": 1,
+        "crypto": 1,
+        "gambling": 1,
+        "email": 1
+      }
+    },
+    {
+      "hi": "महासमुंद",
+      "en": "Mahasamund",
+      "division_hi": "रायपुर संभाग",
+      "division_en": "Raipur Division",
+      "total": 55,
+      "breakdown": {
+        "upi": 28,
+        "card_sim": 8,
+        "netbanking": 5,
+        "vishing": 4,
+        "impersonation": 3,
+        "ewallet": 3,
+        "job": 1,
+        "crypto": 1,
+        "gambling": 1,
+        "email": 1
+      }
+    },
+    {
+      "hi": "बस्तर (जगदलपुर)",
+      "en": "Bastar (Jagdalpur)",
+      "division_hi": "बस्तर संभाग",
+      "division_en": "Bastar Division",
+      "total": 52,
+      "breakdown": {
+        "upi": 25,
+        "card_sim": 9,
+        "netbanking": 6,
+        "vishing": 3,
+        "impersonation": 2,
+        "ewallet": 3,
+        "job": 1,
+        "crypto": 1,
+        "gambling": 1,
+        "email": 1
+      }
+    },
+    {
+      "hi": "धमतरी",
+      "en": "Dhamtari",
+      "division_hi": "रायपुर संभाग",
+      "division_en": "Raipur Division",
+      "total": 37,
+      "breakdown": {
+        "upi": 14,
+        "card_sim": 6,
+        "netbanking": 6,
+        "vishing": 2,
+        "impersonation": 3,
+        "ewallet": 2,
+        "job": 1,
+        "crypto": 1,
+        "gambling": 1,
+        "email": 1
+      }
+    }
+  ],
+  "monthly": [
+    {
+      "month_hi": "जून",
+      "month_en": "Jun",
+      "upi": 85,
+      "card_sim": 35,
+      "netbanking": 28,
+      "vishing": 17
+    },
+    {
+      "month_hi": "जुलाई",
+      "month_en": "Jul",
+      "upi": 89,
+      "card_sim": 40,
+      "netbanking": 31,
+      "vishing": 19
+    },
+    {
+      "month_hi": "अगस्त",
+      "month_en": "Aug",
+      "upi": 104,
+      "card_sim": 41,
+      "netbanking": 35,
+      "vishing": 22
+    },
+    {
+      "month_hi": "सितंबर",
+      "month_en": "Sep",
+      "upi": 112,
+      "card_sim": 45,
+      "netbanking": 34,
+      "vishing": 21
+    },
+    {
+      "month_hi": "अक्टूबर",
+      "month_en": "Oct",
+      "upi": 114,
+      "card_sim": 46,
+      "netbanking": 33,
+      "vishing": 27
+    },
+    {
+      "month_hi": "नवंबर",
+      "month_en": "Nov",
+      "upi": 119,
+      "card_sim": 43,
+      "netbanking": 41,
+      "vishing": 21
+    }
+  ],
+  "monthly_types": [
+    "upi",
+    "card_sim",
+    "netbanking",
+    "vishing"
+  ]
+}

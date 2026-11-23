@@ -1,230 +1,255 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg"
-    android:fillViewport="true">
+    android:orientation="vertical"
+    android:background="@color/bg">
 
+    <!-- ============ HEADER ============ -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@color/primary"
+        android:orientation="vertical"
+        android:paddingHorizontal="18dp"
+        android:paddingTop="44dp"
+        android:paddingBottom="18dp">
 
-        <!-- ============ HEADER ============ -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/navy"
-            android:orientation="vertical"
-            android:paddingHorizontal="18dp"
-            android:paddingTop="44dp"
-            android:paddingBottom="18dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/backBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="←"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:paddingEnd="10dp"
-                    android:paddingVertical="4dp" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_qr"
-                    android:tint="@color/white"
-                    android:contentDescription="@null" />
-
-                <TextView
-                    android:id="@+id/titleText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="10dp"
-                    android:text="QR Code Checker"
-                    android:textColor="@color/white"
-                    android:textSize="19sp"
-                    android:fontFamily="sans-serif-medium" />
-
-                <TextView
-                    android:id="@+id/langBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_btn_outline_white"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="5dp"
-                    android:text="EN"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:fontFamily="sans-serif-medium" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/subtitleText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="Scan or upload a QR code before paying"
-                android:textColor="#D9E8F7"
-                android:textSize="13sp" />
-        </LinearLayout>
-
-        <!-- ============ TABS ============ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_margin="14dp"
-            android:layout_marginBottom="0dp">
+            android:gravity="center_vertical">
 
             <TextView
-                android:id="@+id/tabCamera"
+                android:id="@+id/backBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="←"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:paddingEnd="10dp"
+                android:paddingVertical="4dp" />
+
+            <TextView
+                android:id="@+id/titleText"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Camera"
-                android:gravity="center"
-                android:textColor="@color/on_saffron"
-                android:background="@drawable/bg_btn_primary"
-                android:paddingVertical="10dp"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="13.5sp"
-                android:layout_marginEnd="6dp" />
+                android:layout_marginStart="2dp"
+                android:text="QR Code Checker"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                android:fontFamily="sans-serif-medium" />
 
             <TextView
-                android:id="@+id/tabUpload"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:id="@+id/langBtn"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Upload"
-                android:gravity="center"
-                android:textColor="@color/text_main"
-                android:background="@drawable/bg_btn_outline"
-                android:paddingVertical="10dp"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="13.5sp" />
+                android:background="@drawable/bg_pill_outline_white"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="5dp"
+                android:text="हिं"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:fontFamily="sans-serif-medium" />
         </LinearLayout>
 
-        <!-- ============ CAMERA PANEL ============ -->
-        <LinearLayout
-            android:id="@+id/cameraPanel"
+        <TextView
+            android:id="@+id/subtitleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/bg_card"
-            android:layout_margin="14dp"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/qrScanHintText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Point your camera at the QR code."
-                android:textColor="@color/text_muted"
-                android:textSize="13sp"
-                android:layout_marginBottom="10dp" />
-
-            <androidx.camera.view.PreviewView
-                android:id="@+id/previewView"
-                android:layout_width="match_parent"
-                android:layout_height="320dp"
-                android:background="#111111"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/camStartBtn"
-                android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/bg_btn_primary"
-                android:text="Start camera"
-                android:textAllCaps="false"
-                android:textColor="@color/on_saffron"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="14.5sp"
-                android:stateListAnimator="@null" />
-
-            <Button
-                android:id="@+id/camStopBtn"
-                android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/bg_btn_outline"
-                android:text="Stop camera"
-                android:textAllCaps="false"
-                android:textColor="@color/text_main"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="14.5sp"
-                android:stateListAnimator="@null"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/camStatusText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/text_muted"
-                android:textSize="12.5sp" />
-        </LinearLayout>
-
-        <!-- ============ UPLOAD PANEL ============ -->
-        <LinearLayout
-            android:id="@+id/uploadPanel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/bg_card"
-            android:layout_margin="14dp"
-            android:padding="16dp"
-            android:visibility="gone">
-
-            <Button
-                android:id="@+id/uploadBtn"
-                android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:background="@drawable/bg_btn_outline"
-                android:text="Upload QR image"
-                android:textAllCaps="false"
-                android:textColor="@color/text_main"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="14.5sp"
-                android:stateListAnimator="@null" />
-
-            <ImageView
-                android:id="@+id/uploadPreview"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:layout_marginTop="10dp"
-                android:layout_gravity="center"
-                android:scaleType="centerInside"
-                android:visibility="gone"
-                android:contentDescription="@null" />
-
-            <TextView
-                android:id="@+id/uploadStatusText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/text_muted"
-                android:textSize="12.5sp" />
-        </LinearLayout>
-
-        <!-- ============ RESULT ============ -->
-        <LinearLayout
-            android:id="@+id/resultContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginHorizontal="14dp"
-            android:layout_marginBottom="24dp" />
-
+            android:layout_marginTop="6dp"
+            android:text="Scan or upload a QR code before paying"
+            android:textColor="#D7ECDF"
+            android:textSize="13sp" />
     </LinearLayout>
-</ScrollView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- ============ TABS ============ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="14dp"
+                android:layout_marginBottom="0dp">
+
+                <TextView
+                    android:id="@+id/tabCamera"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Camera"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:background="@drawable/bg_btn_primary_green"
+                    android:paddingVertical="10dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="13.5sp"
+                    android:layout_marginEnd="6dp" />
+
+                <TextView
+                    android:id="@+id/tabUpload"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Upload"
+                    android:gravity="center"
+                    android:textColor="@color/text_main"
+                    android:background="@drawable/bg_btn_outline_green"
+                    android:paddingVertical="10dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="13.5sp" />
+            </LinearLayout>
+
+            <!-- ============ CAMERA PANEL ============ -->
+            <LinearLayout
+                android:id="@+id/cameraPanel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card_white_round"
+                android:layout_margin="14dp"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/qrScanHintText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Point your camera at the QR code."
+                    android:textColor="@color/text_muted"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="10dp" />
+
+                <androidx.camera.view.PreviewView
+                    android:id="@+id/previewView"
+                    android:layout_width="match_parent"
+                    android:layout_height="320dp"
+                    android:background="#111111"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/camStartBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_btn_primary_green"
+                    android:text="Start camera"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="14.5sp"
+                    android:stateListAnimator="@null" />
+
+                <Button
+                    android:id="@+id/camStopBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_btn_outline_green"
+                    android:text="Stop camera"
+                    android:textAllCaps="false"
+                    android:textColor="@color/primary"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="14.5sp"
+                    android:stateListAnimator="@null"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/camStatusText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/text_muted"
+                    android:textSize="12.5sp" />
+            </LinearLayout>
+
+            <!-- ============ UPLOAD PANEL ============ -->
+            <LinearLayout
+                android:id="@+id/uploadPanel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card_white_round"
+                android:layout_margin="14dp"
+                android:padding="16dp"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/uploadBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:background="@drawable/bg_btn_outline_green"
+                    android:text="Upload QR image"
+                    android:textAllCaps="false"
+                    android:textColor="@color/primary"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="14.5sp"
+                    android:stateListAnimator="@null" />
+
+                <ImageView
+                    android:id="@+id/uploadPreview"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside"
+                    android:visibility="gone"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:id="@+id/uploadStatusText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/text_muted"
+                    android:textSize="12.5sp" />
+            </LinearLayout>
+
+            <!-- ============ RESULT ============ -->
+            <LinearLayout
+                android:id="@+id/resultContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="14dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- ============ HISTORY ============ -->
+            <TextView
+                android:id="@+id/historyLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="14dp"
+                android:layout_marginBottom="8dp"
+                android:text="Recent QR checks"
+                android:textColor="@color/text_main"
+                android:fontFamily="sans-serif-medium"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:id="@+id/historyList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="14dp"
+                android:layout_marginBottom="20dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <include
+        android:id="@+id/navBottom"
+        layout="@layout/nav_bottom" />
+
+</LinearLayout>

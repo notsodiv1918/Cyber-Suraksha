@@ -174,6 +174,103 @@ meaningful change from here on** (the user asked for this explicitly) — `git a
 
 ## Change Log (newest first)
 
+- **Full Android app UI redesign to a 5-screen green-themed architecture, driven directly from a
+  reference mockup the user supplied (a set of 5 phone screenshots: Home, Message Detector, Result,
+  Safety Lessons, Scam Trends).** First attempt (batch-writing a dozen new icon/drawable files before
+  showing any result) was explicitly rejected mid-session by the user, who redirected to "redo to
+  match the website better" instead — that smaller, website-token-driven pass (sharp 2px corners,
+  saffron accent cards) shipped first (see entry below) and is what's on `main` before this one. The
+  user then came back with the actual rounded-card mockup and asked for layout-exact fidelity,
+  explicitly overriding the site's sharp-corner convention for this redesign ("make the UI look
+  exactly like this, copy the exact layout"), plus: light green not pista/olive green, reuse the
+  hero photo assets already in the project, and — the functional ask — move SMS/call/QR history
+  OFF the home page entirely, into each detector's own screen, with home reduced to just hero +
+  "how to use" + the three detector links + secondary Report/Learn/Trends links.
+  1. **New green theme**: `colors.xml` gained `primary`/`primary_dark` (#1B6B3C/#124A29),
+     `bg_cream`/`bg_green_tint`/`bg_blue_tint`/`bg_yellow_tint` pastel card tints, `accent_blue`/
+     `accent_amber`. New *rounded* (14dp card, 10dp button, 20dp pill) drawables alongside the
+     existing sharp ones from the previous pass — `bg_hero`, `bg_card_round_{green,blue,yellow}`,
+     `bg_card_white_round`, `bg_icon_round_green`, `bg_btn_primary_green`, `bg_btn_outline_green`,
+     `bg_pill_selected`/`bg_pill_outline` (filter chips), `bg_badge_risk`, `bg_input_round`,
+     `bg_nav_bar`. **Real bug caught in testing**: `themes.xml`'s `colorPrimary` was still the old
+     navy — Material Components auto-tints plain `<Button>` widgets from the theme's `colorPrimary`
+     regardless of an explicit `android:background`, so the QR screen's "Start camera" button kept
+     rendering blue even with `bg_btn_primary_green` set. Fixed by updating `colorPrimary`/
+     `colorPrimaryDark`/`colorAccent`/`android:statusBarColor` in `themes.xml` to the new green —
+     confirmed fixed by rebuilding and re-screenshotting the QR screen.
+  2. **Home screen** (`activity_main.xml`/`MainActivity.kt`) rebuilt to mockup order: green header
+     (hamburger + shield + title/subtitle + language pill) → hero card (one of the existing
+     `site/assets/hero-photo-*.webp` images, copied into `res/drawable-nodpi/hero_photo.webp`, plus
+     heading/subtitle/3-step "how to use") → Message+Call detector cards (2-col) → QR card
+     (full-width) → Report/Learn/Trends secondary row (3-col, smaller) → emergency 1930 banner. SMS
+     auto-scan/call-screening status toggles (a real feature, previously inline on home) moved to
+     a new **More** screen so they're not lost. All verdict/history UI removed from this screen.
+  3. **New shared bottom nav** (`layout/nav_bottom.xml` + `NavBar.kt`): Home / Detect / Learn /
+     Report / More, included at the bottom of every top-level screen (but hidden during the
+     Message/Call Detector's **Result** state, matching the mockup, which shows Result as its own
+     focused screen with no nav chrome). `NavBar.Tab.NONE` added for screens (QR checker, Scam
+     Trends) that aren't one of the 5 literal nav destinations, so nothing is misleadingly
+     highlighted active.
+  4. **New `MessageDetectorActivity`** replaces the old inline check card on home: icon hero, heading,
+     500-char-limited input with live counter, "Check Message" button, 3 sample-message rows, and —
+     per the "history separate from home, inside its own tab" ask — its own **Recent message
+     checks** list filtered to `history type in {sms, message}` via a new shared `HistoryView`
+     renderer (factored out of the old `MainActivity.historyRow`). Checking swaps the same screen
+     into a **Result** state (not a separate Activity, to avoid duplicating the classify pipeline) —
+     risk-score badge, dynamic "Why it's suspicious?" bullets built directly from
+     `ClassifyResult.hits` (real lexicon-entry reasons, not fabricated copy), Report This / Check
+     Another buttons, on-device privacy note. Back button in Result state returns to the input
+     state rather than exiting, matching the mockup's own screen-to-screen back behaviour.
+  5. **New `CallDetectorActivity`**: same pattern/layout as the message detector (shares
+     `activity_message_detector.xml`'s structure via a copied+adapted `activity_call_detector.xml`),
+     phone icon, call-script sample rows (digital-arrest script, fake-bank-OTP-request script), its
+     own history filtered to `type == "call"` — which now shows BOTH auto-screened incoming calls
+     (`CallScreenService`'s existing `"unscreened"` entries) and manually-pasted transcript checks
+     in one place, previously scattered across the single combined home list.
+  6. **`QrCheckActivity` reskinned** to the new green/rounded theme (tabs, buttons, cards) and given
+     its own **Recent QR checks** history section at the bottom (`type == "qr"`), via the same
+     `HistoryView` renderer — previously QR scans only showed up buried in the home page's combined
+     list.
+  7. **New `ReportActivity`** (green/blue/yellow cards for 1930 / cybercrime.gov.in / Chakshu,
+     reusing the real URLs from `site/pages/report.html`: `https://cybercrime.gov.in`,
+     `https://sancharsaathi.gov.in/sfc/`) and **`LearnActivity`** (horizontally-scrolling filter
+     chips — All/UPI & Payments/KYC/Fraud Calls — over 6 hand-written bilingual lesson cards
+     covering UPI PIN safety, fake-KYC messages, digital-arrest scams, fraud-call red flags, safe
+     QR/online payments, account hygiene) — both entirely new native-app features with no prior
+     equivalent, built to fill out the mockup's Report/Learn home cards with real destinations
+     rather than dead ends.
+  8. **New `DashboardActivity`** ("Scam Trends"): `site/data/dashboard.json` copied into
+     `app/src/main/assets/` and parsed directly — a district `PopupMenu` (real Chhattisgarh district
+     list from the JSON) toggles between the national `scam_types` percentages (real, from the
+     8,006-row NCRP sample) and a selected district's own `breakdown` counts turned into
+     percentages of that district's `total` — same underlying real data and the same "district
+     split is proportionally synthesised" honesty note the website already carries, now surfaced
+     natively instead of being a website-only feature.
+  9. **New `MoreActivity`** holds the relocated Protection status card (SMS auto-scan / call
+     screening enable toggles, moved verbatim from the old home screen with identical permission-
+     request logic) plus a short "About this app" prototype disclaimer, so the feature isn't lost
+     even though it no longer fits the mockup's minimal home page.
+  10. **Verified every screen live on the connected device** (not just a clean build): Home (full
+      scroll, both rows, emergency banner), Message Detector end-to-end (sample tap → scam verdict
+      → reasons bullets → back-to-input), Call Detector (empty-state correctly localised, caught
+      and fixed a real bug here — its Check button was showing the Message detector's "Check
+      Message" label instead of "Check Call", added a dedicated `T.checkCallBtn` string), QR
+      Checker (tabs, its own history, the colorPrimary button-tint bug caught and fixed), Report
+      (all three cards), Safety Lessons (filter chips + cards), Scam Trends (national view AND a
+      district selected via the popup menu, confirming the breakdown math), and More (status
+      toggles). No crashes in `logcat` on any screen. **Process note for next time**: picking tap
+      coordinates by eye off a screenshot rendered at its *displayed* resolution (this tool shows
+      images scaled down, e.g. 910×2000 for a 1080×2373 device) caused several misdirected taps
+      mid-session — `adb shell uiautomator dump`'s `bounds=` attribute gives real device-pixel
+      coordinates straight from the current screen and should be pulled fresh before every tap
+      instead of eyeballing a scaled image. One stray mistap also pulled down the notification
+      shade and briefly landed in the user's own WhatsApp — backed out immediately without reading
+      further; worth being more conservative about screen-top taps (y<100px) in future adb-driven
+      testing.
+  11. All existing functionality re-verified intact through this rewrite: SMS auto-scan, call
+      screening (`CallScreenService`), the on-device NB+lexicon classifier, and the QR analyzer are
+      completely unchanged — only the UI layer (layouts, navigation, where history is shown) moved.
+
 - **Restyled the Android app's home screen (and QR checker) to actually match the website's design
   tokens, after a first attempt at copying a rounded-corner dashboard mockup was explicitly
   rejected mid-session.** The user showed two rounded, shadow-heavy mockup screenshots and initially

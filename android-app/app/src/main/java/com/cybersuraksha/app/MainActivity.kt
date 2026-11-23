@@ -1,19 +1,10 @@
 package com.cybersuraksha.app
 
-import android.app.role.RoleManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.telecom.TelecomManager
-import android.text.format.DateUtils
-import android.view.Gravity
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -23,13 +14,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var b: ActivityMainBinding
 
-    private val requestSmsPermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-        refreshStatus()
-    }
     private val requestNotifPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
-    private val requestCallRole = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        refreshStatus()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,226 +28,49 @@ class MainActivity : AppCompatActivity() {
             requestNotifPermission.launch(android.Manifest.permission.POST_NOTIFICATIONS)
         }
 
-        b.langBtn.setOnClickListener {
-            T.next()
-            applyLanguage()
+        b.langBtn.setOnClickListener { T.next(); applyLanguage() }
+        b.cardMessage.setOnClickListener { startActivity(Intent(this, MessageDetectorActivity::class.java)) }
+        b.cardCall.setOnClickListener { startActivity(Intent(this, CallDetectorActivity::class.java)) }
+        b.cardQr.setOnClickListener { startActivity(Intent(this, QrCheckActivity::class.java)) }
+        b.cardReport.setOnClickListener { startActivity(Intent(this, ReportActivity::class.java)) }
+        b.cardLearn.setOnClickListener { startActivity(Intent(this, LearnActivity::class.java)) }
+        b.cardTrends.setOnClickListener { startActivity(Intent(this, DashboardActivity::class.java)) }
+        b.emergencyCard.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:1930")))
         }
-        b.smsEnableBtn.setOnClickListener {
-            // Request RECEIVE_SMS and READ_SMS together — they're in the same permission
-            // group, and requesting only one has caused inconsistent partial-grant state
-            // on some OEM builds (confirmed via `adb shell appops get`: READ_SMS stayed
-            // "ignore" even after RECEIVE_SMS was granted through the single-permission path).
-            requestSmsPermissions.launch(arrayOf(android.Manifest.permission.RECEIVE_SMS, android.Manifest.permission.READ_SMS))
-        }
-        b.callEnableBtn.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val roleManager = getSystemService(Context.ROLE_SERVICE) as RoleManager
-                if (roleManager.isRoleAvailable(RoleManager.ROLE_CALL_SCREENING)) {
-                    requestCallRole.launch(roleManager.createRequestRoleIntent(RoleManager.ROLE_CALL_SCREENING))
-                } else {
-                    Toast.makeText(this, "Call screening role not available on this device", Toast.LENGTH_LONG).show()
-                }
-            } else {
-                Toast.makeText(this, "Needs Android 10+", Toast.LENGTH_LONG).show()
-            }
-        }
-        b.checkBtn.setOnClickListener { runCheck() }
-        b.qrCard.setOnClickListener { startActivity(Intent(this, QrCheckActivity::class.java)) }
 
+        NavBar.wire(this, b.navBottom.root, NavBar.Tab.HOME)
         applyLanguage()
     }
 
     override fun onResume() {
         super.onResume()
-        refreshStatus()
-        renderHistory()
+        applyLanguage()
     }
 
     private fun applyLanguage() {
         b.langBtn.text = T.label()
         b.titleText.text = T.appTitle
-        b.subtitleText.text = T.subtitle
-        b.statusTitle.text = T.statusTitle
-        b.servicesEyebrow.text = T.servicesEyebrow
-        b.checkLabel.text = T.checkLabel
-        b.messageInput.hint = T.hint
-        b.checkBtn.text = T.checkBtn
-        b.historyLabel.text = T.historyLabel
-        b.qrCardLabel.text = T.qrCardLabel
-        refreshStatus()
-        renderHistory()
+        b.subtitleText.text = T.headerSubtitle
+        b.heroTitle.text = T.heroTitle
+        b.heroSubtitle.text = T.heroSubtitle
+        b.howToUseStep1.text = T.howToUseStep1
+        b.howToUseStep2.text = T.howToUseStep2
+        b.howToUseStep3.text = T.howToUseStep3
+        b.cardMessageTitle.text = T.detectMessageTitle
+        b.cardMessageDesc.text = T.detectMessageDesc
+        b.cardCallTitle.text = T.detectCallTitle
+        b.cardCallDesc.text = T.detectCallDesc
+        b.cardQrTitle.text = T.detectQrTitle
+        b.cardQrDesc.text = T.detectQrDesc
+        b.cardReportTitle.text = T.reportFraudTitle
+        b.cardReportDesc.text = T.reportFraudDesc
+        b.cardLearnTitle.text = T.safetyLessonsTitle
+        b.cardLearnDesc.text = T.safetyLessonsDesc
+        b.cardTrendsTitle.text = T.scamTrendsTitle
+        b.cardTrendsDesc.text = T.scamTrendsDesc
+        b.emergencyTitleText.text = T.emergencyTitle
+        b.emergencySubtitleText.text = T.emergencySubtitle
+        NavBar.wire(this, b.navBottom.root, NavBar.Tab.HOME)
     }
-
-    private fun refreshStatus() {
-        val smsGranted = ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
-        b.smsStatusText.text = if (smsGranted) T.smsOn else T.smsOff
-        b.smsEnableBtn.visibility = if (smsGranted) android.view.View.GONE else android.view.View.VISIBLE
-        tintDot(b.smsDot, smsGranted)
-
-        var callActive = false
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val telecom = getSystemService(TELECOM_SERVICE) as TelecomManager
-            callActive = telecom.defaultDialerPackage == packageName ||
-                (getSystemService(Context.ROLE_SERVICE) as RoleManager).isRoleHeld(RoleManager.ROLE_CALL_SCREENING)
-        }
-        b.callStatusText.text = if (callActive) T.callOn else T.callOff
-        b.callEnableBtn.visibility = if (callActive) android.view.View.GONE else android.view.View.VISIBLE
-        tintDot(b.callDot, callActive)
-    }
-
-    private fun tintDot(dot: android.view.View, on: Boolean) {
-        val color = ContextCompat.getColor(this, if (on) R.color.safe else R.color.text_muted)
-        (dot.background.mutate() as android.graphics.drawable.GradientDrawable).setColor(color)
-    }
-
-    private fun runCheck() {
-        val text = b.messageInput.text.toString().trim()
-        if (text.isEmpty()) {
-            setBanner(R.color.warn_bg, R.color.warn, R.drawable.ic_alert_triangle, T.emptyInput)
-            return
-        }
-        val result = Classifier.classify(text)
-        HistoryStore.add(this, HistoryItem("manual", "-", text, result.verdict, System.currentTimeMillis()))
-        showResult(result)
-        renderHistory()
-    }
-
-    private fun showResult(result: ClassifyResult) {
-        val style = when (result.verdict) {
-            "scam" -> VerdictStyle(R.color.danger_bg, R.color.danger, R.drawable.ic_x_circle, T.verdictScam)
-            "suspicious" -> VerdictStyle(R.color.warn_bg, R.color.warn, R.drawable.ic_alert_triangle, T.verdictSuspicious)
-            else -> VerdictStyle(R.color.safe_bg, R.color.safe, R.drawable.ic_check_circle, T.verdictGenuine)
-        }
-        val pct = Math.round(result.probability * 100)
-        val typeLine = result.scamType?.let { " · " + T.categoryLabel(it) } ?: ""
-        setBanner(style.bg, style.fg, style.icon, "${style.label} ($pct%)$typeLine")
-    }
-
-    private data class VerdictStyle(val bg: Int, val fg: Int, val icon: Int, val label: String)
-
-    private fun setBanner(bgColor: Int, fgColor: Int, icon: Int, text: String) {
-        b.resultBanner.visibility = android.view.View.VISIBLE
-        (b.resultBanner.background.mutate() as android.graphics.drawable.GradientDrawable)
-            .setColor(ContextCompat.getColor(this, bgColor))
-        b.resultIcon.setImageResource(icon)
-        b.resultIcon.setColorFilter(ContextCompat.getColor(this, fgColor))
-        b.resultText.text = text
-        b.resultText.setTextColor(ContextCompat.getColor(this, fgColor))
-    }
-
-    private fun renderHistory() {
-        b.historyList.removeAllViews()
-        val items = HistoryStore.all(this)
-        if (items.isEmpty()) {
-            val tv = TextView(this)
-            tv.text = T.emptyHistory
-            tv.setTextColor(ContextCompat.getColor(this, R.color.text_muted))
-            tv.textSize = 13f
-            b.historyList.addView(tv)
-            return
-        }
-        for (item in items) {
-            b.historyList.addView(historyRow(item))
-        }
-    }
-
-    private fun historyRow(item: HistoryItem): LinearLayout {
-        val row = LinearLayout(this)
-        row.orientation = LinearLayout.HORIZONTAL
-        row.background = ContextCompat.getDrawable(this, R.drawable.bg_card)
-        val lp = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        lp.bottomMargin = dp(8)
-        row.layoutParams = lp
-        row.setPadding(dp(12), dp(12), dp(12), dp(12))
-        row.gravity = Gravity.TOP
-
-        val (typeIcon, chipColor) = when (item.type) {
-            "sms" -> R.drawable.ic_mail to R.color.navy
-            "call" -> R.drawable.ic_phone to R.color.navy
-            "qr" -> R.drawable.ic_qr to R.color.navy
-            else -> R.drawable.ic_shield_check to R.color.saffron
-        }
-        val chip = android.widget.FrameLayout(this)
-        val chipLp = LinearLayout.LayoutParams(dp(32), dp(32))
-        chip.layoutParams = chipLp
-        chip.background = ContextCompat.getDrawable(this, R.drawable.bg_icon_chip)?.mutate()
-        (chip.background as android.graphics.drawable.GradientDrawable).setColor(ContextCompat.getColor(this, chipColor))
-        val chipIcon = android.widget.ImageView(this)
-        val ciLp = android.widget.FrameLayout.LayoutParams(dp(16), dp(16))
-        ciLp.gravity = Gravity.CENTER
-        chipIcon.layoutParams = ciLp
-        chipIcon.setImageResource(typeIcon)
-        chipIcon.setColorFilter(Color.WHITE)
-        chip.addView(chipIcon)
-        row.addView(chip)
-
-        val col = LinearLayout(this)
-        col.orientation = LinearLayout.VERTICAL
-        val colLp = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
-        colLp.marginStart = dp(12)
-        col.layoutParams = colLp
-
-        val header = TextView(this)
-        val who = when (item.type) {
-            "sms" -> T.smsScannedLine(item.who)
-            "call" -> T.callScreenedLine(item.who)
-            "qr" -> T.qrTitle
-            else -> if (T.lang == Lang.EN) "Manual check" else "मैन्युअल जाँच"
-        }
-        header.text = who
-        header.setTextColor(ContextCompat.getColor(this, R.color.text_main))
-        header.setTypeface(null, android.graphics.Typeface.BOLD)
-        header.textSize = 13.5f
-        col.addView(header)
-
-        if (item.text.isNotBlank()) {
-            val body = TextView(this)
-            body.text = item.text.take(90)
-            body.setTextColor(ContextCompat.getColor(this, R.color.text_muted))
-            body.textSize = 12.5f
-            val blp = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            blp.topMargin = dp(2)
-            body.layoutParams = blp
-            col.addView(body)
-        }
-
-        val footer = LinearLayout(this)
-        footer.orientation = LinearLayout.HORIZONTAL
-        footer.gravity = Gravity.CENTER_VERTICAL
-        val flp = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        flp.topMargin = dp(6)
-        footer.layoutParams = flp
-
-        val badge = TextView(this)
-        val (bgCol, fgCol, label) = when (item.verdict) {
-            "scam" -> Triple(R.color.danger_bg, R.color.danger, T.verdictScam)
-            "suspicious", "unscreened" -> Triple(R.color.warn_bg, R.color.warn, T.verdictSuspicious)
-            else -> Triple(R.color.safe_bg, R.color.safe, T.verdictGenuine)
-        }
-        badge.text = label
-        badge.setTextColor(ContextCompat.getColor(this, fgCol))
-        badge.background = ContextCompat.getDrawable(this, R.drawable.bg_badge)?.mutate()
-        (badge.background as android.graphics.drawable.GradientDrawable).setColor(ContextCompat.getColor(this, bgCol))
-        badge.setPadding(dp(8), dp(3), dp(8), dp(3))
-        badge.textSize = 11f
-        badge.setTypeface(null, android.graphics.Typeface.BOLD)
-        footer.addView(badge)
-
-        val time = TextView(this)
-        time.text = DateUtils.getRelativeTimeSpanString(item.time)
-        time.setTextColor(ContextCompat.getColor(this, R.color.text_muted))
-        time.textSize = 11f
-        val tlp = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
-        tlp.gravity = Gravity.END
-        tlp.marginStart = dp(8)
-        time.layoutParams = tlp
-        time.gravity = Gravity.END
-        footer.addView(time)
-
-        col.addView(footer)
-        row.addView(col)
-        return row
-    }
-
-    private fun dp(v: Int): Int = (v * resources.displayMetrics.density).toInt()
 }

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="44dp"
+        android:paddingBottom="16dp">
+
+        <TextView
+            android:id="@+id/backBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="←"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:paddingEnd="12dp"
+            android:paddingVertical="4dp" />
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Scam Trends"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:fontFamily="sans-serif-medium" />
+
+        <TextView
+            android:id="@+id/langBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_pill_outline_white"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="5dp"
+            android:text="हिं"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif-medium" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="14dp">
+
+            <LinearLayout
+                android:id="@+id/districtPicker"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_input_round"
+                android:paddingHorizontal="14dp"
+                android:layout_marginBottom="18dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/districtText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="All Chhattisgarh"
+                    android:textColor="@color/text_main"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_chevron_down"
+                    android:tint="@color/text_muted"
+                    android:contentDescription="@null" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_card_round_green"
+                android:padding="20dp"
+                android:layout_marginBottom="18dp">
+
+                <FrameLayout
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:background="@drawable/bg_icon_round_green">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_trend_up"
+                        android:tint="@color/primary"
+                        android:contentDescription="@null" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/trendsHeadingText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"
+                    android:text="Top scam types in your area"
+                    android:textColor="@color/text_main"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="15.5sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/scamTypeList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_card_round_blue"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_info"
+                    android:tint="@color/accent_blue"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:id="@+id/trendsNoteText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:text="Based on real complaint records."
+                    android:textColor="@color/text_main"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <include
+        android:id="@+id/navBottom"
+        layout="@layout/nav_bottom" />
+
+</LinearLayout>

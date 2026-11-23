@@ -1,346 +1,604 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg"
-    android:fillViewport="true">
+    android:orientation="vertical"
+    android:background="@color/bg">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
-        <!-- ============ HEADER ============ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/navy"
-            android:orientation="vertical"
-            android:paddingHorizontal="18dp"
-            android:paddingTop="44dp"
-            android:paddingBottom="18dp">
+            android:orientation="vertical">
 
+            <!-- ============ HEADER ============ -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/primary"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="44dp"
+                android:paddingBottom="16dp">
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_menu"
+                    android:tint="@color/white"
+                    android:contentDescription="@null" />
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_marginStart="12dp"
                     android:src="@drawable/ic_shield_check"
                     android:tint="@color/white"
                     android:contentDescription="@null" />
 
-                <TextView
-                    android:id="@+id/titleText"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="10dp"
-                    android:text="Cyber Suraksha"
-                    android:textColor="@color/white"
-                    android:textSize="19sp"
-                    android:fontFamily="sans-serif-medium" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/titleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cyber Suraksha"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        android:fontFamily="sans-serif-medium" />
+
+                    <TextView
+                        android:id="@+id/subtitleText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Digital Financial Literacy"
+                        android:textColor="#D7ECDF"
+                        android:textSize="11.5sp" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/langBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_btn_outline_white"
+                    android:background="@drawable/bg_pill_outline_white"
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="5dp"
-                    android:text="EN"
+                    android:text="हिं"
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     android:fontFamily="sans-serif-medium" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/subtitleText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="On-device SMS and call scam detector"
-                android:textColor="#D9E8F7"
-                android:textSize="13sp" />
-        </LinearLayout>
-
-        <!-- ============ STATUS CARD ============ -->
-        <LinearLayout
-            android:id="@+id/statusCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/bg_card"
-            android:layout_margin="14dp"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/statusTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Protection status"
-                android:textColor="@color/text_main"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="14.5sp"
-                android:layout_marginBottom="12dp" />
-
+            <!-- ============ HERO ============ -->
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_hero"
+                android:layout_margin="14dp"
+                android:padding="4dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginBottom="14dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/hero_photo"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:id="@+id/heroTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:text="Stay safe from\ndigital fraud"
+                    android:textColor="@color/primary_dark"
+                    android:textSize="23sp"
+                    android:lineSpacingExtra="2dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/heroSubtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="14dp"
+                    android:text="Check messages, calls and QR codes for scams — fully on your device, even offline."
+                    android:textColor="@color/text_muted"
+                    android:textSize="13.5sp"
+                    android:lineSpacingExtra="2dp" />
+
+                <!-- how to use -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginBottom="14dp"
+                    android:weightSum="3">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:gravity="center"
+                            android:background="@drawable/bg_pill_selected"
+                            android:text="1"
+                            android:textColor="@color/white"
+                            android:fontFamily="sans-serif-medium"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/howToUseStep1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:gravity="center"
+                            android:text="Paste or scan"
+                            android:textColor="@color/text_main"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:gravity="center"
+                            android:background="@drawable/bg_pill_selected"
+                            android:text="2"
+                            android:textColor="@color/white"
+                            android:fontFamily="sans-serif-medium"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/howToUseStep2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:gravity="center"
+                            android:text="We check it on-device"
+                            android:textColor="@color/text_main"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:gravity="center"
+                            android:background="@drawable/bg_pill_selected"
+                            android:text="3"
+                            android:textColor="@color/white"
+                            android:fontFamily="sans-serif-medium"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/howToUseStep3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:gravity="center"
+                            android:text="See the verdict instantly"
+                            android:textColor="@color/text_main"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- ============ DETECT: MESSAGE + CALL ============ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginHorizontal="14dp"
+                android:layout_marginBottom="12dp"
+                android:weightSum="2">
+
+                <LinearLayout
+                    android:id="@+id/cardMessage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_round_green"
+                    android:padding="14dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <FrameLayout
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_icon_round_green">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_mail"
+                            android:tint="@color/primary"
+                            android:contentDescription="@null" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/cardMessageTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="Check Message"
+                        android:textColor="@color/text_main"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="14.5sp" />
+
+                    <TextView
+                        android:id="@+id/cardMessageDesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Detect scam SMS or WhatsApp"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11.5sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/cardCall"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_round_blue"
+                    android:padding="14dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <FrameLayout
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_icon_round_green">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_phone"
+                            android:tint="@color/accent_blue"
+                            android:contentDescription="@null" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/cardCallTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="Check Call"
+                        android:textColor="@color/text_main"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="14.5sp" />
+
+                    <TextView
+                        android:id="@+id/cardCallDesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Analyse a suspicious call"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11.5sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- ============ DETECT: QR ============ -->
+            <LinearLayout
+                android:id="@+id/cardQr"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
-
-                <View
-                    android:id="@+id/smsDot"
-                    android:layout_width="9dp"
-                    android:layout_height="9dp"
-                    android:background="@drawable/bg_dot" />
-
-                <TextView
-                    android:id="@+id/smsStatusText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="10dp"
-                    android:text="SMS auto-scan: off"
-                    android:textColor="@color/text_main"
-                    android:textSize="13.5sp" />
-
-                <TextView
-                    android:id="@+id/smsEnableBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_btn_outline"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="5dp"
-                    android:text="Enable"
-                    android:textColor="@color/text_main"
-                    android:textSize="12sp"
-                    android:fontFamily="sans-serif-medium" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <View
-                    android:id="@+id/callDot"
-                    android:layout_width="9dp"
-                    android:layout_height="9dp"
-                    android:background="@drawable/bg_dot" />
-
-                <TextView
-                    android:id="@+id/callStatusText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="10dp"
-                    android:text="Call screening: off"
-                    android:textColor="@color/text_main"
-                    android:textSize="13.5sp" />
-
-                <TextView
-                    android:id="@+id/callEnableBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_btn_outline"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="5dp"
-                    android:text="Enable"
-                    android:textColor="@color/text_main"
-                    android:textSize="12sp"
-                    android:fontFamily="sans-serif-medium" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- ============ SERVICES EYEBROW (mirrors the website's section-title pattern) ============ -->
-        <TextView
-            android:id="@+id/servicesEyebrow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="14dp"
-            android:layout_marginBottom="8dp"
-            android:text="मुख्य सेवाएँ"
-            android:textColor="@color/india_green"
-            android:fontFamily="sans-serif-medium"
-            android:textAllCaps="true"
-            android:letterSpacing="0.04"
-            android:textSize="11.5sp" />
-
-        <!-- ============ CHECK MESSAGE CARD ============ -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/bg_card_accent"
-            android:layout_marginHorizontal="14dp"
-            android:layout_marginBottom="14dp"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
+                android:background="@drawable/bg_card_round_yellow"
+                android:layout_marginHorizontal="14dp"
+                android:layout_marginBottom="16dp"
+                android:padding="14dp"
+                android:clickable="true"
+                android:focusable="true">
 
                 <FrameLayout
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:background="@drawable/bg_icon_chip">
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_icon_round_green">
 
                     <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_mail"
-                        android:tint="@color/white"
+                        android:src="@drawable/ic_qr"
+                        android:tint="@color/accent_amber"
                         android:contentDescription="@null" />
                 </FrameLayout>
 
-                <TextView
-                    android:id="@+id/checkLabel"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="12dp"
-                    android:text="Paste a message to check"
-                    android:textColor="@color/text_main"
-                    android:fontFamily="sans-serif-medium"
-                    android:textSize="14.5sp" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/cardQrTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Check QR"
+                        android:textColor="@color/text_main"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="14.5sp" />
+
+                    <TextView
+                        android:id="@+id/cardQrDesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Scan before you pay"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11.5sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_chevron_right"
+                    android:tint="@color/text_muted"
+                    android:contentDescription="@null" />
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/messageInput"
-                android:layout_width="match_parent"
-                android:layout_height="96dp"
-                android:background="@drawable/bg_input"
-                android:gravity="top|start"
-                android:padding="12dp"
-                android:hint="Paste SMS text here..."
-                android:textColorHint="@color/text_muted"
-                android:inputType="textMultiLine"
-                android:textSize="14sp"
-                android:textColor="@color/text_main" />
-
-            <Button
-                android:id="@+id/checkBtn"
-                android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/bg_btn_primary"
-                android:text="Check message"
-                android:textAllCaps="false"
-                android:textColor="@color/on_saffron"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="14.5sp"
-                android:stateListAnimator="@null" />
-
+            <!-- ============ SECONDARY: REPORT / LEARN / TRENDS ============ -->
             <LinearLayout
-                android:id="@+id/resultBanner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:background="@drawable/bg_banner"
-                android:layout_marginTop="14dp"
-                android:padding="12dp"
-                android:gravity="center_vertical"
-                android:visibility="gone">
+                android:layout_marginHorizontal="14dp"
+                android:layout_marginBottom="16dp"
+                android:weightSum="3">
 
-                <ImageView
-                    android:id="@+id/resultIcon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_check_circle"
-                    android:contentDescription="@null" />
-
-                <TextView
-                    android:id="@+id/resultText"
+                <LinearLayout
+                    android:id="@+id/cardReport"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="10dp"
-                    android:textSize="13.5sp"
-                    android:fontFamily="sans-serif-medium" />
+                    android:layout_marginEnd="5dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_white_round"
+                    android:padding="10dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <FrameLayout
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_card_round_yellow">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_flag"
+                            android:tint="@color/accent_amber"
+                            android:contentDescription="@null" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/cardReportTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Report Fraud"
+                        android:textColor="@color/text_main"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="12.5sp" />
+
+                    <TextView
+                        android:id="@+id/cardReportDesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="1930, cybercrime.gov.in"
+                        android:textColor="@color/text_muted"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/cardLearn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="5dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_white_round"
+                    android:padding="10dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <FrameLayout
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_card_round_blue">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_book"
+                            android:tint="@color/accent_blue"
+                            android:contentDescription="@null" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/cardLearnTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Safety Lessons"
+                        android:textColor="@color/text_main"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="12.5sp" />
+
+                    <TextView
+                        android:id="@+id/cardLearnDesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Short lessons &amp; tips"
+                        android:textColor="@color/text_muted"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/cardTrends"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_card_white_round"
+                    android:padding="10dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <FrameLayout
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_card_round_green">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_trend_up"
+                            android:tint="@color/primary"
+                            android:contentDescription="@null" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/cardTrendsTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Scam Trends"
+                        android:textColor="@color/text_main"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="12.5sp" />
+
+                    <TextView
+                        android:id="@+id/cardTrendsDesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="What's trending near you"
+                        android:textColor="@color/text_muted"
+                        android:textSize="10sp" />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
-        <!-- ============ QR CHECKER CARD ============ -->
-        <LinearLayout
-            android:id="@+id/qrCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/bg_card_accent"
-            android:layout_marginHorizontal="14dp"
-            android:layout_marginBottom="14dp"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="16dp"
-            android:clickable="true"
-            android:focusable="true">
-
-            <FrameLayout
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:background="@drawable/bg_icon_chip">
-
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_qr"
-                    android:tint="@color/white"
-                    android:contentDescription="@null" />
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/qrCardLabel"
-                android:layout_width="0dp"
+            <!-- ============ EMERGENCY BANNER ============ -->
+            <LinearLayout
+                android:id="@+id/emergencyCard"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:text="QR Code Checker"
-                android:textColor="@color/text_main"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="14.5sp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_card_round_yellow"
+                android:layout_marginHorizontal="14dp"
+                android:layout_marginBottom="20dp"
+                android:padding="14dp"
+                android:clickable="true"
+                android:focusable="true">
 
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_chevron_right"
-                android:tint="@color/text_muted"
-                android:contentDescription="@null" />
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_icon_round_green">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_phone"
+                        android:tint="@color/danger"
+                        android:contentDescription="@null" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/emergencyTitleText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Need immediate help?"
+                        android:textColor="@color/text_main"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="13.5sp" />
+
+                    <TextView
+                        android:id="@+id/emergencySubtitleText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Call the National Cybercrime Helpline"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11.5sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_badge_risk"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:text="1930"
+                    android:textColor="@color/white"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
         </LinearLayout>
+    </ScrollView>
 
-        <!-- ============ HISTORY ============ -->
-        <TextView
-            android:id="@+id/historyLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="14dp"
-            android:layout_marginBottom="8dp"
-            android:text="Recent activity"
-            android:textColor="@color/text_main"
-            android:fontFamily="sans-serif-medium"
-            android:textSize="14.5sp" />
+    <include
+        android:id="@+id/navBottom"
+        layout="@layout/nav_bottom" />
 
-        <LinearLayout
-            android:id="@+id/historyList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginHorizontal="14dp"
-            android:layout_marginBottom="24dp" />
-
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>

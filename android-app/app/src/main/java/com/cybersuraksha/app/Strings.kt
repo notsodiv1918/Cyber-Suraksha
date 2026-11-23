@@ -34,6 +34,7 @@ object T {
     val checkLabel get() = pick("Paste a message to check", "जाँचने हेतु मैसेज पेस्ट करें", "जाँचे बर मैसेज पेस्ट करव")
     val hint get() = pick("Paste SMS text here...", "यहाँ SMS टेक्स्ट पेस्ट करें...", "इहाँ SMS टेक्स्ट पेस्ट करव...")
     val checkBtn get() = pick("Check message", "मैसेज जाँचें", "मैसेज जाँचव")
+    val checkCallBtn get() = pick("Check Call", "कॉल जाँचें", "कॉल जाँचव")
     val historyLabel get() = pick("Recent activity", "हाल की गतिविधि", "हाल के गतिविधि")
     val qrCardLabel get() = pick("QR Code Checker — scan before you pay", "QR कोड चेकर — भुगतान से पहले स्कैन करें", "QR कोड चेकर — भुगतान के पहिली स्कैन करव")
     val emptyHistory get() = pick(
@@ -115,4 +116,155 @@ object T {
     val qrSevCaution get() = pick("Caution", "सावधानी", "सावधानी")
     val qrSevInfo get() = pick("Info", "जानकारी", "जानकारी")
     val qrFieldsNone get() = pick("No decoded fields.", "कोई डिकोडेड फ़ील्ड नहीं।", "कोनो डिकोडेड फील्ड नइहे।")
+
+    // ---- bottom nav ----
+    val navHome get() = pick("Home", "होम", "होम")
+    val navDetect get() = pick("Detect", "जाँच", "जाँच")
+    val navLearn get() = pick("Learn", "सीखें", "सीखव")
+    val navReport get() = pick("Report", "शिकायत", "शिकायत")
+    val navMore get() = pick("More", "अधिक", "अउ")
+
+    // ---- home: header / hero ----
+    val headerSubtitle get() = pick("Digital Financial Literacy", "डिजिटल वित्तीय साक्षरता", "डिजिटल वित्तीय साक्षरता")
+    val heroTitle get() = pick("Stay safe from\ndigital fraud", "डिजिटल धोखाधड़ी से\nसुरक्षित रहें", "डिजिटल धोखाधड़ी ले\nसुरक्षित रहव")
+    val heroSubtitle get() = pick(
+        "Check messages, calls and QR codes for scams — fully on your device, even offline.",
+        "स्कैम हेतु मैसेज, कॉल एवं QR कोड जाँचें — पूरी तरह आपके डिवाइस पर, ऑफ़लाइन भी।",
+        "स्कैम बर मैसेज, कॉल अउ QR कोड जाँचव — पूरा आपके डिवाइस म, ऑफ़लाइन घलो।"
+    )
+    val howToUseTitle get() = pick("How to use", "कैसे उपयोग करें", "कइसे उपयोग करव")
+    val howToUseStep1 get() = pick("Paste or scan", "पेस्ट या स्कैन करें", "पेस्ट या स्कैन करव")
+    val howToUseStep2 get() = pick("We check it on-device", "हम डिवाइस पर ही जाँचते हैं", "हम डिवाइस म ही जाँचथन")
+    val howToUseStep3 get() = pick("See the verdict instantly", "तुरंत परिणाम देखें", "तुरते परिणाम देखव")
+
+    val detectMessageTitle get() = pick("Check Message", "मैसेज जाँचें", "मैसेज जाँचव")
+    val detectMessageDesc get() = pick("Detect scam SMS or WhatsApp", "स्कैम SMS या व्हाट्सऐप पहचानें", "स्कैम SMS या व्हाट्सऐप पहिचानव")
+    val detectCallTitle get() = pick("Check Call", "कॉल जाँचें", "कॉल जाँचव")
+    val detectCallDesc get() = pick("Analyse a suspicious call", "संदिग्ध कॉल का विश्लेषण करें", "संदेहास्पद कॉल के विश्लेषण करव")
+    val detectQrTitle get() = pick("Check QR", "QR जाँचें", "QR जाँचव")
+    val detectQrDesc get() = pick("Scan before you pay", "भुगतान से पहले स्कैन करें", "भुगतान के पहिली स्कैन करव")
+
+    val reportFraudTitle get() = pick("Report Fraud", "धोखाधड़ी की शिकायत", "धोखाधड़ी के शिकायत")
+    val reportFraudDesc get() = pick("1930, cybercrime.gov.in, Chakshu", "1930, cybercrime.gov.in, चक्षु", "1930, cybercrime.gov.in, चक्षु")
+    val safetyLessonsTitle get() = pick("Safety Lessons", "सुरक्षा पाठ", "सुरक्षा पाठ")
+    val safetyLessonsDesc get() = pick("Short lessons & tips", "छोटे पाठ एवं सुझाव", "छोटे पाठ अउ सुझाव")
+    val scamTrendsTitle get() = pick("Scam Trends", "स्कैम ट्रेंड", "स्कैम ट्रेंड")
+    val scamTrendsDesc get() = pick("What's trending in your area", "आपके क्षेत्र में क्या चल रहा है", "आपके इलाका म का चलत हे")
+
+    val emergencyTitle get() = pick("Need immediate help?", "तुरंत मदद चाहिए?", "तुरते मदद चाही?")
+    val emergencySubtitle get() = pick(
+        "Call the National Cybercrime Helpline",
+        "राष्ट्रीय साइबर अपराध हेल्पलाइन पर कॉल करें",
+        "राष्ट्रीय साइबर अपराध हेल्पलाइन म कॉल करव"
+    )
+
+    // ---- message / call detector screens ----
+    val msgDetectorTitle get() = pick("Message Detector", "मैसेज डिटेक्टर", "मैसेज डिटेक्टर")
+    val msgDetectorHeading get() = pick("Check if a message is a scam", "जाँचें कि मैसेज स्कैम है या नहीं", "जाँचव कि मैसेज स्कैम हे या नइ")
+    val msgDetectorSub get() = pick(
+        "Paste any SMS, WhatsApp message or link below.",
+        "नीचे कोई भी SMS, व्हाट्सऐप मैसेज या लिंक पेस्ट करें।",
+        "तरी कोनो भी SMS, व्हाट्सऐप मैसेज या लिंक पेस्ट करव।"
+    )
+    val msgPlaceholder get() = pick("Paste the message here...", "यहाँ मैसेज पेस्ट करें...", "इहाँ मैसेज पेस्ट करव...")
+    val callDetectorTitle get() = pick("Call Detector", "कॉल डिटेक्टर", "कॉल डिटेक्टर")
+    val callDetectorHeading get() = pick("Check if a call is a scam", "जाँचें कि कॉल स्कैम है या नहीं", "जाँचव कि कॉल स्कैम हे या नइ")
+    val callDetectorSub get() = pick(
+        "Paste or type what the caller said, as best you remember.",
+        "कॉलर ने जो कहा वह जितना याद हो, पेस्ट या टाइप करें।",
+        "कॉलर जे कहिस ओ जतका याद हे, पेस्ट या टाइप करव।"
+    )
+    val callPlaceholder get() = pick("Type the call transcript here...", "यहाँ कॉल का विवरण टाइप करें...", "इहाँ कॉल के बात टाइप करव...")
+    val trySample get() = pick("Try a sample message", "उदाहरण मैसेज आज़माएँ", "उदाहरण मैसेज आजमाव")
+    val trySampleCall get() = pick("Try a sample call script", "उदाहरण कॉल स्क्रिप्ट आज़माएँ", "उदाहरण कॉल स्क्रिप्ट आजमाव")
+    val charCount get() = pick("characters", "अक्षर", "अक्षर")
+
+    val sampleKyc get() = pick("Your KYC update is pending, click the link now or your account will be blocked.", "आपका KYC अपडेट लंबित है, अभी लिंक पर क्लिक करें वरना खाता ब्लॉक हो जाएगा।", "आपके KYC अपडेट लंबित हे, अभी लिंक म क्लिक करव नइते खाता ब्लॉक हो जाही।")
+    val samplePrize get() = pick("Congratulations! You won ₹25,00,000 in a lucky draw. Share OTP to claim.", "बधाई हो! आपने लकी ड्रॉ में ₹25,00,000 जीते हैं। दावा करने हेतु OTP साझा करें।", "बधाई हो! तुमन लकी ड्रॉ म ₹25,00,000 जीतेव। दावा करे बर OTP बताव।")
+    val sampleCourier get() = pick("Your parcel is held at customs. Pay ₹499 fine immediately to release it.", "आपका पार्सल कस्टम में रुका है। इसे छुड़ाने हेतु तुरंत ₹499 जुर्माना भरें।", "तुम्हर पार्सल कस्टम म रुकेहे। ए ला छोड़ाय बर तुरते ₹499 जुर्माना भरव।")
+    val sampleArrest get() = pick("This is TRAI. Your number is linked to illegal activity. Stay on the line or face digital arrest.", "यह TRAI है। आपका नंबर अवैध गतिविधि से जुड़ा है। लाइन पर बने रहें वरना डिजिटल अरेस्ट होगा।", "ए TRAI हे। तुम्हर नंबर अवैध काम ले जुड़े हे। लाइन म बने रहव नइते डिजिटल अरेस्ट होही।")
+    val sampleOtpCall get() = pick("Sir, this is your bank. Your card is blocked, please tell me the OTP you just received to unblock it.", "सर, मैं आपका बैंक बोल रहा हूँ। आपका कार्ड ब्लॉक हो गया है, अनब्लॉक करने हेतु अभी आया OTP बताइए।", "सर, मैं तुम्हर बैंक बोलत हंव। तुम्हर कार्ड ब्लॉक हो गे हे, अनब्लॉक करे बर अभी आय OTP बताव।")
+    val sampleBankGenuine get() = pick("Rs 500 debited from your account on 12-Jun for UPI txn. Avl bal Rs 4,200.", "आपके खाते से 12-जून को UPI लेनदेन हेतु ₹500 कटे। उपलब्ध शेष ₹4,200।", "तुम्हर खाता ले 12-जून ल UPI लेनदेन बर ₹500 कटिस। उपलब्ध शेष ₹4,200।")
+
+    // ---- result ----
+    val resultLikelyScam get() = pick("Likely Scam", "संभावित स्कैम", "संभावित स्कैम")
+    val resultSuspicious get() = pick("Suspicious", "संदिग्ध", "संदेहास्पद")
+    val resultGenuine get() = pick("Appears Genuine", "असली प्रतीत होता है", "असली लगथे")
+    val riskScore get() = pick("Risk Score", "जोखिम स्कोर", "जोखिम स्कोर")
+    val whySuspicious get() = pick("Why it's suspicious?", "यह संदिग्ध क्यों है?", "ए संदेहास्पद काबर हे?")
+    val whySafe get() = pick("No known red flags found in this text.", "इस टेक्स्ट में कोई ज्ञात खतरे का संकेत नहीं मिला।", "ए टेक्स्ट म कोनो जानत खतरा के संकेत नइ मिलिस।")
+    val reportThis get() = pick("Report This", "रिपोर्ट करें", "रिपोर्ट करव")
+    val checkAnother get() = pick("Check Another", "दूसरा जाँचें", "दूसर जाँचव")
+    val onDeviceNote get() = pick(
+        "Analysed on your device. No message is sent to the internet.",
+        "आपके डिवाइस पर विश्लेषित। कोई मैसेज इंटरनेट पर नहीं भेजा गया।",
+        "तुम्हर डिवाइस म विश्लेषित। कोनो मैसेज इंटरनेट म नइ भेजे गिस।"
+    )
+
+    // ---- per-screen history ----
+    val historyMessages get() = pick("Recent message checks", "हाल की मैसेज जाँच", "हाल के मैसेज जाँच")
+    val historyCalls get() = pick("Recent call checks", "हाल की कॉल जाँच", "हाल के कॉल जाँच")
+    val historyQr get() = pick("Recent QR checks", "हाल की QR जाँच", "हाल के QR जाँच")
+    val emptyHistoryMessages get() = pick(
+        "No messages checked yet — incoming SMS will appear here automatically.",
+        "अभी तक कोई मैसेज नहीं जाँचा गया — आने वाले SMS यहाँ अपने-आप दिखेंगे।",
+        "अभी तक कोनो मैसेज नइ जाँचे गिस — आवत SMS इहाँ अपने आप देखाही।"
+    )
+    val emptyHistoryCalls get() = pick(
+        "No calls checked yet — screened calls will appear here automatically.",
+        "अभी तक कोई कॉल नहीं जाँची गई — स्क्रीन की गई कॉलें यहाँ अपने-आप दिखेंगी।",
+        "अभी तक कोनो कॉल नइ जाँचे गिस — स्क्रीन करे गे कॉल इहाँ अपने आप देखाही।"
+    )
+    val emptyHistoryQr get() = pick("No QR codes checked yet.", "अभी तक कोई QR कोड नहीं जाँचा गया।", "अभी तक कोनो QR कोड नइ जाँचे गिस।")
+    val callUnscreened get() = pick("Not yet checked", "अभी तक नहीं जाँची गई", "अभी तक नइ जाँचे गिस")
+
+    // ---- report / emergency screen ----
+    val reportTitle get() = pick("Report Fraud", "धोखाधड़ी की शिकायत", "धोखाधड़ी के शिकायत")
+    val reportSub get() = pick("Lost money or spotted a scam? Report it right away.", "पैसे गँवाए या स्कैम दिखा? तुरंत शिकायत करें।", "पइसा गंवायेव या स्कैम दिखिस? तुरते शिकायत करव।")
+    val report1930Title get() = pick("National Cybercrime Helpline", "राष्ट्रीय साइबर अपराध हेल्पलाइन", "राष्ट्रीय साइबर अपराध हेल्पलाइन")
+    val report1930Desc get() = pick(
+        "Call 1930 immediately if you lost money — banks can freeze transactions within the Golden Hour.",
+        "पैसे गँवाने पर तुरंत 1930 पर कॉल करें — बैंक 'गोल्डन ऑवर' में लेनदेन रोक सकते हैं।",
+        "पइसा गंवाय म तुरते 1930 म कॉल करव — बैंक 'गोल्डन आवर' म लेनदेन रोक सकथें।"
+    )
+    val reportCallBtn get() = pick("Call 1930", "1930 पर कॉल करें", "1930 म कॉल करव")
+    val reportPortalTitle get() = pick("cybercrime.gov.in", "cybercrime.gov.in", "cybercrime.gov.in")
+    val reportPortalDesc get() = pick(
+        "File a detailed complaint on the official National Cybercrime Reporting Portal.",
+        "आधिकारिक राष्ट्रीय साइबर अपराध रिपोर्टिंग पोर्टल पर विस्तृत शिकायत दर्ज करें।",
+        "आधिकारिक राष्ट्रीय साइबर अपराध रिपोर्टिंग पोर्टल म विस्तृत शिकायत दर्ज करव।"
+    )
+    val reportOpenBtn get() = pick("Open portal", "पोर्टल खोलें", "पोर्टल खोलव")
+    val reportChakshuTitle get() = pick("Chakshu (fraud call/SMS)", "चक्षु (फ्रॉड कॉल/SMS)", "चक्षु (फ्रॉड कॉल/SMS)")
+    val reportChakshuDesc get() = pick(
+        "Report a fraud communication (call/SMS) to DoT's Chakshu portal within 30 days.",
+        "DoT के चक्षु पोर्टल पर फ्रॉड कॉल/SMS की शिकायत 30 दिनों के भीतर दर्ज करें।",
+        "DoT के चक्षु पोर्टल म फ्रॉड कॉल/SMS के शिकायत 30 दिन के भीतर दर्ज करव।"
+    )
+
+    // ---- learn screen ----
+    val learnTitle get() = pick("Safety Lessons", "सुरक्षा पाठ", "सुरक्षा पाठ")
+    val filterAll get() = pick("All", "सभी", "सब्भो")
+    val filterUpi get() = pick("UPI & Payments", "UPI एवं भुगतान", "UPI अउ भुगतान")
+    val filterKyc get() = pick("KYC", "KYC", "KYC")
+    val filterCalls get() = pick("Fraud Calls", "फ्रॉड कॉल", "फ्रॉड कॉल")
+
+    // ---- scam trends screen ----
+    val trendsTitle get() = pick("Scam Trends", "स्कैम ट्रेंड", "स्कैम ट्रेंड")
+    val trendsRegionAll get() = pick("All Chhattisgarh", "संपूर्ण छत्तीसगढ़", "पूरा छत्तीसगढ़")
+    val trendsHeading get() = pick("Top scam types in your area", "आपके क्षेत्र में शीर्ष स्कैम प्रकार", "आपके इलाका म शीर्ष स्कैम किसिम")
+    fun trendsNote(total: Int) = pick(
+        "Based on $total real complaint records (NCRP). District split is proportionally synthesised — see About.",
+        "$total वास्तविक शिकायत रिकॉर्ड (NCRP) पर आधारित। जिलेवार विभाजन आनुपातिक रूप से संश्लेषित है — परिचय देखें।",
+        "$total वास्तविक शिकायत रिकॉर्ड (NCRP) म आधारित। जिलावार बँटवारा संश्लेषित हे — परिचय देखव।"
+    )
+
+    // ---- more / protection status screen ----
+    val moreTitle get() = pick("More", "अधिक", "अउ")
+    val aboutTitle get() = pick("About this app", "इस ऐप के बारे में", "ए ऐप के बारे म")
+    val aboutDesc get() = pick(
+        "Cyber Suraksha is an offline, on-device scam detector for SMS, calls and QR codes — a hackathon prototype, not an official government app.",
+        "साइबर सुरक्षा SMS, कॉल एवं QR कोड हेतु एक ऑफ़लाइन, ऑन-डिवाइस स्कैम डिटेक्टर है — यह एक हैकाथॉन प्रोटोटाइप है, आधिकारिक सरकारी ऐप नहीं।",
+        "साइबर सुरक्षा SMS, कॉल अउ QR कोड बर एक ऑफ़लाइन, ऑन-डिवाइस स्कैम डिटेक्टर हे — ए एक हैकाथॉन प्रोटोटाइप हे, आधिकारिक सरकारी ऐप नइ।"
+    )
 }

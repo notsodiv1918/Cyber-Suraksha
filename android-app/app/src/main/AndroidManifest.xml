@@ -31,6 +31,36 @@
             android:exported="false"
             android:label="@string/app_name" />
 
+        <activity
+            android:name=".MessageDetectorActivity"
+            android:exported="false"
+            android:label="@string/app_name" />
+
+        <activity
+            android:name=".CallDetectorActivity"
+            android:exported="false"
+            android:label="@string/app_name" />
+
+        <activity
+            android:name=".ReportActivity"
+            android:exported="false"
+            android:label="@string/app_name" />
+
+        <activity
+            android:name=".LearnActivity"
+            android:exported="false"
+            android:label="@string/app_name" />
+
+        <activity
+            android:name=".DashboardActivity"
+            android:exported="false"
+            android:label="@string/app_name" />
+
+        <activity
+            android:name=".MoreActivity"
+            android:exported="false"
+            android:label="@string/app_name" />
+
         <receiver
             android:name=".SmsReceiver"
             android:exported="true"

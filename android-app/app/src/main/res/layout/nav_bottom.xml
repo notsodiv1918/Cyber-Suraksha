@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_nav_bar"
+    android:orientation="horizontal"
+    android:paddingTop="8dp"
+    android:paddingBottom="10dp">
+
+    <LinearLayout
+        android:id="@+id/navHome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:src="@drawable/ic_home"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="Home"
+            android:textSize="10.5sp"
+            android:fontFamily="sans-serif-medium" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/navDetect"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:src="@drawable/ic_search"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="Detect"
+            android:textSize="10.5sp"
+            android:fontFamily="sans-serif-medium" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/navLearn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:src="@drawable/ic_book"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="Learn"
+            android:textSize="10.5sp"
+            android:fontFamily="sans-serif-medium" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/navReport"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:src="@drawable/ic_flag"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="Report"
+            android:textSize="10.5sp"
+            android:fontFamily="sans-serif-medium" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/navMore"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:src="@drawable/ic_grid"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="More"
+            android:textSize="10.5sp"
+            android:fontFamily="sans-serif-medium" />
+    </LinearLayout>
+
+</LinearLayout>

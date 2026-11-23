@@ -72,8 +72,14 @@ class QrCheckActivity : AppCompatActivity() {
         b.camStopBtn.setOnClickListener { stopCamera() }
         b.uploadBtn.setOnClickListener { pickImage.launch("image/*") }
 
+        NavBar.wire(this, b.navBottom.root, NavBar.Tab.NONE)
         applyLanguage()
         showTab(camera = true)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        renderHistory()
     }
 
     private fun applyLanguage() {
@@ -86,17 +92,24 @@ class QrCheckActivity : AppCompatActivity() {
         b.camStopBtn.text = T.qrStopCamera
         b.uploadBtn.text = T.qrUploadBtn
         b.qrScanHintText.text = T.qrScanHint
+        b.historyLabel.text = T.historyQr
+        NavBar.wire(this, b.navBottom.root, NavBar.Tab.NONE)
+        renderHistory()
+    }
+
+    private fun renderHistory() {
+        HistoryView.render(this, b.historyList, setOf("qr"), T.emptyHistoryQr)
     }
 
     private fun showTab(camera: Boolean) {
         b.cameraPanel.visibility = if (camera) View.VISIBLE else View.GONE
         b.uploadPanel.visibility = if (camera) View.GONE else View.VISIBLE
-        val activeBg = R.drawable.bg_btn_primary
-        val inactiveBg = R.drawable.bg_btn_outline
+        val activeBg = R.drawable.bg_btn_primary_green
+        val inactiveBg = R.drawable.bg_btn_outline_green
         b.tabCamera.setBackgroundResource(if (camera) activeBg else inactiveBg)
-        b.tabCamera.setTextColor(ContextCompat.getColor(this, if (camera) R.color.on_saffron else R.color.text_main))
+        b.tabCamera.setTextColor(ContextCompat.getColor(this, if (camera) R.color.white else R.color.text_main))
         b.tabUpload.setBackgroundResource(if (camera) inactiveBg else activeBg)
-        b.tabUpload.setTextColor(ContextCompat.getColor(this, if (camera) R.color.text_main else R.color.on_saffron))
+        b.tabUpload.setTextColor(ContextCompat.getColor(this, if (camera) R.color.text_main else R.color.white))
         if (!camera) stopCamera()
     }
 
@@ -200,6 +213,7 @@ class QrCheckActivity : AppCompatActivity() {
             QrVerdict.WARN -> "suspicious"
             QrVerdict.SAFE -> "genuine"
         }, System.currentTimeMillis()))
+        renderHistory()
 
         val style = when (result.verdict) {
             QrVerdict.DANGER -> QrVerdictStyle(R.color.danger_bg, R.color.danger, R.drawable.ic_x_circle, T.qrVerdictDanger)
