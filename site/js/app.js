@@ -92,11 +92,25 @@
     });
   }
 
+  // Offline support: once a page has loaded here at least once, the service worker serves the
+  // core site (this page's HTML/CSS/JS plus the trained model) from cache with no network at
+  // all next time — see sw.js for exactly what it does and doesn't cover. Service workers only
+  // run on https:// or http://localhost, so this silently does nothing when the site is opened
+  // as a plain file:// page or over plain http on a non-localhost host.
+  function initOfflineCache() {
+    if (!("serviceWorker" in navigator)) return;
+    const swUrl = (location.pathname.indexOf("/pages/") !== -1 ? "../" : "") + "sw.js";
+    navigator.serviceWorker.register(swUrl).catch(() => {
+      // offline caching is a bonus, not a requirement — never block the page on this
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     initLang();
     initTextSize();
     initNavToggle();
     initEmergencyWidget();
     initTabs();
+    initOfflineCache();
   });
 })();

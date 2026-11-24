@@ -334,6 +334,18 @@ object T {
         "सुने बर माइक्रोफोन अनुमति चाही।"
     )
     val listening get() = pick("Listening…", "सुन रहा है…", "सुनत हे…")
+    val offlineVoiceTitle get() = pick("Offline voice pack", "ऑफ़लाइन आवाज़ पैक", "ऑफलाइन आवाज पैक")
+    val offlineVoiceDesc get() = pick(
+        "\"Speak instead\" and live call warning use your phone's on-device Hindi speech model when it's downloaded — fully offline, no mobile data used. If it's not downloaded yet, they fall back to using mobile data just this once. Download the Hindi voice pack below for guaranteed offline use.",
+        "\"बोलकर जाँचें\" एवं लाइव कॉल चेतावनी आपके फ़ोन के ऑन-डिवाइस हिन्दी वॉइस मॉडल का उपयोग करते हैं जब वह डाउनलोड हो — पूरी तरह ऑफ़लाइन, कोई मोबाइल डेटा नहीं। अभी डाउनलोड न हुआ हो तो केवल इस बार मोबाइल डेटा उपयोग होता है। पूरी तरह ऑफ़लाइन उपयोग हेतु नीचे हिन्दी वॉइस पैक डाउनलोड करें।",
+        "\"बोलके जाँचव\" अउ लाइव कॉल चेतावनी आपके फोन के ऑन-डिवाइस हिन्दी वॉइस मॉडल के उपयोग करथें जब वो डाउनलोड होय — पूरा ऑफलाइन, कोनो मोबाइल डेटा नइ। अभी डाउनलोड नइ होय त सिर्फ ए बेर मोबाइल डेटा उपयोग होथे। पूरा ऑफलाइन उपयोग बर नीचे हिन्दी वॉइस पैक डाउनलोड करव।"
+    )
+    val openVoiceSettingsBtn get() = pick("Open voice input settings", "आवाज़ इनपुट सेटिंग खोलें", "आवाज इनपुट सेटिंग खोलव")
+    val voiceSettingsUnavailable get() = pick(
+        "Couldn't open voice settings on this device — check Settings > System > Languages.",
+        "इस डिवाइस पर आवाज़ सेटिंग नहीं खुल सकी — सेटिंग्स > सिस्टम > भाषाएँ में देखें।",
+        "ए डिवाइस म आवाज सेटिंग नइ खुलिस — सेटिंग्स > सिस्टम > भाषा म देखव।"
+    )
     val listenBtn get() = pick("Listen", "सुनें", "सुनव")
     fun ttsVerdictScam(pct: Int) = pick(
         "Warning. This looks like a scam. Risk score $pct percent.",

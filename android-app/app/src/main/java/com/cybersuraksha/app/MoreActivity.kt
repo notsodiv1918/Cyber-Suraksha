@@ -2,6 +2,7 @@ package com.cybersuraksha.app
 
 import android.app.role.RoleManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -59,6 +60,17 @@ class MoreActivity : AppCompatActivity() {
             }
         }
 
+        b.openVoiceSettingsBtn.setOnClickListener {
+            try {
+                startActivity(Intent(android.provider.Settings.ACTION_VOICE_INPUT_SETTINGS))
+            } catch (e: Exception) {
+                try {
+                    startActivity(Intent(android.provider.Settings.ACTION_SETTINGS))
+                } catch (e2: Exception) {
+                    Toast.makeText(this, T.voiceSettingsUnavailable, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
         b.trustedContactNameInput.setText(TrustedContact.getName(this))
         b.trustedContactNumberInput.setText(TrustedContact.getNumber(this))
         b.trustedContactSaveBtn.setOnClickListener {
@@ -87,6 +99,9 @@ class MoreActivity : AppCompatActivity() {
         b.callEnableBtn.text = T.enable
         b.liveWarningTitle.text = T.liveCallWarningTitle
         b.liveWarningDesc.text = T.liveCallWarningDesc
+        b.offlineVoiceTitle.text = T.offlineVoiceTitle
+        b.offlineVoiceDesc.text = T.offlineVoiceDesc
+        b.openVoiceSettingsBtnText.text = T.openVoiceSettingsBtn
         b.trustedContactTitle.text = T.trustedContactTitle
         b.trustedContactDesc.text = T.trustedContactDesc
         b.trustedContactNameInput.hint = T.trustedContactNameHint

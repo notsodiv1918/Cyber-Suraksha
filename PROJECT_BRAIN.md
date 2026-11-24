@@ -242,7 +242,82 @@ works" banner, report.html's share-box hint) rather than only here.
 
 ---
 
+## 8. Offline status, feature by feature (audited directly, not assumed)
+
+The user asked: is the website realistically offline-capable, or should the app be the one thing
+that's guaranteed to work with no connection — and if so, make sure every app feature actually is.
+Audited each feature directly (reading the code, and for the app, confirming via live `adb logcat`
+where it mattered) rather than assuming from the project's "offline" pitch:
+
+**Android app — already fully offline, confirmed:**
+- Message/call text classification (`Classifier.kt`, bundled `model.json` in assets).
+- Photo/video OCR (ML Kit's bundled on-device Latin+Devanagari models, no network).
+- QR code scanning/analysis (ML Kit's bundled barcode model + `QrAnalyzer.kt`).
+- SMS auto-scan, call screening, Scam Trends dashboard (bundled `dashboard.json`), Safety Lessons,
+  trusted-contact dial, and the new shareable warning-image poster (local `Bitmap` + `FileProvider`
+  — only the user's own choice to then actually send it via WhatsApp needs network, same as sending
+  any file ever does).
+- Text-to-speech ("सुनें") — confirmed via `adb logcat` that it reads local
+  `.../com.google.android.tts/files/superpacks/...` files, not the network.
+
+**Android app — offline when the on-device language pack is downloaded, else a one-time fallback
+to mobile data (both now handled honestly, not silently):**
+- Voice input ("बोलकर जाँचें", `VoiceInput.kt`) and live call warning (`LiveCallWarningService.kt`)
+  both set `EXTRA_PREFER_OFFLINE=true` and only fall back toward network recognition if the
+  on-device Hindi/English speech model isn't available at that moment — confirmed via live testing
+  that this genuinely happens on real devices (Google Play Services downloads these packs lazily,
+  and reported it unavailable intermittently even right after a previous successful attempt).
+  Added a new **"Offline voice pack"** card on the More screen (`MoreActivity`) explaining this
+  plainly and a button opening `Settings.ACTION_VOICE_INPUT_SETTINGS` so the user can download the
+  pack once for guaranteed fully-offline voice input from then on.
+
+**Android app — intentionally online, by design, already documented (§7):** the opt-in "share with
+district" new-scam-pattern alert (needs a server to cluster *other people's* reports — fundamentally
+can't be on-device), and actually following the Report screen's 1930/cybercrime.gov.in/Chakshu
+links (visiting them needs network, same as any link).
+
+**Website — NOT realistically a fully-offline experience, for reasons that are platform limits, not
+code gaps:** the Web Speech API (mic input) sends audio to a cloud recognition service in every
+mainstream desktop/mobile browser — there's no public browser API for on-device speech recognition
+the way Android's `SpeechRecognizer` has one, so the website's mic/voice features can **never** be
+offline, on any device, no matter what's added here. OCR currently loads `tesseract.js` from a CDN,
+and fonts load from Google Fonts — both fixable by self-hosting, not done this round (scoped out,
+see below). The scam-trend dashboard's district alerts and the backend-dependent report-sharing are
+also inherently online (§7, already documented) on the website same as the app.
+**What *was* added**: a service worker (`site/sw.js`, registered from the shared `js/app.js` so
+every page gets it with one edit) that precaches the core same-origin pages/CSS/JS/`model.json` on
+first visit and serves them from cache with zero network afterward — so the plain paste-and-check
+flow on `detector.html`/`call-checker.html`/`qr-checker.html` (and Learn/Report/the new poster page)
+keeps working if the connection drops *after* a first visit. This is a genuine, if partial,
+improvement — it does **not** cover a true first-ever offline visit, the CDN-hosted OCR engine,
+Google Fonts, or (per the above) the mic button, which stays online-only everywhere, forever, by
+browser design. **Recommendation given to the user**: treat the Android app as the one thing to
+promise rural users is 100%-offline (it already essentially is, including voice input once the
+pack is downloaded) — the website is better framed as the awareness/demo/sharing surface (the
+posters, the dashboard, onboarding material), not an offline guarantee.
+
+---
+
 ## Change Log (newest first)
+
+- **Audited offline capability end-to-end (per the user's "make sure the model/app works offline,
+  and tell me honestly whether the website can too" ask) and added the two concrete gaps found.**
+  See §8 above for the full per-feature audit; summary of what actually changed in this pass:
+  1. **Website**: added `site/sw.js` (a service worker precaching the core same-origin pages, CSS,
+     JS and `model.json`) registered from `js/app.js` so it's live on every page with one shared
+     edit — the paste-and-check flow keeps working offline after a first visit. Explicitly did
+     *not* oversell this: the mic button stays online-only on the web forever (a real browser
+     platform limit, not fixable here), and CDN-hosted OCR/fonts weren't self-hosted this round.
+  2. **Android**: added a "Offline voice pack" card to the More screen explaining, plainly, that
+     voice input and live-call-warning are offline once the device's Hindi/English speech model is
+     downloaded (and fall back to mobile data just once if it isn't yet), with a button opening
+     `Settings.ACTION_VOICE_INPUT_SETTINGS` — confirmed opens the real system screen live on-device,
+     no crash. No code changes were needed elsewhere since the rest of the app's features were
+     already confirmed offline in the prior session's audit.
+  3. **Recommendation given directly to the user**: the Android app is the thing to promise as
+     100%-offline to rural users; the website is better positioned as the awareness/sharing surface
+     (posters, dashboard, onboarding) rather than an offline guarantee, since the mic button there
+     structurally can't ever be offline in a browser.
 
 - **Fixed the Android voice-input ("बोलकर जाँचें") mic button, which the user reported as
   completely broken ("voice search isn't available") — found two real, independent bugs via a

@@ -192,6 +192,55 @@
                     android:textSize="12.5sp" />
             </LinearLayout>
 
+            <!-- ============ OFFLINE VOICE PACK ============ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card_white_round"
+                android:padding="16dp"
+                android:layout_marginBottom="14dp">
+
+                <TextView
+                    android:id="@+id/offlineVoiceTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Offline voice pack"
+                    android:textColor="@color/text_main"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="14.5sp"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:id="@+id/offlineVoiceDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Download the Hindi voice pack in your phone's language settings..."
+                    android:textColor="@color/text_muted"
+                    android:textSize="12.5sp"
+                    android:layout_marginBottom="12dp" />
+
+                <LinearLayout
+                    android:id="@+id/openVoiceSettingsBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/bg_btn_outline_green"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        android:id="@+id/openVoiceSettingsBtnText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Open voice input settings"
+                        android:textColor="@color/primary"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="13.5sp" />
+                </LinearLayout>
+            </LinearLayout>
+
             <!-- ============ TRUSTED CONTACT ============ -->
             <LinearLayout
                 android:layout_width="match_parent"
