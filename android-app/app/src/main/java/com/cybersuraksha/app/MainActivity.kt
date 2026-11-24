@@ -18,6 +18,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (OnboardingActivity.shouldShow(this)) {
+            startActivity(Intent(this, OnboardingActivity::class.java))
+            finish()
+            return
+        }
         b = ActivityMainBinding.inflate(layoutInflater)
         setContentView(b.root)
 

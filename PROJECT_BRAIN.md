@@ -298,7 +298,52 @@ posters, the dashboard, onboarding material), not an offline guarantee.
 
 ---
 
+## 9. First-launch onboarding walkthrough (Android, finally built — was explicitly deferred earlier)
+
+Three-page icon-only walkthrough (`OnboardingActivity.kt` + `activity_onboarding.xml`), shown once
+on first launch before `MainActivity` (a `SharedPreferences` flag set on Skip or completing page 3;
+`MainActivity.onCreate` redirects to it before inflating its own layout if the flag isn't set yet).
+Pages: "paste or speak" (`ic_mail` + `ic_mic`) → "we check" (`ic_shield_check`) → "see the result"
+(`ic_check_circle` + `ic_x_circle`), each a big icon pair, a short caption (not a paragraph), a
+"फिर सुनव" (listen again) button, and audio narration that auto-plays when the page appears. Swipe
+(fling-gesture) and tap-through both advance pages, matching the rest of the app's navigation feel.
+
+**Deliberately bypasses the app's normal trilingual `T` system for this one screen**, per the
+user's explicit ask: always Chhattisgarhi on-screen text, narrated by the Hindi TTS voice (no
+distinct Chhattisgarhi speech-synthesis voice exists on Android — same precedent as Chhattisgarhi
+reusing the Hindi speech *recognizer* elsewhere in this app), and **no English at all**, regardless
+of whatever language the rest of the app is currently set to. Added `TtsHelper.speakIn(context,
+text, locale)` (the existing `speak()` now just calls it with the `T.lang`-derived locale) so this
+screen can force the Hindi locale without touching the app's own language toggle state.
+
+**Fully offline, confirmed live on-device via `adb logcat`**: icons are bundled vector drawables
+(no network ever), and the narration's `TextToSpeech` audio was confirmed reading local
+`.../com.google.android.tts/files/superpacks/hi-in/...` voice-pack files, not the network — this
+screen does speech *synthesis* only, never speech *recognition*, so it doesn't have the occasional
+pack-download gap the mic-input/live-call-warning features can hit (§8) at all.
+
+**Verified live on the connected device**: fresh first launch correctly opens straight to the
+walkthrough (not `MainActivity`) with no flash of the home screen first; all three pages' captions,
+"फिर सुनव", and the Next-button label (which changes to "सुरू करव" on page 3) render correctly;
+tapping through to the end lands on `MainActivity` with no crash; relaunching the app afterward
+(via `am force-stop` + fresh start) correctly goes straight to `MainActivity`, confirming the
+once-only flag persists. Swipe-to-advance was wired but not separately exercised over `adb` (fling
+gestures are unreliable to simulate via `input swipe`) — tap-through was used for the live test
+instead, and is the primary interaction the Skip/Next buttons already cover regardless.
+
+---
+
 ## Change Log (newest first)
+
+- **Built the Android first-launch icon-only onboarding walkthrough — the one item explicitly left
+  "deferred, not built this round" in an earlier session ("make the icon-only onboarding too much
+  to squeeze in alongside everything else that round"). See §9 above for full detail.** Three
+  pages, Chhattisgarhi captions + Hindi-voiced audio narration (no English anywhere on this
+  screen, per explicit ask), shown once on first launch via a `SharedPreferences` flag checked in
+  `MainActivity.onCreate`. Confirmed fully offline (narration reads local on-device voice-pack
+  files, confirmed via `adb logcat`, same as every other TTS use in this app) and verified live
+  end-to-end on the connected device: first launch → walkthrough → `MainActivity`, then a second
+  launch skips straight to `MainActivity` as expected.
 
 - **Audited offline capability end-to-end (per the user's "make sure the model/app works offline,
   and tell me honestly whether the website can too" ask) and added the two concrete gaps found.**

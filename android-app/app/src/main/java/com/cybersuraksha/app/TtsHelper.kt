@@ -21,12 +21,22 @@ object TtsHelper {
     }
 
     fun speak(context: Context, text: String) {
+        val locale = when (T.lang) {
+            Lang.EN -> Locale.ENGLISH
+            else -> Locale("hi", "IN")
+        }
+        speakIn(context, text, locale)
+    }
+
+    /** Speaks fixed text in a specific locale regardless of the app's current language toggle —
+     *  used by the onboarding walkthrough, which is narrated in Chhattisgarhi text read by the
+     *  Hindi voice (there is no distinct Chhattisgarhi speech-synthesis voice on Android, same
+     *  precedent as Chhattisgarhi reusing the Hindi speech *recognizer* elsewhere in this app;
+     *  Hindi TTS still reads Devanagari Chhattisgarhi text intelligibly, just not with perfectly
+     *  native pronunciation) regardless of whatever language the rest of the app is set to. */
+    fun speakIn(context: Context, text: String, locale: Locale) {
         ensure(context) {
             val engine = tts ?: return@ensure
-            val locale = when (T.lang) {
-                Lang.EN -> Locale.ENGLISH
-                else -> Locale("hi", "IN")
-            }
             val result = engine.setLanguage(locale)
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 engine.language = Locale.ENGLISH
