@@ -539,13 +539,15 @@ body.text-xl{font-size:125%;}
 .walk-wrapper{position:relative;height:calc(100vh + 700px);}
 .walk-sticky{position:sticky;top:var(--header-h, 0px);padding:40px 0;}
 /* Height raised from 170px: the character is anchored by its own feet (see .walk-character's
-   translate(-50%,-100%)) and stands ~156px tall including its speech bubble, which is taller
-   than the old 170px stage at its highest waypoint — the figure's head was overflowing above
-   the stage box and getting rendered underneath the sticky site-header (z-index:100), which
-   visually cut it off ("going out of frame"). 320px gives every waypoint (see the matching
-   WAYPOINTS/path coordinates in index.html's own script, both rescaled together) comfortable
-   headroom so the full figure + bubble always stays inside this box. */
-.walk-stage{position:relative;height:320px;margin-bottom:18px;}
+   translate(-50%,-100%)) and stands ~170px tall including its speech bubble (118px figure +
+   12px gap + 40px bubble — all exact values from .walk-character/.walk-bubble below), which is
+   taller than the old 170px stage at its highest waypoint — the figure's head was overflowing
+   above the stage box and getting rendered underneath the sticky site-header (z-index:100),
+   which visually cut it off ("going out of frame"). 360px gives every waypoint (see the
+   matching WAYPOINTS/path coordinates in index.html's own script, both rescaled together) a
+   verified ~64px of spare headroom so the full figure + bubble always stays inside this box,
+   with margin to spare for any rendering variance across browsers. */
+.walk-stage{position:relative;height:360px;margin-bottom:18px;}
 .walk-path{position:absolute;inset:0;width:100%;height:100%;}
 .walk-path path{fill:none;stroke:var(--border);stroke-width:3;stroke-dasharray:2 10;stroke-linecap:round;}
 .walk-marker{fill:#fff;stroke:var(--saffron);stroke-width:3;}

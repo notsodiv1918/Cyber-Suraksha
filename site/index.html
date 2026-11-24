@@ -6,7 +6,7 @@
 <title>साइबर सुरक्षा एवं डिजिटल वित्तीय साक्षरता पोर्टल | छत्तीसगढ़</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=2">
 <style>/* homepage keeps its own navy shade — the lighter sky blue below is for the other pages only */
 :root{--navy:#2f72bb;--navy-light:#4f96dd;}
 </style>
@@ -224,12 +224,12 @@
       </div>
 
       <div class="walk-stage" id="walk-stage">
-        <svg class="walk-path" viewBox="0 0 1000 260" preserveAspectRatio="none">
-          <path d="M60,220 C180,180 260,160 360,170 C460,180 560,240 660,230 C760,220 860,170 940,180" />
-          <circle class="walk-marker" cx="60" cy="220" r="7"></circle>
-          <circle class="walk-marker" cx="360" cy="170" r="7"></circle>
-          <circle class="walk-marker" cx="660" cy="230" r="7"></circle>
-          <circle class="walk-marker" cx="940" cy="180" r="7"></circle>
+        <svg class="walk-path" viewBox="0 0 1000 300" preserveAspectRatio="none">
+          <path d="M60,245 C180,205 260,185 360,195 C460,205 560,265 660,255 C760,245 860,195 940,205" />
+          <circle class="walk-marker" cx="60" cy="245" r="7"></circle>
+          <circle class="walk-marker" cx="360" cy="195" r="7"></circle>
+          <circle class="walk-marker" cx="660" cy="255" r="7"></circle>
+          <circle class="walk-marker" cx="940" cy="205" r="7"></circle>
         </svg>
         <div class="walk-character" id="walk-character">
           <div class="walk-bubble" id="walk-bubble">
@@ -690,12 +690,15 @@
   }
   setHeaderHeight();
 
-  // y-values match the SVG path's own coordinate space below (viewBox height 260) — both were
-  // shifted down together (+130 from the original 0-140 scheme) to give the character's own
-  // 118px-tall figure plus its ~40px speech bubble enough headroom above its feet that it never
-  // overflows above #walk-stage (see the CSS comment on .walk-stage for why that overflow used
-  // to render underneath the sticky site-header and look cut off).
-  var WAYPOINTS = [[60,220],[360,170],[660,230],[940,180]];
+  // y-values match the SVG path's own coordinate space below (viewBox height 300) — both were
+  // shifted down together (+155 from the original 0-140 scheme) to give the character's own
+  // 118px-tall figure plus its ~40px speech bubble a verified ~64px of spare headroom above its
+  // feet, at every waypoint, so it never overflows above #walk-stage (see the CSS comment on
+  // .walk-stage for why that overflow used to render underneath the sticky site-header and look
+  // cut off). If style.css ever stops picking up a change here, check its own cache-busting
+  // query string (`?v=`) first — a stale cached stylesheet with a shorter #walk-stage than this
+  // script assumes is exactly what reproduces this same "character/bubble clipped" symptom.
+  var WAYPOINTS = [[60,245],[360,195],[660,255],[940,205]];
   var STEPS = [
     { body:'assets/walk-body-1.png', face:'assets/walk-face-1.png', color:'#9a3b3b',
       hi:'संदिग्ध मैसेज?', en:'Suspicious message?' },
@@ -731,7 +734,7 @@
     var pos = positionAt(progress);
     var stageW = stage.clientWidth, stageH = stage.clientHeight;
     charEl.style.left = (pos[0]/1000*stageW) + 'px';
-    charEl.style.top = (pos[1]/260*stageH) + 'px';
+    charEl.style.top = (pos[1]/300*stageH) + 'px';
 
     var stepIdx = Math.min(3, Math.floor(progress*4 + 0.0001));
     if(progress<=0) stepIdx = 0;

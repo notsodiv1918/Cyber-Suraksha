@@ -335,6 +335,29 @@ instead, and is the primary interaction the Skip/Next buttons already cover rega
 
 ## Change Log (newest first)
 
+- **Second pass on the "how it works" walking-character fix: the user showed a fresh screenshot
+  proving the first pass's numbers alone hadn't resolved it, and found a real second cause — a
+  missing cache-buster on `style.css` — plus added a larger safety margin on top.** `style.css` was
+  linked as a bare `href="css/style.css"` on every page, with no `?v=` query string (unlike
+  `icons.svg`, which already had one) — a browser that had cached the *old* 170px-tall
+  `#walk-stage` from before the first pass, combined with a freshly-loaded `index.html` carrying
+  the *new* JS (which assumes a taller stage), reproduces exactly this symptom: the character's
+  body mostly visible (helped by the new waypoint math) but its speech bubble still clipped, since
+  the bubble needs the most headroom and the mismatched old/new scales no longer lined up.
+  Re-verified this theory by hand against the reported screenshot (card 4 "Report in one tap"
+  highlighted ⇒ the character is at waypoint 4; recomputed the exact pixel deficit this mismatch
+  would produce there and it matches the reported clipping). Fixed by adding `?v=2` to every
+  page's `style.css` link (`index.html` + all of `pages/*.html`) and bumping `sw.js`'s own
+  precache entry + `CACHE_NAME` to match (so the service worker's offline cache doesn't keep
+  serving the old file either). **Also** increased the safety margin itself, independent of the
+  caching fix, purely as a hedge against any other rendering variance since this session's sandbox
+  still can't render the real page to visually confirm: `#walk-stage` 320px → 360px, and the
+  SVG path / `WAYPOINTS` / JS scale divisor shifted further down (now a 0–300 coordinate space,
+  +155 from the original 0–140 scheme, versus the first pass's +130/0–260) — verified by the same
+  exact-pixel-arithmetic method as the first pass, now giving ~64px of spare headroom at the
+  tightest waypoint instead of ~39px. Left an explicit comment in the script pointing future
+  debugging straight at `style.css`'s cache-busting query string if this symptom ever reappears.
+
 - **Fixed the homepage's "how it works" walking character rendering cut off / behind the sticky
   nav bar, reported with a screenshot.** Root cause, found by reading the actual CSS pixel values
   rather than guessing: the character is anchored by its own feet (`.walk-character`'s

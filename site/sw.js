@@ -9,11 +9,11 @@
  * Paths are written relative to this file (site root), so this works whether the site is
  * deployed at a domain root or under a subpath (e.g. a GitHub Pages project page). */
 
-const CACHE_NAME = "cg-cyber-suraksha-v1";
+const CACHE_NAME = "cg-cyber-suraksha-v2";
 
 const PRECACHE_URLS = [
   "index.html",
-  "css/style.css",
+  "css/style.css?v=2",
   "js/app.js",
   "js/nb-model.js",
   "js/ocr-upload.js",
