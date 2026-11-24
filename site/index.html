@@ -224,12 +224,12 @@
       </div>
 
       <div class="walk-stage" id="walk-stage">
-        <svg class="walk-path" viewBox="0 0 1000 140" preserveAspectRatio="none">
-          <path d="M60,90 C180,50 260,30 360,40 C460,50 560,110 660,100 C760,90 860,40 940,50" />
-          <circle class="walk-marker" cx="60" cy="90" r="7"></circle>
-          <circle class="walk-marker" cx="360" cy="40" r="7"></circle>
-          <circle class="walk-marker" cx="660" cy="100" r="7"></circle>
-          <circle class="walk-marker" cx="940" cy="50" r="7"></circle>
+        <svg class="walk-path" viewBox="0 0 1000 260" preserveAspectRatio="none">
+          <path d="M60,220 C180,180 260,160 360,170 C460,180 560,240 660,230 C760,220 860,170 940,180" />
+          <circle class="walk-marker" cx="60" cy="220" r="7"></circle>
+          <circle class="walk-marker" cx="360" cy="170" r="7"></circle>
+          <circle class="walk-marker" cx="660" cy="230" r="7"></circle>
+          <circle class="walk-marker" cx="940" cy="180" r="7"></circle>
         </svg>
         <div class="walk-character" id="walk-character">
           <div class="walk-bubble" id="walk-bubble">
@@ -690,7 +690,12 @@
   }
   setHeaderHeight();
 
-  var WAYPOINTS = [[60,90],[360,40],[660,100],[940,50]];
+  // y-values match the SVG path's own coordinate space below (viewBox height 260) — both were
+  // shifted down together (+130 from the original 0-140 scheme) to give the character's own
+  // 118px-tall figure plus its ~40px speech bubble enough headroom above its feet that it never
+  // overflows above #walk-stage (see the CSS comment on .walk-stage for why that overflow used
+  // to render underneath the sticky site-header and look cut off).
+  var WAYPOINTS = [[60,220],[360,170],[660,230],[940,180]];
   var STEPS = [
     { body:'assets/walk-body-1.png', face:'assets/walk-face-1.png', color:'#9a3b3b',
       hi:'संदिग्ध मैसेज?', en:'Suspicious message?' },
@@ -726,7 +731,7 @@
     var pos = positionAt(progress);
     var stageW = stage.clientWidth, stageH = stage.clientHeight;
     charEl.style.left = (pos[0]/1000*stageW) + 'px';
-    charEl.style.top = (pos[1]/140*stageH) + 'px';
+    charEl.style.top = (pos[1]/260*stageH) + 'px';
 
     var stepIdx = Math.min(3, Math.floor(progress*4 + 0.0001));
     if(progress<=0) stepIdx = 0;

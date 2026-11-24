@@ -335,6 +335,24 @@ instead, and is the primary interaction the Skip/Next buttons already cover rega
 
 ## Change Log (newest first)
 
+- **Fixed the homepage's "how it works" walking character rendering cut off / behind the sticky
+  nav bar, reported with a screenshot.** Root cause, found by reading the actual CSS pixel values
+  rather than guessing: the character is anchored by its own feet (`.walk-character`'s
+  `transform:translate(-50%,-100%)`) and stands 170px tall including its speech bubble (118px
+  figure + 12px gap + 40px bubble, all exact values from `.walk-character`/`.walk-bubble`'s own
+  CSS), but the old `#walk-stage` box was only 170px tall *total* and the character's highest
+  waypoint placed its feet just ~49px below the stage's top edge — so ~120px of the figure's head
+  rendered above the stage box entirely, and because the sticky `.site-header` has `z-index:100`
+  (and the stage/stage's ancestors have no z-index of their own), that overflow got drawn
+  *underneath* the header rather than on top of it, making it look cut off/missing rather than
+  just overlapping. Fixed by raising `#walk-stage` to 320px and shifting the SVG path/circle
+  coordinates and the JS `WAYPOINTS`/scale divisor down together (a uniform +130, from a 0–140 to
+  a 0–260 coordinate space) so every waypoint now gives the full figure+bubble at least ~39px of
+  verified headroom inside the stage box — confirmed by recomputing the exact pixel numbers from
+  the component's own hard-coded CSS values, not by eyeballing a render (the sandboxed browser
+  preview tool in this session still can't render local pages with real CSS/JS applied, only an
+  unstyled static snapshot — see the Android/web session before this one for the same limitation).
+
 - **Built the Android first-launch icon-only onboarding walkthrough — the one item explicitly left
   "deferred, not built this round" in an earlier session ("make the icon-only onboarding too much
   to squeeze in alongside everything else that round"). See §9 above for full detail.** Three
