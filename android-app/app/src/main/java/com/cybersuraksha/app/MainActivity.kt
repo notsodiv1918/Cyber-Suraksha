@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -18,11 +19,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (OnboardingActivity.shouldShow(this)) {
-            startActivity(Intent(this, OnboardingActivity::class.java))
-            finish()
-            return
-        }
         b = ActivityMainBinding.inflate(layoutInflater)
         setContentView(b.root)
 
@@ -46,11 +42,58 @@ class MainActivity : AppCompatActivity() {
 
         NavBar.wire(this, b.navBottom.root, NavBar.Tab.HOME)
         applyLanguage()
+        b.root.post { maybeStartTour() }
     }
 
     override fun onResume() {
         super.onResume()
         applyLanguage()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        TtsHelper.stop()
+    }
+
+    /** First-launch, icon-pointing guided tour (a spotlight overlay on the real Home screen, not
+     *  a separate static slideshow) — Message/Call/QR cards, then the bottom nav's "जाँच" and
+     *  "अधिक" tabs, each narrated in Chhattisgarhi. Shown once; see `AppTourOverlay`. */
+    private fun maybeStartTour() {
+        val prefs = getSharedPreferences("home_tour", MODE_PRIVATE)
+        if (prefs.getBoolean("shown", false)) return
+        val navRoot = b.navBottom.root
+        val navDetect = navRoot.findViewById<View>(R.id.navDetect)
+        val navMore = navRoot.findViewById<View>(R.id.navMore)
+        val steps = listOf(
+            AppTourOverlay.Step(
+                b.cardMessage,
+                "मैसेज जाँचव",
+                "कोनो संदिग्ध मैसेज आए त इहाँ पेस्ट करव या बोलव, ऐप तुरंत जाँच दिही।"
+            ),
+            AppTourOverlay.Step(
+                b.cardCall,
+                "कॉल जाँचव",
+                "संदिग्ध कॉल के बारे म इहाँ बताव, ऐप स्कैम कॉल ल पहिचान लिही।"
+            ),
+            AppTourOverlay.Step(
+                b.cardQr,
+                "QR कोड जाँचव",
+                "भुगतान करे के पहिली QR कोड ल इहाँ स्कैन करके जाँच लव।"
+            ),
+            AppTourOverlay.Step(
+                navDetect,
+                "इहाँ ले सीधा जाँच पाव",
+                "नीचे के 'जाँच' टैब ले आप कोनो बेरा सीधा मैसेज, कॉल अउ QR जाँच म जा सकत हव।"
+            ),
+            AppTourOverlay.Step(
+                navMore,
+                "अनुमति अउ सेटिंग इहाँ",
+                "'अधिक' टैब म जाके आप SMS, कॉल अउ आवाज के अनुमति ल चालू-बंद कर सकत हव।"
+            ),
+        )
+        AppTourOverlay(this).start(steps) {
+            prefs.edit().putBoolean("shown", true).apply()
+        }
     }
 
     private fun applyLanguage() {

@@ -298,42 +298,79 @@ posters, the dashboard, onboarding material), not an offline guarantee.
 
 ---
 
-## 9. First-launch onboarding walkthrough (Android, finally built — was explicitly deferred earlier)
+## 9. First-launch onboarding — spotlight coach-mark tour on the real Home screen
 
-Three-page icon-only walkthrough (`OnboardingActivity.kt` + `activity_onboarding.xml`), shown once
-on first launch before `MainActivity` (a `SharedPreferences` flag set on Skip or completing page 3;
-`MainActivity.onCreate` redirects to it before inflating its own layout if the flag isn't set yet).
-Pages: "paste or speak" (`ic_mail` + `ic_mic`) → "we check" (`ic_shield_check`) → "see the result"
-(`ic_check_circle` + `ic_x_circle`), each a big icon pair, a short caption (not a paragraph), a
-"फिर सुनव" (listen again) button, and audio narration that auto-plays when the page appears. Swipe
-(fling-gesture) and tap-through both advance pages, matching the rest of the app's navigation feel.
+**Superseded its own first version.** The first pass (see Change Log, further down) was a separate
+static 3-slide walkthrough screen (`OnboardingActivity`). The user explicitly asked to replace that
+with a real "coach mark" tour — the kind most apps show on first launch, dimming the actual screen
+and cutting a bright spotlight hole around the real button being explained, highlighting the real
+Home screen itself rather than a mocked-up slide. `OnboardingActivity.kt` and
+`activity_onboarding.xml` were deleted entirely (including its manifest entry); `AppTourOverlay.kt`
++ `view_tour_caption.xml` replace them.
 
-**Deliberately bypasses the app's normal trilingual `T` system for this one screen**, per the
-user's explicit ask: always Chhattisgarhi on-screen text, narrated by the Hindi TTS voice (no
-distinct Chhattisgarhi speech-synthesis voice exists on Android — same precedent as Chhattisgarhi
-reusing the Hindi speech *recognizer* elsewhere in this app), and **no English at all**, regardless
-of whatever language the rest of the app is currently set to. Added `TtsHelper.speakIn(context,
-text, locale)` (the existing `speak()` now just calls it with the `T.lang`-derived locale) so this
-screen can force the Hindi locale without touching the app's own language toggle state.
+**How it works**: `AppTourOverlay` is a small reusable controller, not tied to any one screen — it
+adds a custom `TourOverlayView` (a `FrameLayout`) as the *last* child of the Activity's own
+`android.R.id.content` FrameLayout (the implicit container every Activity's `setContentView` root
+sits inside), so it draws on top of and intercepts touches before the real screen underneath,
+without altering that screen's own view hierarchy at all — removing the overlay when the tour ends
+leaves every card/button exactly as it was. `TourOverlayView.dispatchDraw` draws a dark scrim onto
+an offscreen bitmap, punches a true transparent rounded-rect hole into it with
+`PorterDuff.Mode.CLEAR` (reliable regardless of hardware acceleration, unlike drawing CLEAR directly
+onto the on-screen canvas), traces a saffron ring around the hole, then lets the real child views
+(the caption card) draw on top as normal. A `Step(target: View, caption, narration)` list drives it;
+for `MainActivity`'s Home-screen tour the 5 steps point at the **real** `cardMessage`/`cardCall`/
+`cardQr` views and the real bottom-nav `navDetect`/`navMore` tabs (found via the same
+`findViewById` calls `NavBar.kt` already uses) — never a reproduction.
 
-**Fully offline, confirmed live on-device via `adb logcat`**: icons are bundled vector drawables
-(no network ever), and the narration's `TextToSpeech` audio was confirmed reading local
-`.../com.google.android.tts/files/superpacks/hi-in/...` voice-pack files, not the network — this
-screen does speech *synthesis* only, never speech *recognition*, so it doesn't have the occasional
-pack-download gap the mic-input/live-call-warning features can hit (§8) at all.
+**Two real bugs found and fixed via live on-device testing with added `Log.d` diagnostics (not
+guessed)**:
+1. **Caption card invisible when highlighting a target near the bottom of the screen** (the bottom
+   nav tabs). Root cause, confirmed via logging: the first version placed the card by assigning a
+   "below the hole" `topMargin` *before* measuring it, then corrected to "above" only if a
+   `doOnLayout` callback reported insufficient space below. For a target near the screen's bottom
+   edge, that initial topMargin was *larger than the overlay's own height* — Android's measure-spec
+   packing turns a resulting negative available size into effectively zero, so the card's measured
+   height came back `0` and it rendered as nothing, and the "should I flip above?" check (which
+   relied on that same broken height) never meaningfully corrected it either. Fixed by measuring the
+   card *independently* first (`View.measure()` with explicit, sane specs, before it's ever given a
+   real position), then deciding above-vs-below from that clean measurement — no two-pass "place,
+   measure, maybe correct" dance at all anymore.
+2. **Caption text and the highlighted hole could momentarily point at two different steps** if the
+   user tapped "Next" again before the previous step's hole finished repositioning (scrolling a card
+   into view is asynchronous — `ScrollView.smoothScrollTo` + a settle delay — so a fast double-tap
+   could have an older step's position callback land after a newer step's caption text had already
+   been set). Fixed by capturing which step index a given position-update callback was requested
+   for and discarding it if a newer step has since started.
 
-**Verified live on the connected device**: fresh first launch correctly opens straight to the
-walkthrough (not `MainActivity`) with no flash of the home screen first; all three pages' captions,
-"फिर सुनव", and the Next-button label (which changes to "सुरू करव" on page 3) render correctly;
-tapping through to the end lands on `MainActivity` with no crash; relaunching the app afterward
-(via `am force-stop` + fresh start) correctly goes straight to `MainActivity`, confirming the
-once-only flag persists. Swipe-to-advance was wired but not separately exercised over `adb` (fling
-gestures are unreliable to simulate via `input swipe`) — tap-through was used for the live test
-instead, and is the primary interaction the Skip/Next buttons already cover regardless.
+**Narration**: same Chhattisgarhi-text/Hindi-TTS-voice/no-English approach as the first version
+(`TtsHelper.speakIn`, forcing the Hindi locale independent of the app's own language toggle — no
+distinct Chhattisgarhi speech-synthesis voice exists on Android). Fully offline: icons and the
+scrim/hole are drawn locally, and narration audio was confirmed (both in the first version and
+re-confirmed here) reading local on-device TTS voice-pack files, never the network.
+
+**Verified live on the connected device**: rebuilt, reinstalled, and watched (via `adb logcat`
+diagnostics plus direct screenshots) the Message card get a correctly-sized, correctly-positioned
+hole + caption on a genuinely fresh process; confirmed the exact bug above by watching the bottom
+nav tabs' caption card measure `0` height before the fix, and confirmed real-looking values after
+it. Also confirmed, while debugging, that the device being tested on was concurrently being handled
+by the user themselves (a screenshot caught a live app-switch transition mid-gesture) — several
+earlier "did it auto-advance by itself?" moments during testing were real human taps on the device,
+not a bug in the advance logic, once that became clear.
 
 ---
 
 ## Change Log (newest first)
+
+- **Replaced the Android onboarding's static 3-slide walkthrough with a real spotlight/coach-mark
+  tour on the actual Home screen, per explicit user ask ("like when we download any new app... it
+  highlights that area").** See §9 above for full detail (architecture, the two real bugs found and
+  fixed via on-device logging, and offline verification). Deleted `OnboardingActivity.kt` and
+  `activity_onboarding.xml` entirely; new `AppTourOverlay.kt` + `view_tour_caption.xml` dim the real
+  Home screen and cut a spotlight hole around the real Message/Call/QR cards and the bottom nav's
+  Detect/More tabs in sequence, narrated in Chhattisgarhi (Hindi TTS voice, no English), fully
+  offline. Confirmed no existing feature was disturbed — the overlay is purely an added/removed
+  layer on top of `MainActivity`'s unchanged view hierarchy, verified by completing/skipping the
+  tour and confirming every Home-screen card and nav tab still worked exactly as before.
 
 - **Second pass on the "how it works" walking-character fix: the user showed a fresh screenshot
   proving the first pass's numbers alone hadn't resolved it, and found a real second cause — a
