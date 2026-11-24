@@ -43,6 +43,7 @@
       <li><a href="learn.html" data-en="Safety Lessons &amp; Quiz">सुरक्षा पाठ एवं क्विज़</a></li>
       <li><a href="dashboard.html" data-en="Scam Trend Dashboard">स्कैम ट्रेंड डैशबोर्ड</a></li>
       <li><a href="officials.html" data-en="New-Scam Alerts">नए स्कैम अलर्ट</a></li>
+      <li><a href="poster.html" data-en="Scam Signs Poster">स्कैम संकेत पोस्टर</a></li>
       <li><a href="about.html" data-en="About &amp; Data Sources">परिचय एवं डेटा स्रोत</a></li>
     </ul>
   </div></nav>
@@ -62,22 +63,27 @@
       <div class="grid" style="grid-template-columns:1.3fr .9fr;gap:24px;align-items:start;">
 
         <div class="card">
+          <button id="upload-btn" type="button" class="btn btn-primary" style="width:100%;justify-content:center;padding:16px;font-size:17px;margin-bottom:8px;">
+            <svg class="icon" style="width:22px;height:22px;"><use href="../assets/icons.svg?v=2#i-camera"></use></svg>
+            <span data-en="Take or upload a photo of the message">मैसेज की फ़ोटो खींचें या अपलोड करें</span>
+          </button>
+          <input type="file" id="media-upload" accept="image/*,video/*" style="display:none;">
+          <p class="hint" id="ocr-status" style="display:none;margin-top:8px;"></p>
+          <p class="hint" style="margin-bottom:16px;" data-en="Screenshot or photograph the message — text is read on-device in your browser, nothing is uploaded anywhere.">मैसेज का स्क्रीनशॉट लें या फ़ोटो खींचें — टेक्स्ट आपके ब्राउज़र में ही पढ़ा जाता है, कहीं अपलोड नहीं होता।</p>
+
           <div class="field">
-            <label for="msg-text" data-en="SMS / WhatsApp message or link">SMS / व्हाट्सऐप मैसेज या लिंक</label>
+            <label for="msg-text" data-en="Or type / paste the message">या मैसेज टाइप / पेस्ट करें</label>
             <textarea id="msg-text" rows="6" placeholder="यहाँ संदेश पेस्ट करें..." data-en-ph="Paste the message here..."></textarea>
             <p class="hint" data-en="Works with Hindi (Devanagari), English, and Hinglish (code-mixed) text.">हिन्दी (देवनागरी), अंग्रेज़ी व हिंग्लिश (मिश्रित) टेक्स्ट पर काम करता है।</p>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
             <button id="check-btn" class="btn btn-primary" data-en="Check message">मैसेज जाँचें</button>
-            <button id="clear-btn" class="btn btn-outline" style="border-color:var(--text);color:var(--text);" data-en="Clear">साफ़ करें</button>
-            <button id="upload-btn" type="button" class="btn btn-outline" style="border-color:var(--text);color:var(--text);">
-              <svg class="icon"><use href="../assets/icons.svg?v=2#i-upload"></use></svg>
-              <span data-en="Upload photo / video">फ़ोटो / वीडियो अपलोड करें</span>
+            <button id="mic-btn" type="button" class="btn btn-outline" style="border-color:var(--text);color:var(--text);">
+              <svg class="icon"><use href="../assets/icons.svg?v=2#i-mic"></use></svg>
+              <span data-en="Speak instead">बोलकर जाँचें</span>
             </button>
-            <input type="file" id="media-upload" accept="image/*,video/*" style="display:none;">
+            <button id="clear-btn" class="btn btn-outline" style="border-color:var(--text);color:var(--text);" data-en="Clear">साफ़ करें</button>
           </div>
-          <p class="hint" id="ocr-status" style="display:none;margin-top:10px;"></p>
-          <p class="hint" data-en="Upload a screenshot or a short video of the message — text is extracted on-device in your browser, then checked the same way as pasted text.">मैसेज का स्क्रीनशॉट या एक छोटा वीडियो अपलोड करें — टेक्स्ट आपके ब्राउज़र में ही निकाला जाता है, फिर पेस्ट किए गए टेक्स्ट की तरह जाँचा जाता है।</p>
           <div id="result-box" style="margin-top:20px;"></div>
         </div>
 
@@ -132,6 +138,7 @@
       <li><a href="learn.html"><span data-en="Lessons &amp; Quiz">पाठ एवं क्विज़</span> <strong>→</strong></a></li>
       <li><a href="dashboard.html"><span data-en="Dashboard">डैशबोर्ड</span> <strong>→</strong></a></li>
       <li><a href="officials.html"><span data-en="New-Scam Alerts">नए स्कैम अलर्ट</span> <strong>→</strong></a></li>
+      <li><a href="poster.html"><span data-en="Scam Signs Poster">स्कैम संकेत पोस्टर</span> <strong>→</strong></a></li>
       <li><a href="about.html"><span data-en="Data Sources">डेटा स्रोत</span> <strong>→</strong></a></li>
     </ul>
   </div>
@@ -142,6 +149,9 @@
 <script src="../js/nb-model.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
 <script src="../js/ocr-upload.js"></script>
+<script src="../js/voice-input.js"></script>
+<script src="../js/tts-read.js"></script>
+<script src="../js/warning-poster.js"></script>
 <script>
 var SAMPLES = [
   { hi: "प्रिय ग्राहक, आपका KYC अपडेट लंबित है। 10 मिनट में इस लिंक पर क्लिक कर अपडेट करें वरना खाता ब्लॉक हो जाएगा: http://bit.ly/kyc-update", en: "Dear customer, your KYC update is pending. Click this link within 10 minutes or your account will be blocked: http://bit.ly/kyc-update" },
@@ -176,20 +186,44 @@ document.addEventListener('cg:langchange', function(e){
   });
 });
 
+var lastResult = null;
 function runCheck(){
   var text = document.getElementById('msg-text').value.trim();
   var box = document.getElementById('result-box');
-  if(!text){ box.innerHTML=''; return; }
+  if(!text){ box.innerHTML=''; lastResult = null; return; }
   box.innerHTML = '<p class="hint">' + (document.documentElement.lang==='en' ? 'Analysing…' : 'विश्लेषण हो रहा है…') + '</p>';
   CGScam.ready.then(function(){
     var r = CGScam.classify(text);
-    box.innerHTML = CGScam.renderVerdict(r, document.documentElement.lang);
+    lastResult = r;
+    var lang = document.documentElement.lang;
+    box.innerHTML = CGScam.renderVerdict(r, lang);
+    if(r.verdict !== 'genuine'){
+      var isEn = lang === 'en';
+      var actions = document.createElement('div');
+      actions.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;';
+      actions.innerHTML =
+        '<button id="listen-btn" type="button" class="btn btn-outline btn-sm" style="border-color:var(--text);color:var(--text);">' +
+          '<svg class="icon"><use href="../assets/icons.svg?v=2#i-phone-alert"></use></svg> <span>' + (isEn ? 'Listen' : 'सुनें') + '</span></button>' +
+        '<button id="poster-btn" type="button" class="btn btn-outline btn-sm" style="border-color:var(--text);color:var(--text);">' +
+          '<svg class="icon"><use href="../assets/icons.svg?v=2#i-send"></use></svg> <span>' + (isEn ? 'Share as image' : 'चेतावनी छवि शेयर करें') + '</span></button>';
+      box.appendChild(actions);
+      document.getElementById('listen-btn').addEventListener('click', function(){
+        CGTts.speakVerdict(r, lang);
+      });
+      document.getElementById('poster-btn').addEventListener('click', function(){
+        CGPoster.generateAndShare(r, lang);
+      });
+    }
   });
 }
 document.getElementById('check-btn').addEventListener('click', runCheck);
 document.getElementById('clear-btn').addEventListener('click', function(){
   document.getElementById('msg-text').value='';
   document.getElementById('result-box').innerHTML='';
+  lastResult = null;
+});
+CGVoice.attach(document.getElementById('mic-btn'), document.getElementById('msg-text'), {
+  onResult: function(){ runCheck(); }
 });
 
 var catMeta = {

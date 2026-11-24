@@ -40,8 +40,16 @@
 
         <activity
             android:name=".MessageDetectorActivity"
-            android:exported="false"
-            android:label="@string/app_name" />
+            android:exported="true"
+            android:label="@string/app_name">
+            <!-- Share-to-check: lets the user hit "Share" on a suspicious WhatsApp/SMS
+                 message and pick Cyber Suraksha directly, no manual copy-paste. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".CallDetectorActivity"
@@ -67,6 +75,16 @@
             android:name=".MoreActivity"
             android:exported="false"
             android:label="@string/app_name" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <service
             android:name=".LiveCallWarningService"

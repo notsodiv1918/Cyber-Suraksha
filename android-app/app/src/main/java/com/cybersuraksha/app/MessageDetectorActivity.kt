@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -34,12 +35,24 @@ class MessageDetectorActivity : AppCompatActivity() {
         val uri = result.data?.data
         if (result.resultCode == RESULT_OK && uri != null) runOcr(uri)
     }
+    private lateinit var voiceLauncher: androidx.activity.result.ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         b = ActivityMessageDetectorBinding.inflate(layoutInflater)
         setContentView(b.root)
         Classifier.load(this)
+        voiceLauncher = VoiceInput.register(this) { text ->
+            b.messageInput.setText(text)
+            runCheck()
+        }
+
+        // Share-to-check: a shared SMS/WhatsApp message lands here already filled in.
+        if (intent?.action == Intent.ACTION_SEND && intent.type == "text/plain") {
+            intent.getStringExtra(Intent.EXTRA_TEXT)?.let { shared ->
+                b.messageInput.setText(shared.take(MAX_LEN))
+            }
+        }
 
         b.messageInput.filters = arrayOf(InputFilter.LengthFilter(MAX_LEN))
         b.messageInput.addTextChangedListener(object : TextWatcher {
@@ -61,12 +74,30 @@ class MessageDetectorActivity : AppCompatActivity() {
             showInput()
         }
         b.uploadBtn.setOnClickListener { launchMediaPicker() }
+        b.micBtn.setOnClickListener { VoiceInput.launch(this, voiceLauncher) }
+        b.listenBtn.setOnClickListener {
+            lastResult?.let { r ->
+                val pct = Math.round(r.probability * 100).toInt()
+                val reasons = r.hits.distinctBy { it.cat }.map { if (T.lang == Lang.EN) it.en else it.hi }
+                TtsHelper.speakVerdictResult(this, r.verdict, pct, reasons)
+            }
+        }
+        b.shareImageBtn.setOnClickListener {
+            lastResult?.let { r ->
+                startActivity(Intent.createChooser(WarningPoster.shareIntent(this, r.verdict, rememberedText), T.shareImageBtn))
+            }
+        }
+        b.trustedContactBtn.setOnClickListener {
+            val dial = TrustedContact.dialIntent(this)
+            if (dial != null) startActivity(dial)
+            else Toast.makeText(this, T.trustedContactNotSet, Toast.LENGTH_LONG).show()
+        }
         ShareReport.wire(this, b.shareBtn, b.shareStatusText, { rememberedText }, { lastResult?.verdict ?: "" }, "message")
 
         swipeDetector = DetectTabs.gestureDetector(this, DetectTabs.Tab.MESSAGE)
         buildSamples()
         applyLanguage()
-        showInput()
+        if (b.messageInput.text?.isNotBlank() == true) runCheck() else showInput()
     }
 
     override fun dispatchTouchEvent(ev: android.view.MotionEvent): Boolean {
@@ -95,6 +126,10 @@ class MessageDetectorActivity : AppCompatActivity() {
         b.charCountText.text = "${b.messageInput.text?.length ?: 0}/$MAX_LEN"
         b.checkBtnText.text = T.checkBtn
         b.uploadBtnText.text = T.uploadPhotoVideo
+        b.micBtnText.text = T.micBtn
+        b.listenBtnText.text = T.listenBtn
+        b.shareImageBtnText.text = T.shareImageBtn
+        b.trustedContactBtnText.text = T.trustedContactBtn
         b.trySampleLabel.text = T.trySample
         b.historyLabel.text = T.historyMessages
         b.reportBtnText.text = T.reportThis
@@ -259,6 +294,7 @@ class MessageDetectorActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         ocrExecutor.shutdown()
+        TtsHelper.stop()
     }
 
     private data class Quad(val text: String, val fg: Int, val bg: Int, val icon: Int)

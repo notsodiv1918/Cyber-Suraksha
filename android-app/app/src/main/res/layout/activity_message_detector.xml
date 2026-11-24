@@ -153,32 +153,70 @@
                 </FrameLayout>
 
                 <LinearLayout
-                    android:id="@+id/uploadBtn"
                     android:layout_width="match_parent"
-                    android:layout_height="46dp"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center"
-                    android:background="@drawable/bg_btn_outline_green"
-                    android:layout_marginBottom="10dp"
-                    android:clickable="true"
-                    android:focusable="true">
+                    android:layout_marginBottom="10dp">
 
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@drawable/ic_upload"
-                        android:tint="@color/primary"
-                        android:contentDescription="@null" />
+                    <LinearLayout
+                        android:id="@+id/uploadBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="46dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:background="@drawable/bg_btn_outline_green"
+                        android:layout_marginEnd="6dp"
+                        android:clickable="true"
+                        android:focusable="true">
 
-                    <TextView
-                        android:id="@+id/uploadBtnText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Upload photo / video"
-                        android:textColor="@color/primary"
-                        android:fontFamily="sans-serif-medium"
-                        android:textSize="13.5sp" />
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_upload"
+                            android:tint="@color/primary"
+                            android:contentDescription="@null" />
+
+                        <TextView
+                            android:id="@+id/uploadBtnText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Upload photo / video"
+                            android:textColor="@color/primary"
+                            android:fontFamily="sans-serif-medium"
+                            android:textSize="13.5sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/micBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="46dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:background="@drawable/bg_btn_outline_green"
+                        android:layout_marginStart="6dp"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_mic"
+                            android:tint="@color/primary"
+                            android:contentDescription="@null" />
+
+                        <TextView
+                            android:id="@+id/micBtnText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Speak"
+                            android:textColor="@color/primary"
+                            android:fontFamily="sans-serif-medium"
+                            android:textSize="13.5sp" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <TextView
@@ -345,6 +383,102 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_marginBottom="18dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10dp">
+
+                    <LinearLayout
+                        android:id="@+id/listenBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:background="@drawable/bg_btn_outline_green"
+                        android:layout_marginEnd="6dp"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_volume"
+                            android:tint="@color/primary"
+                            android:contentDescription="@null" />
+
+                        <TextView
+                            android:id="@+id/listenBtnText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Listen"
+                            android:textColor="@color/primary"
+                            android:fontFamily="sans-serif-medium"
+                            android:textSize="13.5sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/shareImageBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:background="@drawable/bg_btn_outline_green"
+                        android:layout_marginStart="6dp"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_image"
+                            android:tint="@color/primary"
+                            android:contentDescription="@null" />
+
+                        <TextView
+                            android:id="@+id/shareImageBtnText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Share warning image"
+                            android:textColor="@color/primary"
+                            android:fontFamily="sans-serif-medium"
+                            android:textSize="12.5sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/trustedContactBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/bg_btn_outline_green"
+                    android:layout_marginBottom="10dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_users"
+                        android:tint="@color/accent_blue"
+                        android:contentDescription="@null" />
+
+                    <TextView
+                        android:id="@+id/trustedContactBtnText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Call a trusted person"
+                        android:textColor="@color/accent_blue"
+                        android:fontFamily="sans-serif-medium"
+                        android:textSize="13.5sp" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/reportBtn"

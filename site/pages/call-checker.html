@@ -43,6 +43,7 @@
       <li><a href="learn.html" data-en="Safety Lessons &amp; Quiz">सुरक्षा पाठ एवं क्विज़</a></li>
       <li><a href="dashboard.html" data-en="Scam Trend Dashboard">स्कैम ट्रेंड डैशबोर्ड</a></li>
       <li><a href="officials.html" data-en="New-Scam Alerts">नए स्कैम अलर्ट</a></li>
+      <li><a href="poster.html" data-en="Scam Signs Poster">स्कैम संकेत पोस्टर</a></li>
       <li><a href="about.html" data-en="About &amp; Data Sources">परिचय एवं डेटा स्रोत</a></li>
     </ul>
   </div></nav>
@@ -157,6 +158,7 @@
       <li><a href="learn.html"><span data-en="Lessons &amp; Quiz">पाठ एवं क्विज़</span> <strong>→</strong></a></li>
       <li><a href="dashboard.html"><span data-en="Dashboard">डैशबोर्ड</span> <strong>→</strong></a></li>
       <li><a href="officials.html"><span data-en="New-Scam Alerts">नए स्कैम अलर्ट</span> <strong>→</strong></a></li>
+      <li><a href="poster.html"><span data-en="Scam Signs Poster">स्कैम संकेत पोस्टर</span> <strong>→</strong></a></li>
       <li><a href="about.html"><span data-en="Data Sources">डेटा स्रोत</span> <strong>→</strong></a></li>
     </ul>
   </div>
@@ -165,6 +167,8 @@
 
 <script src="../js/app.js"></script>
 <script src="../js/nb-model.js"></script>
+<script src="../js/tts-read.js"></script>
+<script src="../js/warning-poster.js"></script>
 <script>
 var CALL_SAMPLES = [
   { hi: "नमस्ते, मैं भारतीय दूरसंचार विभाग से बोल रहा हूँ। आपके आधार कार्ड से जारी सिम कार्ड का गैरकानूनी गतिविधियों में उपयोग हो रहा है। यह कॉल अभी CBI को ट्रांसफर की जा रही है, कृपया लाइन पर बने रहें और अपनी जानकारी सत्यापित करने हेतु सहयोग करें।", en: "Hello, I am calling from the Department of Telecom. The SIM card issued on your Aadhaar is being used for illegal activities. This call is now being transferred to CBI, please stay on the line and cooperate to verify your details." },
@@ -191,7 +195,21 @@ function analyseCall(text, resultEl){
   if(!text){ resultEl.innerHTML=''; return; }
   CGScam.ready.then(function(){
     var r = CGScam.classify(text);
-    resultEl.innerHTML = CGScam.renderVerdict(r, document.documentElement.lang);
+    var lang = document.documentElement.lang;
+    resultEl.innerHTML = CGScam.renderVerdict(r, lang);
+    if(r.verdict !== 'genuine'){
+      var isEn = lang === 'en';
+      var actions = document.createElement('div');
+      actions.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;';
+      actions.innerHTML =
+        '<button id="call-listen-btn" type="button" class="btn btn-outline btn-sm" style="border-color:var(--text);color:var(--text);">' +
+          '<svg class="icon"><use href="../assets/icons.svg?v=2#i-phone-alert"></use></svg> <span>' + (isEn ? 'Listen' : 'सुनें') + '</span></button>' +
+        '<button id="call-poster-btn" type="button" class="btn btn-outline btn-sm" style="border-color:var(--text);color:var(--text);">' +
+          '<svg class="icon"><use href="../assets/icons.svg?v=2#i-send"></use></svg> <span>' + (isEn ? 'Share as image' : 'चेतावनी छवि शेयर करें') + '</span></button>';
+      resultEl.appendChild(actions);
+      document.getElementById('call-listen-btn').addEventListener('click', function(){ CGTts.speakVerdict(r, lang); });
+      document.getElementById('call-poster-btn').addEventListener('click', function(){ CGPoster.generateAndShare(r, lang); });
+    }
   });
 }
 document.getElementById('call-check-btn').addEventListener('click', function(){

@@ -244,6 +244,85 @@ works" banner, report.html's share-box hint) rather than only here.
 
 ## Change Log (newest first)
 
+- **Added a batch of low-literacy / rural-accessibility features across both web and app, reusing
+  existing code where possible (speech recognition, TTS, canvas) rather than new dependencies.**
+  Scope was picked from a prioritized list the user gave (quick wins reusing existing code first,
+  then new low-literacy features, then a community-forwardable poster); the two app-only items
+  that needed a full new screen flow (icon-only onboarding walkthrough, and reordering camera vs.
+  gallery as two separate native pickers) were **explicitly deferred**, not silently dropped — see
+  the note at the end of this entry.
+  1. **"बोलकर जाँचें" — speak instead of type (Android + web).** Android: new `VoiceInput.kt` wraps
+     `RecognizerIntent.ACTION_RECOGNIZE_SPEECH` (the system speech UI, `EXTRA_PREFER_OFFLINE=true`)
+     behind a reusable `register()`/`launch()` pair; wired into a new "Speak" button next to the
+     existing upload button on both `MessageDetectorActivity` and `CallDetectorActivity` — speaking
+     fills the input and (for messages) auto-runs the check. Web: new `site/js/voice-input.js`
+     (`CGVoice.attach`) wraps the Web Speech API for `detector.html`'s new "बोलकर जाँचें" mic button;
+     `call-checker.html` already had its own live-mic tab from an earlier session, so that one was
+     left as-is rather than duplicated.
+  2. **"सुनें" — read the verdict aloud (Android + web).** Android: new `TtsHelper.kt` wraps
+     `android.speech.tts.TextToSpeech` (no new dependency), with a `speakVerdictResult()` that
+     builds a spoken sentence from the verdict + top reasons in the current app language; a new
+     "Listen" button on both detectors' Result screens. Web: new `site/js/tts-read.js`
+     (`CGTts.speakVerdict`) wraps `SpeechSynthesis` the same way, wired to a "सुनें" button that
+     appears under a scam/suspicious verdict on `detector.html` and `call-checker.html`.
+  3. **Share-to-check from WhatsApp/SMS (Android).** `MessageDetectorActivity` is now
+     `exported="true"` with an `ACTION_SEND`/`text/plain` intent-filter, so "Share" on a message in
+     WhatsApp/Messages can target Cyber Suraksha directly — the shared text pre-fills the input and
+     auto-runs the check on launch. (Not added to `CallDetectorActivity`: there's no equivalent
+     "share a call" action on Android to receive.)
+  4. **Shareable warning image / poster, generated from an actual verdict (Android + web).**
+     Android: new `WarningPoster.kt` draws a simple canvas-style poster (colour banner sized to
+     verdict severity, big headline, the message text, a forward-to-family footer line) to a
+     `Bitmap`, saves it to a cache file, and shares it via a new `FileProvider` (manifest provider +
+     `res/xml/file_paths.xml`, authority `${applicationId}.fileprovider`) — a new "Share warning
+     image" button on both detectors' Result screens. Web: `site/js/warning-poster.js`
+     (`CGPoster`) does the equivalent on an HTML5 `<canvas>`, offered via the Web Share API on
+     mobile (`navigator.canShare` with a `File`) or a plain download link as fallback — wired to a
+     "चेतावनी छवि शेयर करें" button that appears alongside "सुनें" under scam/suspicious verdicts.
+  5. **Trusted-contact one-tap call on the verdict screen (Android only — this is a native-app
+     concept, no web equivalent).** New `TrustedContact.kt` stores a name+number locally
+     (SharedPreferences only, never transmitted) and builds an `ACTION_DIAL` intent (no
+     `CALL_PHONE` permission needed, so the user still confirms in the system dialer). A "भरोसेमंद
+     व्यक्ति को कॉल करें" button added to both detectors' Result screens; if nothing is saved yet it
+     shows a toast pointing to the new **Trusted contact** card added to the **More** screen
+     (name/number fields + Save, same SharedPreferences-backed pattern as everything else there).
+  6. **Camera-first message check (web).** `detector.html`'s photo/video upload button was pulled
+     out from being a secondary option below the paste box and made the first, full-width, primary
+     action on the page ("मैसेज की फ़ोटो खींचें या अपलोड करें", camera icon) — the paste textarea is
+     now explicitly framed as the "or type" fallback underneath. No change to the underlying OCR
+     pipeline (`ocr-upload.js` already handled image/video uploads from the same `#media-upload`
+     input, just re-triggered from the new button). Not done on Android — the existing "Upload
+     photo / video" button there already opens the system picker, which already offers the camera
+     as one of its options, so the marginal gain was lower than on web.
+  7. **Standalone "5 signs of a scam" forwardable poster (web, new page).** New
+     `site/pages/poster.html` + `site/js/scam-signs-poster.js`: a big-text, icon-only (numbered
+     badges, no emoji, consistent with this project's icon rules), tricolour-bannered poster
+     (reusing the exact `--saffron`/`--navy`/`--india-green` tokens) covering the five most common
+     scam red flags, rendered both as an on-page HTML card (so it's screenshot/print-friendly as-is)
+     and as a downloadable/shareable PNG via canvas + the Web Share API. Linked into the nav and
+     the "Quick Links" emergency widget on every existing page except `officials.html` (which has no
+     emergency widget at all — a pre-existing difference, not something this change altered).
+  8. **Colour palette**: deliberately reused the existing tokens everywhere rather than inventing
+     new ones — Android's green theme (`primary #1B6B3C`, `danger`/`warn`/`safe`, `accent_blue`)
+     for the poster banner and all new buttons/icons, and the website's tricolour tokens
+     (`--saffron`, `--india-green`, `--navy`) for the new poster page and the warning-image canvas.
+  9. **Verified**: Android — `:app:compileDebugKotlin` and `:app:assembleDebug` both succeed clean
+     (JDK 11+ required; this sandbox's default `java` was 1.8, so built with Android Studio's
+     bundled `jbr` as `JAVA_HOME`) after fixing one real compile error caught this way
+     (`Math.round(Double)` returns `Long` in Kotlin, not `Int` — the new TTS pct calculation needed
+     an explicit `.toInt()` in both detector activities). Web — all new/edited inline `<script>`
+     blocks and new `.js` files pass `node --check`/`new Function()` syntax validation; **the
+     in-sandbox browser preview tool itself refused to navigate this session** ("navigation ...
+     denied or failed" on every retry, unrelated to anything in this change), so the new
+     mic/TTS/poster buttons were **not** exercised live in an actual browser or on a real Android
+     device this round — that's the one honest gap here, same as several earlier Android UI
+     changes in this log that could only be verified on the next real device/browser session.
+  10. **Explicitly deferred, not built this round**: an icon-only, audio-narrated 3-screen
+      first-launch onboarding walkthrough for the Android app (a real new screen flow — first-run
+      detection, 3 swipeable pages, audio per page — sized as its own follow-up task rather than
+      squeezed in alongside the above). If picked up later, it slots in next to `MoreActivity`-style
+      activities using the same trilingual `Strings.kt` pattern.
+
 - **Live call warning: fixed the first bug, found and documented a second one, then paused this
   feature at the user's call ("we can do this later") to focus on easier wins.** After the
   READ_PHONE_STATE fix below, a second real-call test still produced zero

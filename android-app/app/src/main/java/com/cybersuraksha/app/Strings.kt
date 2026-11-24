@@ -320,6 +320,54 @@ object T {
         "यह डिवाइस ऑन-डिवाइस वाक् पहचान समर्थित नहीं करता।",
         "ए डिवाइस ऑन-डिवाइस आवाज पहिचान समर्थित नइ करय।"
     )
+    // ---- voice input / TTS / trusted contact / shareable poster ----
+    val micBtn get() = pick("Speak", "बोलकर जाँचें", "बोलके जाँचव")
+    val voicePrompt get() = pick("Speak the message now", "अब मैसेज बोलें", "अब मैसेज बोलव")
+    val voiceUnavailable get() = pick(
+        "Voice input is not available on this device.",
+        "इस डिवाइस पर वॉइस इनपुट उपलब्ध नहीं है।",
+        "ए डिवाइस म वॉइस इनपुट उपलब्ध नइहे।"
+    )
+    val listenBtn get() = pick("Listen", "सुनें", "सुनव")
+    fun ttsVerdictScam(pct: Int) = pick(
+        "Warning. This looks like a scam. Risk score $pct percent.",
+        "चेतावनी। यह एक स्कैम जैसा लगता है। जोखिम स्कोर $pct प्रतिशत।",
+        "चेतावनी। ए एक स्कैम जइसे लगत हे। जोखिम स्कोर $pct प्रतिशत।"
+    )
+    fun ttsVerdictSuspicious(pct: Int) = pick(
+        "Be careful. This looks suspicious. Risk score $pct percent.",
+        "सावधान रहें। यह संदिग्ध लगता है। जोखिम स्कोर $pct प्रतिशत।",
+        "सावधान रहव। ए संदेहास्पद लगत हे। जोखिम स्कोर $pct प्रतिशत।"
+    )
+    val ttsVerdictGenuine get() = pick(
+        "This message appears genuine.",
+        "यह मैसेज असली प्रतीत होता है।",
+        "ए मैसेज असली लगथे।"
+    )
+    val trustedContactBtn get() = pick("Call a trusted person", "भरोसेमंद व्यक्ति को कॉल करें", "भरोसा के मनखे ल कॉल करव")
+    val trustedContactNotSet get() = pick(
+        "No trusted contact saved yet — add one in More.",
+        "अभी तक कोई भरोसेमंद व्यक्ति सहेजा नहीं गया — 'अधिक' में जोड़ें।",
+        "अभी तक कोई भरोसा के मनखे सहेजा नइ गिस — 'अउ' म जोड़व।"
+    )
+    val shareImageBtn get() = pick("Share warning image", "चेतावनी छवि शेयर करें", "चेतावनी फोटू शेयर करव")
+    val posterHeadlineScam get() = pick("WARNING: This is a SCAM message", "चेतावनी: यह एक स्कैम मैसेज है", "चेतावनी: ए एक स्कैम मैसेज हे")
+    val posterHeadlineSuspicious get() = pick("CAUTION: This message is suspicious", "सावधान: यह मैसेज संदिग्ध है", "सावधान: ए मैसेज संदेहास्पद हे")
+    val posterSub get() = pick("Checked with Cyber Suraksha", "साइबर सुरक्षा से जाँचा गया", "साइबर सुरक्षा ले जाँचे गिस")
+    val posterFooter get() = pick("Forward this to warn your family and friends", "अपने परिवार व मित्रों को सचेत करने हेतु आगे भेजें", "अपन परिवार अउ संगी-साथी ल सचेत करे बर आगू भेजव")
+
+    // ---- trusted contact settings (More screen) ----
+    val trustedContactTitle get() = pick("Trusted contact", "भरोसेमंद व्यक्ति", "भरोसा के मनखे")
+    val trustedContactDesc get() = pick(
+        "Save a family member's number — a one-tap call from any verdict screen, for when you want human reassurance.",
+        "किसी परिवार के सदस्य का नंबर सहेजें — हर जाँच-परिणाम स्क्रीन से एक टैप में कॉल करें, जब आपको मानवीय भरोसे की ज़रूरत हो।",
+        "कोनो परिवार के सदस्य के नंबर सहेजव — हर जाँच-परिणाम स्क्रीन ले एक टैप म कॉल करव, जब आप ल मानवीय भरोसा के जरूरत होय।"
+    )
+    val trustedContactNameHint get() = pick("Name (optional)", "नाम (वैकल्पिक)", "नाम (वैकल्पिक)")
+    val trustedContactNumberHint get() = pick("Phone number", "फ़ोन नंबर", "फोन नंबर")
+    val saveBtn get() = pick("Save", "सहेजें", "सहेजव")
+    val savedToast get() = pick("Saved", "सहेजा गया", "सहेजे गिस")
+
     val aboutTitle get() = pick("About this app", "इस ऐप के बारे में", "ए ऐप के बारे म")
     val aboutDesc get() = pick(
         "Cyber Suraksha is an offline, on-device scam detector for SMS, calls and QR codes — a hackathon prototype, not an official government app.",

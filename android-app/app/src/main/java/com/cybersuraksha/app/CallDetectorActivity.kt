@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -32,12 +33,14 @@ class CallDetectorActivity : AppCompatActivity() {
         val uri = result.data?.data
         if (result.resultCode == RESULT_OK && uri != null) setupAudio(uri)
     }
+    private lateinit var voiceLauncher: androidx.activity.result.ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         b = ActivityCallDetectorBinding.inflate(layoutInflater)
         setContentView(b.root)
         Classifier.load(this)
+        voiceLauncher = VoiceInput.register(this) { text -> b.messageInput.setText(text) }
 
         b.messageInput.filters = arrayOf(InputFilter.LengthFilter(CALL_MAX_LEN))
         b.messageInput.addTextChangedListener(object : TextWatcher {
@@ -59,7 +62,25 @@ class CallDetectorActivity : AppCompatActivity() {
             showInput()
         }
         b.uploadBtn.setOnClickListener { launchAudioPicker() }
+        b.micBtn.setOnClickListener { VoiceInput.launch(this, voiceLauncher) }
         b.audioPlayBtn.setOnClickListener { toggleAudioPlayback() }
+        b.listenBtn.setOnClickListener {
+            lastResult?.let { r ->
+                val pct = Math.round(r.probability * 100).toInt()
+                val reasons = r.hits.distinctBy { it.cat }.map { if (T.lang == Lang.EN) it.en else it.hi }
+                TtsHelper.speakVerdictResult(this, r.verdict, pct, reasons)
+            }
+        }
+        b.shareImageBtn.setOnClickListener {
+            lastResult?.let { r ->
+                startActivity(Intent.createChooser(WarningPoster.shareIntent(this, r.verdict, rememberedText), T.shareImageBtn))
+            }
+        }
+        b.trustedContactBtn.setOnClickListener {
+            val dial = TrustedContact.dialIntent(this)
+            if (dial != null) startActivity(dial)
+            else Toast.makeText(this, T.trustedContactNotSet, Toast.LENGTH_LONG).show()
+        }
         ShareReport.wire(this, b.shareBtn, b.shareStatusText, { rememberedText }, { lastResult?.verdict ?: "" }, "call")
 
         swipeDetector = DetectTabs.gestureDetector(this, DetectTabs.Tab.CALL)
@@ -94,7 +115,11 @@ class CallDetectorActivity : AppCompatActivity() {
         b.charCountText.text = "${b.messageInput.text?.length ?: 0}/$CALL_MAX_LEN"
         b.checkBtnText.text = T.checkCallBtn
         b.uploadBtnText.text = T.uploadAudio
+        b.micBtnText.text = T.micBtn
         b.audioHintText.text = T.audioPlayHint
+        b.listenBtnText.text = T.listenBtn
+        b.shareImageBtnText.text = T.shareImageBtn
+        b.trustedContactBtnText.text = T.trustedContactBtn
         b.trySampleLabel.text = T.trySampleCall
         b.historyLabel.text = T.historyCalls
         b.reportBtnText.text = T.reportThis
@@ -198,6 +223,7 @@ class CallDetectorActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         releaseAudio()
+        TtsHelper.stop()
     }
 
     private fun runCheck() {

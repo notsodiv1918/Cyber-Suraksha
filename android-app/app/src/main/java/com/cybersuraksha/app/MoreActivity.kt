@@ -59,6 +59,17 @@ class MoreActivity : AppCompatActivity() {
             }
         }
 
+        b.trustedContactNameInput.setText(TrustedContact.getName(this))
+        b.trustedContactNumberInput.setText(TrustedContact.getNumber(this))
+        b.trustedContactSaveBtn.setOnClickListener {
+            TrustedContact.set(
+                this,
+                b.trustedContactNameInput.text.toString().trim(),
+                b.trustedContactNumberInput.text.toString().trim()
+            )
+            Toast.makeText(this, T.savedToast, Toast.LENGTH_SHORT).show()
+        }
+
         NavBar.wire(this, b.navBottom.root, NavBar.Tab.MORE)
         applyLanguage()
     }
@@ -76,6 +87,11 @@ class MoreActivity : AppCompatActivity() {
         b.callEnableBtn.text = T.enable
         b.liveWarningTitle.text = T.liveCallWarningTitle
         b.liveWarningDesc.text = T.liveCallWarningDesc
+        b.trustedContactTitle.text = T.trustedContactTitle
+        b.trustedContactDesc.text = T.trustedContactDesc
+        b.trustedContactNameInput.hint = T.trustedContactNameHint
+        b.trustedContactNumberInput.hint = T.trustedContactNumberHint
+        b.trustedContactSaveBtnText.text = T.saveBtn
         b.aboutTitleText.text = T.aboutTitle
         b.aboutDescText.text = T.aboutDesc
         refreshStatus()
