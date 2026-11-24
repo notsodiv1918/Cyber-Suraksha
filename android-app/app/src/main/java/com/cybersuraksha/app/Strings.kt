@@ -328,6 +328,12 @@ object T {
         "इस डिवाइस पर वॉइस इनपुट उपलब्ध नहीं है।",
         "ए डिवाइस म वॉइस इनपुट उपलब्ध नइहे।"
     )
+    val voiceNeedsMicPerm get() = pick(
+        "Needs microphone permission to listen.",
+        "सुनने हेतु माइक्रोफ़ोन अनुमति चाहिए।",
+        "सुने बर माइक्रोफोन अनुमति चाही।"
+    )
+    val listening get() = pick("Listening…", "सुन रहा है…", "सुनत हे…")
     val listenBtn get() = pick("Listen", "सुनें", "सुनव")
     fun ttsVerdictScam(pct: Int) = pick(
         "Warning. This looks like a scam. Risk score $pct percent.",

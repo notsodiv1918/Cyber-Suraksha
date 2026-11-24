@@ -244,6 +244,60 @@ works" banner, report.html's share-box hint) rather than only here.
 
 ## Change Log (newest first)
 
+- **Fixed the Android voice-input ("बोलकर जाँचें") mic button, which the user reported as
+  completely broken ("voice search isn't available") — found two real, independent bugs via a
+  live on-device test with `adb logcat`, not guesswork.**
+  1. **Root cause #1**: the previous version launched speech recognition as a separate *activity*
+     (`startActivityForResult(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)`), which needs a dedicated
+     "voice search" app/UI to resolve that intent — on this device nothing resolves it, so Android
+     shows exactly "Voice search isn't available" and nothing happens. `LiveCallWarningService`
+     already solved this same problem correctly elsewhere in the app: use
+     `SpeechRecognizer.createSpeechRecognizer()` directly with a `RecognitionListener`, which only
+     needs the on-device recognition *service*, not a separate app. Rewrote `VoiceInput.kt` from a
+     static activity-launcher helper into a proper per-activity class using that mechanism, with a
+     runtime `RECORD_AUDIO` permission request (this flow isn't gated behind the More-screen toggle
+     like live-call-warning is) and a "सुन रहा है…" (listening…) label swap on the mic button itself
+     for feedback, wired into both `MessageDetectorActivity` and `CallDetectorActivity`.
+  2. **Root cause #2, found immediately after fixing #1 via the same live test**: `EXTRA_LANGUAGE`
+     was built from `Locale("hi","IN").toString()`, which actually returns `"hi_IN"` (underscore,
+     Java's legacy format) — `RecognizerIntent.EXTRA_LANGUAGE` needs a real BCP-47 tag like
+     `"hi-IN"` (hyphen), so the recognizer never matched an installed language and failed instantly
+     every time. Fixed by using the literal `"hi-IN"`/`"en-IN"` string tags directly, exactly like
+     `LiveCallWarningService` already does correctly — confirmed via `logcat` that the recognizer
+     then actually initializes (`SodaSpeechRecognizer: Initialize Soda [locale: hi-IN]`) instead of
+     erroring before that point.
+  3. **A third, more intermittent issue found testing the above live, repeatedly**: even with the
+     locale fixed, the device's on-device Hindi/English speech model ("SODA") sometimes reports
+     `ERROR_LANGUAGE_UNAVAILABLE`/`error 13` with the log line `"Returning no LP, as MDD has not
+     downloaded this pack yet"` — Google Play Services' own model-download manager (MDD) hadn't
+     finished making the pack available at that exact moment, a device/Play-Services-level timing
+     issue, not something this app controls. Mitigated with a one-time automatic retry: on any
+     error other than "genuinely heard nothing" (`ERROR_NO_MATCH`/`ERROR_SPEECH_TIMEOUT`) or
+     `ERROR_CLIENT`, retry once with `EXTRA_PREFER_OFFLINE=false` (falls back toward network
+     recognition) after a short delay — recreating a `SpeechRecognizer` synchronously inside the
+     failing one's own `onError` raced with the service unbind and failed immediately with
+     `ERROR_SERVER_DISCONNECTED`; a 300ms `Handler.postDelayed` before the retry (the same pattern
+     `LiveCallWarningService`'s own restart loop already uses) fixed that race. **Verified on the
+     connected device repeatedly**: some attempts now succeed on the very first try
+     (`Initialize Soda [locale: hi-IN]` with no following error, confirmed actually listening), and
+     attempts that fail on the first try now genuinely retry and succeed on the second, instead of
+     failing hard with no recovery as before. English (`en-IN`) hit this same pack-unavailable path
+     on this specific test device and its retry (online fallback) also failed once with
+     `ERROR_SERVER_DISCONNECTED` despite the device having working internet (`ping 8.8.8.8`
+     succeeded) — left as a known residual gap on devices without an installed offline English
+     pack and no working cloud fallback; Hindi (and therefore Chhattisgarhi, which intentionally
+     reuses the Hindi recognizer per the precedent elsewhere in this app) is the language that
+     matters most for this project's actual rural-Chhattisgarh users and is the one confirmed
+     working end-to-end.
+  4. Button UI itself (mic icon + "बोलकर जाँचें"/"Speak" label, present on both detector screens)
+     was never actually missing — the user's "I don't see any change in the UI" report from the
+     previous session turned out to be because the rebuilt APK from that session was built but
+     never `adb install`-ed, so they were testing the old app. Confirmed via `uiautomator dump` on
+     the connected device that the mic button, "सुनें" listen button, "चेतावनी छवि शेयर करें" share-
+     warning-image button (which does work — tapping it opens the real Android share sheet with a
+     generated PNG and app targets like WhatsApp, confirmed live), and the trusted-contact dial
+     button are all present and wired correctly once the current build is actually installed.
+
 - **Added a batch of low-literacy / rural-accessibility features across both web and app, reusing
   existing code where possible (speech recognition, TTS, canvas) rather than new dependencies.**
   Scope was picked from a prioritized list the user gave (quick wins reusing existing code first,

@@ -33,14 +33,13 @@ class CallDetectorActivity : AppCompatActivity() {
         val uri = result.data?.data
         if (result.resultCode == RESULT_OK && uri != null) setupAudio(uri)
     }
-    private lateinit var voiceLauncher: androidx.activity.result.ActivityResultLauncher<Intent>
+    private val voiceInput = VoiceInput(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         b = ActivityCallDetectorBinding.inflate(layoutInflater)
         setContentView(b.root)
         Classifier.load(this)
-        voiceLauncher = VoiceInput.register(this) { text -> b.messageInput.setText(text) }
 
         b.messageInput.filters = arrayOf(InputFilter.LengthFilter(CALL_MAX_LEN))
         b.messageInput.addTextChangedListener(object : TextWatcher {
@@ -62,7 +61,12 @@ class CallDetectorActivity : AppCompatActivity() {
             showInput()
         }
         b.uploadBtn.setOnClickListener { launchAudioPicker() }
-        b.micBtn.setOnClickListener { VoiceInput.launch(this, voiceLauncher) }
+        b.micBtn.setOnClickListener {
+            voiceInput.start(
+                onResult = { text -> b.messageInput.setText(text) },
+                onListening = { listening -> b.micBtnText.text = if (listening) T.listening else T.micBtn }
+            )
+        }
         b.audioPlayBtn.setOnClickListener { toggleAudioPlayback() }
         b.listenBtn.setOnClickListener {
             lastResult?.let { r ->
@@ -224,6 +228,7 @@ class CallDetectorActivity : AppCompatActivity() {
         super.onDestroy()
         releaseAudio()
         TtsHelper.stop()
+        voiceInput.destroy()
     }
 
     private fun runCheck() {

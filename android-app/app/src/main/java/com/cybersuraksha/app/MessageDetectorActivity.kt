@@ -35,17 +35,13 @@ class MessageDetectorActivity : AppCompatActivity() {
         val uri = result.data?.data
         if (result.resultCode == RESULT_OK && uri != null) runOcr(uri)
     }
-    private lateinit var voiceLauncher: androidx.activity.result.ActivityResultLauncher<Intent>
+    private val voiceInput = VoiceInput(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         b = ActivityMessageDetectorBinding.inflate(layoutInflater)
         setContentView(b.root)
         Classifier.load(this)
-        voiceLauncher = VoiceInput.register(this) { text ->
-            b.messageInput.setText(text)
-            runCheck()
-        }
 
         // Share-to-check: a shared SMS/WhatsApp message lands here already filled in.
         if (intent?.action == Intent.ACTION_SEND && intent.type == "text/plain") {
@@ -74,7 +70,12 @@ class MessageDetectorActivity : AppCompatActivity() {
             showInput()
         }
         b.uploadBtn.setOnClickListener { launchMediaPicker() }
-        b.micBtn.setOnClickListener { VoiceInput.launch(this, voiceLauncher) }
+        b.micBtn.setOnClickListener {
+            voiceInput.start(
+                onResult = { text -> b.messageInput.setText(text); runCheck() },
+                onListening = { listening -> b.micBtnText.text = if (listening) T.listening else T.micBtn }
+            )
+        }
         b.listenBtn.setOnClickListener {
             lastResult?.let { r ->
                 val pct = Math.round(r.probability * 100).toInt()
@@ -295,6 +296,7 @@ class MessageDetectorActivity : AppCompatActivity() {
         super.onDestroy()
         ocrExecutor.shutdown()
         TtsHelper.stop()
+        voiceInput.destroy()
     }
 
     private data class Quad(val text: String, val fg: Int, val bg: Int, val icon: Int)
